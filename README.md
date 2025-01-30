@@ -1,10 +1,10 @@
 # autoware_lanelet2_map_validator
 
+**This package was formly one of the packages of `autoware_tools` have been moved here as a new repository (Jan, 2025)!! Commits before Feb, 2025 were made there.**
+
 `autoware_lanelet2_map_validator` is a tool to validate Lanelet2 maps to ensure that Autoware can work properly with it.
 
 This validation tool is an extension of [lanelet2_validation](https://github.com/fzi-forschungszentrum-informatik/Lanelet2/tree/master/lanelet2_validation) so that Autoware specific rules can be applied. As you can see from the codes in the `src/validators` directory, the group of validators belong to this tool inherits the [lanelet::validation::MapValidator class](https://github.com/fzi-forschungszentrum-informatik/Lanelet2/blob/master/lanelet2_validation/include/lanelet2_validation/BasicValidator.h#L17) from the original `lanelet2_validation`. Therefore, we believe that reading the source code of the `lanelet2_validation` will help you understand this tool better.
-
-**Note that this validator is still on construction that there are only a few rules and a template to define those rules.**
 
 The official Autoware requirements for lanelet2 maps are described in [Vector Map creation requirement specifications (in Autoware Documentation)](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/).
 
