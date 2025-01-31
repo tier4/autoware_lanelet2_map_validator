@@ -1,6 +1,6 @@
 # autoware_lanelet2_map_validator
 
-**This package was formly one of the packages of `autoware_tools` have been moved here as a new repository (Jan, 2025)!! Commits before Feb, 2025 were made there.**
+**This package was formerly one of the packages of `autoware_tools` have been moved here as a new repository (Jan, 2025)!! Commits before Feb, 2025 were made there.**
 
 `autoware_lanelet2_map_validator` is a tool to validate Lanelet2 maps to ensure that Autoware can work properly with it.
 
