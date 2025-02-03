@@ -10,6 +10,9 @@ on:
 jobs:
   check-directory-changes:
     runs-on: ubuntu-22.04
+    env:
+      ACTIONS_RUNNER_DEBUG: true
+      ACTIONS_STEP_DEBUG: true
     outputs:
       changes_detected: ${{ steps.check-changes.outputs.changes_found }}
     steps:
@@ -22,6 +25,8 @@ jobs:
       - name: Check for changes in a specific directory
         id: check-changes
         run: |
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          echo "Head SHA: ${{ github.event.pull_request.head.sha }}"
           if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
             echo "changes_found=true" >> "$GITHUB_OUTPUT"
           else
