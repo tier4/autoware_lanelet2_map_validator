@@ -50,13 +50,11 @@ jobs:
           - rosdistro: humble
             container: ghcr.io/autowarefoundation/autoware:latest-prebuilt
             build-depends-repos: build_depends.repos
-    steps:
-      - name: Prevent No Label Execution
-        if: ${{ needs.check-directory-changes.outputs.changes_detected == 'true' }}
-        uses: autowarefoundation/autoware-github-actions/.github/workflows/prevent-no-label-execution.yaml@v1
-        with:
-          label: tag:run-build-and-test-differential
+    uses: autowarefoundation/autoware-github-actions/.github/workflows/prevent-no-label-execution.yaml@v1
+    with:
+      label: tag:run-build-and-test-differential
 
+    steps:
       - name: Set PR fetch depth
         run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_ENV}"
 
