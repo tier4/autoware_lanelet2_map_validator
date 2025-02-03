@@ -10,6 +10,9 @@ on:
 jobs:
   check-directory-changes:
     runs-on: ubuntu-22.04
+    env:
+      ACTIONS_RUNNER_DEBUG: true
+      ACTIONS_STEP_DEBUG: true
     outputs:
       changes_detected: ${{ steps.check-changes.outputs.changes_found }}
     steps:
@@ -22,24 +25,24 @@ jobs:
       - name: Check for changes in a specific directory
         id: check-changes
         run: |
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          echo "Head SHA: ${{ github.event.pull_request.head.sha }}"
           if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
-            echo "changes_found=true" >> $GITHUB_ENV
-            echo "::set-output name=changes_found::true"
+            echo "changes_found=true" >> "$GITHUB_OUTPUT"
           else
-            echo "changes_found=false" >> $GITHUB_ENV
-            echo "::set-output name=changes_found::false"
+            echo "changes_found=false" >> "$GITHUB_OUTPUT"
           fi
 
   prevent-no-label-execution:
-    needs: check-directory-changes
-    if: ${{ needs.check-directory-changes.outputs.changes_detected == 'true' }}
     uses: autowarefoundation/autoware-github-actions/.github/workflows/prevent-no-label-execution.yaml@v1
     with:
       label: tag:run-build-and-test-differential
 
   build-and-test-differential:
-    needs: prevent-no-label-execution
-    if: ${{ needs.prevent-no-label-execution.outputs.run == 'true' }}
+    needs:
+      - check-directory-changes
+      - prevent-no-label-execution
+    if: ${{ needs.check-directory-changes.outputs.changes_detected == 'true' }}
     runs-on: ubuntu-22.04
     container: ${{ matrix.container }}${{ matrix.container-suffix }}
     strategy:
@@ -54,7 +57,15 @@ jobs:
           - rosdistro: humble
             container: ghcr.io/autowarefoundation/autoware:latest-prebuilt
             build-depends-repos: build_depends.repos
+
     steps:
+      - name: Check No Label Execution
+        run: |
+          if [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
+            echo "tag:run-build-and-test-differential is missing"
+            exit 1
+          fi
+
       - name: Set PR fetch depth
         run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_ENV}"
 
