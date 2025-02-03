@@ -17,7 +17,7 @@ jobs:
     needs: prevent-no-label-execution
     runs-on: ubuntu-22.04
     outputs:
-      changes_detected: ${{ steps.check-changes-and-label.outputs.ok }}
+      changes_detected: ${{ steps.check-changes-and-label.outputs.changed }}
     steps:
       - name: Checkout PR branch and all PR commits
         uses: actions/checkout@v4
@@ -29,20 +29,19 @@ jobs:
         id: check-changes-and-label
         run: |
           if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
-            if  [ "${{ needs.prevent-no-label-execution.outputs.run }}" == 'true' ]; then
-              echo "ok=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "ok=false" >> "$GITHUB_OUTPUT"
-              exit 1
-            fi
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+          if  [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
             exit 1
           fi
 
   build-and-test-differential:
-    needs: check-directory-changes
-    if: ${{ needs.check-directory-changes.outputs.ok == 'true' }}
+    needs:
+      - check-directory-changes-and-label
+      - prevent-no-label-execution
+    if: ${{ needs.check-directory-changes.outputs.changes_detected == 'true' && needs.prevent-no-label-execution.outputs.run == 'true' }}
     runs-on: ubuntu-22.04
     container: ${{ matrix.container }}${{ matrix.container-suffix }}
     strategy:
