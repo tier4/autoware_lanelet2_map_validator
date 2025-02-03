@@ -33,8 +33,15 @@ jobs:
             echo "changes_found=false" >> "$GITHUB_OUTPUT"
           fi
 
+  prevent-no-label-execution:
+    uses: autowarefoundation/autoware-github-actions/.github/workflows/prevent-no-label-execution.yaml@v1
+    with:
+      label: tag:run-build-and-test-differential
+
   build-and-test-differential:
-    needs: check-directory-changes
+    needs:
+      - check-directory-changes
+      - prevent-no-label-execution
     if: ${{ needs.check-directory-changes.outputs.changes_detected == 'true' }}
     runs-on: ubuntu-22.04
     container: ${{ matrix.container }}${{ matrix.container-suffix }}
@@ -50,11 +57,15 @@ jobs:
           - rosdistro: humble
             container: ghcr.io/autowarefoundation/autoware:latest-prebuilt
             build-depends-repos: build_depends.repos
-    uses: autowarefoundation/autoware-github-actions/.github/workflows/prevent-no-label-execution.yaml@v1
-    with:
-      label: tag:run-build-and-test-differential
 
     steps:
+      - name: Check No Label Execution
+        run: |
+          if [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
+            echo "tag:run-build-and-test-differential is missing"
+            exit 1
+          fi
+
       - name: Set PR fetch depth
         run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_ENV}"
 
