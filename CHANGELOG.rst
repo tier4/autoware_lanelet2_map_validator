@@ -5,7 +5,7 @@ Changelog for package autoware_lanelet2_map_validator
 1.0.0 (2025-01-28)
 ------------------
 * Initial release
-* Containing the following implemenetation
+* Containing the following implemenetation done in autoware_tools
   * feat(autoware_lanelet2_map_validator): introduce autoware_lanelet2_map_validator (`#118 <https://github.com/autowarefoundation/autoware_tools/pull/118>`_)
   * chore(autoware_lanelet2_map_validator): add maintainers (`#141 <https://github.com/autowarefoundation/autoware_tools/pull/141>`_)
   * chore(autoware_lanelet2_map_validator): add requirement vm-02-02 to autoware_requirement_set (`#143 <https://github.com/autowarefoundation/autoware_tools/pull/143>`_)
@@ -30,7 +30,10 @@ Changelog for package autoware_lanelet2_map_validator
   * docs(lanelet2_map_validator): update README (`#193 <https://github.com/autowarefoundation/autoware_tools/pull/193>`_)
   * feat(lanelet2_map_validator): add validator to check whether intersection lanelets have valid turn_direction tags (`#186 <https://github.com/autowarefoundation/autoware_tools/pull/186>`_)
   * feat(lanelet2_map_validator): check local coordinates declaration (`#194 <https://github.com/autowarefoundation/autoware_tools/pull/194>`_)
+* Containing the initial setup for the tier4/autoware_lanelet2_map_validator repository
   * chore(deps): bump actions/labeler from 4 to 5 (`#1 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/1>`_)
   * chore: extract documents from package (`#2 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/2>_`)
   * ci: set CI related files (`#3 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/3>`_)
   * ci: refine some workflows (`#4 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/4>`_)
+* New feature of version controlling for autoware_lanelet2_map_validator
+  * feat: apply version control (`#6 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/6>`_)

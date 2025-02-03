@@ -11,7 +11,7 @@ The main goal of `autoware_lanelet2_map_validator` is to validate whether the la
 In other words, each vector map requirement will be validated by one or more validators.
 It is recommended to keep validators small and they don't have to be unique to a specific requirement so that we can broaden the expression of map requirements. (It doesn't mean that a validator should output only one kind of error!)
 
-The list of small validators will be defined as a JSON file (see [`autoware_requirement_set.json`](https://github.com/autowarefoundation/autoware_tools/blob/main/map/autoware_lanelet2_map_validator/autoware_requirement_set.json) for an example), and the output will also be a JSON file that appends validation results to a copy of the input. See [How to use `autoware_lanelet2_map_validator`](https://github.com/autowarefoundation/autoware_tools/tree/main/map/autoware_lanelet2_map_validator#how-to-use) for further information about how the input and output are processed.
+The list of small validators will be defined as a JSON file (see [`autoware_requirement_set.json`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/autoware_requirement_set.json) for an example), and the output will also be a JSON file that appends validation results to a copy of the input. See [How to use `autoware_lanelet2_map_validator`](../README.md#how-to-use) for further information about how the input and output are processed.
 
 ![autoware_lanelet2_map_validator_input_and_output](../media/autoware_lanelet2_map_validator_io.svg)
 
@@ -30,7 +30,7 @@ Please note that the validators are categorized according to [the vector map req
 `autoware_lanelet2_map_validator` began version control on January, 2025 in order to clarify the linkage to versioned map requirements and specifications.
 The version of `autoware_lanelet2_map_validator` starts from `1.0.0` having the major, minor, and patch version.
 See the following sections for further explanations of each version.
-Note that the version of `autoware_lanelet2_map_validator` is stated in the `package.xml` and it is a separated to that of `autoware_requiremenet_set.json`.
+Note that the version of `autoware_lanelet2_map_validator` is stated in the `package.xml` and it is a separated to that of `autoware_requirement_set.json`.
 Therefore, the version written in `autoware_requirement_set.json` is **NOT** linked to the version of `autoware_lanelet2_map_validator`.
 The version of `autoware_requirement_set.json` refers to the version of [map requirements and specifications for Autoware](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/) (... which is not having its version controlled so yes leave it alone for now).
 
@@ -42,7 +42,7 @@ The major version increases with the following changes.
 - The format of inputs and outputs drastically changes.
 - The entire code structure drastically changes.
 
-The major version is NOT intended to be updated frequenetly.
+The major version is NOT intended to be updated frequently.
 
 ### Minor version
 
@@ -74,11 +74,11 @@ This section is aimed at contributors who want to add their own validators. If y
 
 <!--- cSpell:enable --->
 
-Contributors are encouraged to make their validators by following the class structure shown in [`validator_template.cpp`](https://github.com/autowarefoundation/autoware_tools/blob/main/map/autoware_lanelet2_map_validator/template/validator_template.cpp) and [`validator_template.hpp`](https://github.com/autowarefoundation/autoware_tools/blob/main/map/autoware_lanelet2_map_validator/template/validator_template.hpp).
+Contributors are encouraged to make their validators by following the class structure shown in [`validator_template.cpp`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/validator_template.cpp) and [`validator_template.hpp`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/validator_template.hpp).
 
 #### `create_new_validator.py` may be useful
 
-You can use the script [`create_new_validator.py`](https://github.com/autowarefoundation/autoware_tools/blob/main/map/autoware_lanelet2_map_validator/template/create_new_validator.py) to generate the required files below.
+You can use the script [`create_new_validator.py`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/create_new_validator.py) to generate the required files below.
 
 - Source codes (cpp and hpp)
 - Test code (cpp)
@@ -192,14 +192,18 @@ The document must explain the following.
   - Description of the issue
   - Approach to fix the issue
 
-In addition, add a link of the document to the table [Relationship between requirements and validators](https://github.com/autowarefoundation/autoware_tools/tree/main/map/autoware_lanelet2_map_validator#relationship-between-requirements-and-validators) in the main `README.md` to let the users know which map requirement your validator relates with.
+In addition, add a link of the document to the table [Relationship between requirements and validators](https://github.com/tier4/autoware_lanelet2_map_validator/tree/main/map/autoware_lanelet2_map_validator#relationship-between-requirements-and-validators) in the main `README.md` to let the users know which map requirement your validator relates with.
 
 ### 5. Increase version
 
 Contributors must increase the version of `autoware_lanelet2_map_validator`.
 See [Version Control](#version-control) for further information about how versioning is managed.
 Note that contributors should increase the version in `package.xml` and do **NOT** edit the one in `autoware_requirement_set.json` unless the map requirements in Autoware documentation got its version changed.
+Besides, contributors should update the `CHANGELOG.rst`. The following information should be included.
+
+- What kind of updates happend.
+- The according pull request which is the one you will soon create. Therefore you will need to update the `CHANGELOG.rst` after openeing the pull request.
 
 ### 6. Submit a pull request
 
-Submit a pull request to the [autowarefoundation/autoware_tools](https://github.com/autowarefoundation/autoware_tools) repository.
+Submit a pull request to the [tier4/autoware_lanelet2_map_validator](https://github.com/tier4/autoware_lanelet2_map_validator) repository.
