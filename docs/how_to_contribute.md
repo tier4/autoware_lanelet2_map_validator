@@ -50,7 +50,7 @@ The minor version increases with the following changes.
 
 - Addition of new validators.
 - Modification of existing validators due to updates of map requirements or other reasons.
-  - Even if the validation result changes, it will not be taken as the lost of backward compability if it only affects a few validators.
+  - Even if the validation result changes, it will not be taken as the lost of backward compatibility if it only affects a few validators.
 - Modification to the entire validation process that doesn't affect backward compatibility.
 
 This minor version is intended to be updated frequently as pull requests increase.
@@ -201,8 +201,8 @@ See [Version Control](#version-control) for further information about how versio
 Note that contributors should increase the version in `package.xml` and do **NOT** edit the one in `autoware_requirement_set.json` unless the map requirements in Autoware documentation got its version changed.
 Besides, contributors should update the `CHANGELOG.rst`. The following information should be included.
 
-- What kind of updates happend.
-- The according pull request which is the one you will soon create. Therefore you will need to update the `CHANGELOG.rst` after openeing the pull request.
+- What kind of updates happened.
+- The according pull request which is the one you will soon create. Therefore you will need to update the `CHANGELOG.rst` after opening the pull request.
 
 ### 6. Submit a pull request
 
