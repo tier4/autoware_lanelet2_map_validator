@@ -35,5 +35,13 @@ Changelog for package autoware_lanelet2_map_validator
   * chore: extract documents from package (`#2 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/2>_`)
   * ci: set CI related files (`#3 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/3>`_)
   * ci: refine some workflows (`#4 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/4>`_)
+  * ci: change build-and-test-differential algorithm (`#7 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/7>_`)
+  * ci: explictly check prevent no label execution (`#8 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/8>_`)
 * New feature of version controlling for autoware_lanelet2_map_validator
   * feat: apply version control (`#6 <https://github.com/tier4/autoware_lanelet2_map_validator/pull/6>`_)
+    * States the initial version of lanelet2_map_validator in package.xml
+    * Export package.xml to the share directory to read the package version.
+    * Adds a tentative map requirement version to autoware_requirement_set.json
+    * Adds a feature that stamps a validation tag to the .osm file that describes the map is validated by "what validator" with "what validator version" reflecting "what kind of map requirements" with "what requirement version".
+    * Stated a document how to control versions for lanelet2_map_validator.
+    * Create a new CHANGELOG.rst and removed the one brought from autoware_tools.
