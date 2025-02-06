@@ -120,5 +120,5 @@ jobs:
           if [[ "${{ needs.build-and-test-differential.result }}" == "skipped" || "${{ needs.build-and-test-differential.result }}" == "success" ]]
             echo "build-and-test-differential has no errors"
           else
-            echo 1
+            exit 1
           exit
