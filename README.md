@@ -381,7 +381,7 @@ When the `--input_requirements` is thrown to `autoware_lanelet2_map_validator`, 
 - `autoware_lanelet2_map_validator` adds a boolean `passed` field to each requirement. If all validators of the requirement have been passed, the `passed` field of the requirement will be `true` (`false` if not).
 - The `passed` field is also given to each validator. If the validator found any issues the `passed` field will turn to be `false` (`true` if not), and adds an `issues` field which is a list of issues found. Each issue contains information of `severity`, `primitive`, `id`, `message` and `issue_code`.
   - `severity` tells the level of the issue (Error, Warning, or info). However, a concrete definition of each severity class is not settled and depends on the contributors.
-  - `primitive` tells what object is having the issue such like Lanelet, Linestring, Regualatory Element and more.
+  - `primitive` tells what object is having the issue such like Lanelet, Linestring, Regulatory Element and more.
   - `id` refers to the id of the primitive
   - `message` describes what kind of issue is detected
   - `issue_code` is a code that correspond to a specific issue `message` which is prepared to work with other tools. It is not necessary to check for general purpose use.

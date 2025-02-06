@@ -156,7 +156,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 --validator mapping.traffic_light.missing_regulatory_elements \ # or -v in short
 ```
 
-利用可能な検証器あ `--print` オプションで確認できるほか、[各要求仕様と検証器の対応表](#各要求仕様と検証器の対応表)でも確認することができます。
+利用可能な検証器は `--print` オプションで確認できるほか、[各要求仕様と検証器の対応表](#各要求仕様と検証器の対応表)でも確認することができます。
 
 ```bash
 ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
