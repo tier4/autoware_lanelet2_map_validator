@@ -108,3 +108,17 @@ jobs:
 
       - name: Show disk space after the tasks
         run: df -h
+
+  summarize-jobs:
+    needs:
+      - build-and-test-differential
+    runs-on: ubuntu-22.04
+    if: always()
+    steps:
+      - name: Check job results
+        run: |
+          if [[ "${{ needs.build-and-test-differential.result }}" == "skipped" || "${{ needs.build-and-test-differential.result }}" == "success" ]]
+            echo "build-and-test-differential has no errors"
+          else
+            echo 1
+          exit
