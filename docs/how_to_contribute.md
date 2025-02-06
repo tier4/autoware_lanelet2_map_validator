@@ -30,7 +30,7 @@ Please note that the validators are categorized according to [the vector map req
 `autoware_lanelet2_map_validator` began version control on January, 2025 in order to clarify the linkage to versioned map requirements and specifications.
 The version of `autoware_lanelet2_map_validator` starts from `1.0.0` having the major, minor, and patch version.
 See the following sections for further explanations of each version.
-Note that the version of `autoware_lanelet2_map_validator` is stated in the `package.xml` and it is a separated to that of `autoware_requirement_set.json`.
+Note that the version of `autoware_lanelet2_map_validator` is stated in the `package.xml` and it is separated to that of `autoware_requirement_set.json`.
 Therefore, the version written in `autoware_requirement_set.json` is **NOT** linked to the version of `autoware_lanelet2_map_validator`.
 The version of `autoware_requirement_set.json` refers to the version of [map requirements and specifications for Autoware](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/) (... which is not having its version controlled so yes leave it alone for now).
 

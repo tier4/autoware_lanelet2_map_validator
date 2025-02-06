@@ -1,45 +1,45 @@
 # autoware_lanelet2_map_validator
 
-🇬🇧 **English ver** | 🇯🇵 [日本語 ver](./README_ja.md)
+🇬🇧 [English ver](./README.md) | 🇯🇵 **日本語 ver**
 
-**This package was formerly one of the packages of `autoware_tools` have been moved here as a new repository (Jan, 2025)!! Commits before Feb, 2025 were made there.**
+**本パッケージは元々 `autowarefoundation/autoware_tools` の一パッケージでしたが、2025年2月より本リポジトリに移動しました。2025年2月以前のコミットは `autowarefoundation/autoware_tools` にて行われたものです。**
 
-`autoware_lanelet2_map_validator` is a tool to validate Lanelet2 maps to ensure that Autoware can work properly with it.
+`autoware_lanelet2_map_validator` は Lanelet2 地図が Autoware 上で正しく機能するかを自動検証するツールです。
 
-The official Autoware requirements for Lanelet2 maps are described in [Vector Map creation requirement specifications (in Autoware Documentation)](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/).
+Autoware が求める Lanelet2 地図の要求は [Vector Map creation requirement specifications (in Autoware Documentation)](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/) に掲載されています。
 
-## Index
+## 目次
 
-- [Design concept](#design-concept)
-- [Installation](#installation)
-- [How to use](#how-to-use)
-  - [Validation using a requirement set](#usage-a-validation-using-a-requirement-set-a-list-of-validators)
-  - [Validation with with specific validators](#usage-b-validation-with-specific-validators)
-- [Inputs and outputs](#inputs-and-outputs)
-  - [Requirement set (Input JSON file)](#requirement-set-input-json-file)
-  - [Validation results (Output JSON file)](#validation-results-output-json-file)
-  - [Validation signature](#validation-signature)
-- [How to add a new validator (Contributing)](#how-to-add-a-new-validator)
-- [Relationship between requirements and validators](#relationship-between-requirements-and-validators)
+- [構成](#構成)
+- [インストール方法](#インストール方法)
+- [使い方](#使い方)
+  - [使用方法A: 要求仕様リストを用いた検証](#使用方法a-要求仕様リストを用いた検証)
+  - [使用方法B: 検証器を指定した検証](#使用方法b-検証器を指定した検証)
+- [入出力](#入出力)
+  - [要求仕様リスト (入力 JSON ファイル)](#要求仕様リスト-入力-json-ファイル)
+  - [検証結果ファイル (出力 JSON ファイル)](#検証結果ファイル-出力-json-ファイル)
+  - [検証内容の印字](#検証内容の印字)
+- [新しい検証器を作成する場合](#新しい検証器を作成する場合)
+- [各要求仕様と検証器の対応表](#各要求仕様と検証器の対応表)
 
-## Design concept
+## 構成
 
-The `autoware_lanelet2_map_validator` is designed to validate `.osm` map files by using and extending the [lanelet2_validation](https://github.com/fzi-forschungszentrum-informatik/Lanelet2/tree/master/lanelet2_validation) package for Autoware.
+`autoware_lanelet2_map_validator` は [lanelet2_validation](https://github.com/fzi-forschungszentrum-informatik/Lanelet2/tree/master/lanelet2_validation) パッケージを拡張して実装された `.osm` ファイル検証ツールです。
 
-`autoware_lanelet2_map_validator` takes the lanelet2 map (`.osm` file) and requirement set (`.json` file) as the input, and output validation results (`.json`) to the console.
+本ツールは Lanelet2 地図 (`.osm` 形式ファイル)と要求仕様 (`.json` 形式、任意)を入力とし、検証結果をコンソール出力および `.json` 形式で出力します。
 
-If a requirement set is given, `autoware_lanelet2_map_validator` also outputs validation results reflecting the input requirement set.
+要求仕様が入力されると、`autoware_lanelet2_map_validator` は入力内容を反映した出力ファイルを出力します。
 
 ![autoware_lanelet2_map_validator_architecture](./media/autoware_lanelet2_map_validator_architecture.drawio.svg)
 
-## Installation
+## インストール方法
 
-**Currently `autoware_lanelet2_map_validator` requires an [Autoware](https://github.com/autowarefoundation/autoware) workspace and build `autoware_lanelet2_map_validator` within there.**
-We will be working on an installation process that doesn't need Autoware installation in the future.
+**現在 `autoware_lanelet2_map_validator` は [Autoware](https://github.com/autowarefoundation/autoware) と同じワークスペースでビルドされる必要があります。**
+将来的には `autoware_lanelet2_map_validator` 単体でインストールできるようにしたいと考えています。
 
-### 0. Prerequisites
+### 0. 動作条件
 
-Confirm you have the following environments
+以下の動作環境を用意してください。
 
 - OS
   - Ubuntu 22.04
@@ -47,9 +47,9 @@ Confirm you have the following environments
   - ROS 2 Humble
 - Git
 
-### 1. Clone Autoware (if you don't have an Autoware environment)
+### 1. Autoware をクローン (まだ Autoware 環境を持っていない場合)
 
-Launch your terminal, then clone and import Autoware source codes with the following commands.
+ターミナルを起動し、以下のコマンドで　Autoware をインストールします。
 
 ```bash
 git clone https://github.com/autowarefoundation/autoware.git
@@ -58,11 +58,11 @@ mkdir src
 vcs import src < autoware.repos
 ```
 
-### 2. Clone autoware_lanelet2_map_validator
+### 2. autoware_lanelet2_map_validator をクローン
 
-`autoware_lanelet2_map_validator` should be somewhere in the `autoware/src` directory.
-If you don't mind your folder structure, the following will be fine.
-You can skip `git checkout` if there is no specific version needed.
+`autoware_lanelet2_map_validator` は `autoware/src` ディレクトリ内に配置してください。
+ディレクトリ構成に特に制約がない場合は以下のコマンドで十分です。
+バージョン指定が必要ない場合は `git checkout` は不要です。
 
 ```bash
 # Assuming you are at the `autoware` directory
@@ -72,9 +72,9 @@ git checkout <VERSION>  # 1.0.0 for example
 cd ..  # go back to the `autoware` directory
 ```
 
-### 3. Install dependent packages
+### 3. 必要パッケージをインストール
 
-You need to install packages required from `Autoware`.
+`Autoware` に必要なパッケージをインストールします。
 
 ```bash
 # Assuming you are at the `autoware` directory
@@ -84,21 +84,21 @@ rosdep update
 rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 ```
 
-### 4. Build autoware_lanelet2_map_validator
+### 4. autoware_lanelet2_map_validator をビルド
 
-Build autoware_lanelet2_map_validator with the following command. This doesn't build the entire Autoware so it is much quicker.
+以下のコマンドで `autoware_lanelet2_map_validator` をビルドします。`--packages-up-to autoware_lanelet2_map_validator` と指定することで `Autoware` 全体をビルドせずに済みます。
 
 ```bash
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to autoware_lanelet2_map_validator
 ```
 
-## How to use
+## 使い方
 
-There are two ways to run `autoware_lanelet2_map_validator`: run with a requirement set, or run against specific validators. The most general usage is to run with the requirement set `autoware_requirement_set.json`.
+`autoware_lanelet2_map_validator` の使い方は「要求仕様リストを用いた検証」と「検証器を指定した検証」の2通りがあります。基本的には要求仕様リスト `autoware_requirement_set.json` を使って使用することをおすすめします。
 
-### Usage-A: Validation using a requirement set (a list of validators)
+### 使用方法A: 要求仕様リストを用いた検証
 
-You can run `autoware_lanelet2_map_validator` with the following command.
+以下のコマンドで `autoware_lanelet2_map_validator` を実行します。
 
 ```bash
 # Assuming you are at the `autoware` directory
@@ -111,14 +111,14 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 --output_directory <directory/where_you/want_to/save_results> \ # or -o in short
 ```
 
-For example, if ...
+例えば以下のような場合
 
-- Your map is made with the MGRS projection
-- Your map is saved as `$HOME/autoware_map/area1/lanelet2_map.osm`
-- Chosen `autoware_requirement_set.json` as your requirement set
-- Chosen the current directory to output the validation result (`lanelet2_validation_results.json`).
+- 地図が MGRS 投影法で構成されている
+- 地図は `$HOME/autoware_map/area1/lanelet2_map.osm` として保存されている
+- 要求仕様リストとして `autoware_requirement_set.json` を指定している
+- 現在のディレクトリに検証結果ファイル (`lanelet2_validation_results.json`) を出力する
 
-the command will be like
+コマンド例は以下の通りになります。
 
 ```bash
 # Assuming you are at the `autoware` directory
@@ -131,23 +131,23 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -o ./
 ```
 
-Then you will see `lanelet2_validation_results.json` in your current working directory. See [Inputs and outputs](#inputs-and-outputs) for more information of `autoware_requirement_set.json` and `lanelet2_validation_results.json`.
+実行後、検証結果ファイル (`lanelet2_validation_results.json`)が現在のディレクトリ下にあることが確認できます。`autoware_requirement_set.json` と `lanelet2_validation_results.json` の詳細については[入出力](#入出力)を参照してください。
 
-**Be aware that...**
+**また、以下の点に注意してください。**
 
-- `lanelet2_validation_results.json` will be overwritten if it already exists!!
-- The following tab will be appended to the lanelet2 map (`.osm` file). This tab shouldn't harm the Autoware behaviour.
+- `lanelet2_validation_results.json` が既に存在する場合は上書きされてしまいます。
+- 下記のようなタブが Lanelet2 地図 (`osm` ファイル) に追記されます。このタブは Autoware の挙動に影響はしません。
 
-  - All information will be generated automatically. The `validator_version` is obtained from the `package.xml` and the `requirements_version` is obtained from the requirement set JSON file.
+  - 本タブの情報は自動的に付与されるもので、何か手入力する必要はありません。`validation_version` は `package.xml` から、`requirements_version` は要求仕様リストから取得されます。
 
   ```xml
   <validation name="autoware_lanelet2_map_validator" validator_version="1.0.0" requirements="autoware_requirement_set.json" requirements_version="0.0.0" />
   ```
 
-### Usage-B: Validation with specific validators
+### 使用方法B: 検証器を指定した検証
 
-`autoware_lanelet2_map_validator` consists of multiple small validators in order to realize complex requirements with a combination of them.
-If you want to validate with a specific validator, you can select it with the `--validator, -v` option. For example...
+`autoware_lanelet2_map_validator` は小さな検証器から構成されています。
+もしも個別の検証器に対して検証を行いたい場合は `--validator, -v` オプションを用いることができます。
 
 ```bash
 ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
@@ -156,40 +156,40 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 --validator mapping.traffic_light.missing_regulatory_elements \ # or -v in short
 ```
 
-You can get a list of available validators with the `--print` option, or you can check out the table of [Relationship between requirements and validators](#relationship-between-requirements-and-validators).
+利用可能な検証器あ `--print` オプションで確認できるほか、[各要求仕様と検証器の対応表](#各要求仕様と検証器の対応表)でも確認することができます。
 
 ```bash
 ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 ```
 
-**Be aware that...**
+**また、以下の点に注意してください。**
 
-- This usage does NOT output `lanelet2_validation_results.json` even if it has an `--output_directory` option.
-- You CAN select multiple validators by a comma separated string (`"mapping.traffic_light.correct_facing,mapping.traffic_light.missing_regulatory_elements"`), or regexes like `mapping.traffic_light.*`.
+- この使用方法では、`--output_directory` で指定しても `lanelet2_validation_results.json` は出力されません。
+- 複数の検証機を指定する場合はコンマ区切りの文字列 (例：`"mapping.traffic_light.correct_facing,mapping.traffic_light.missing_regulatory_elements"`) か、正規表現 (例：`mapping.traffic_light.*`) を用いて指定してください。
 
-### Available command options
+### オプション一覧
 
-| option                     | description                                                                                                                                                     |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-h, --help`               | Explains about this tool and show a list of options                                                                                                             |
-| `--print`                  | Print all available checker without running them                                                                                                                |
-| `-m, --map_file`           | Path to the map to be validated                                                                                                                                 |
-| `-i, --input_requirements` | Path to the JSON file where the list of requirements and validators is written                                                                                  |
-| `-o, --output_directory`   | Directory to save the list of validation results in a JSON format                                                                                               |
-| `-v, --validator`          | Comma separated list of regexes to filter the applicable validators. Will run all validators by default. Example: `mapping.*` to run all checks for the mapping |
-| `-p, --projector`          | Projector used for loading lanelet map. Available projectors are: `mgrs`, `utm`, and `transverse_mercator`.                                                     |
-| `-l, --location`           | Location of the map (for instantiating the traffic rules), e.g. de for Germany (currently not used)                                                             |
-| `--participants`           | Participants for which the routing graph will be instantiated (default: vehicle) (currently not used)                                                           |
-| `--lat`                    | latitude coordinate of map origin. This is required for the transverse mercator and utm projector.                                                              |
-| `--lon`                    | longitude coordinate of map origin. This is required for the transverse mercator and utm projector.                                                             |
+| オプション                 | 説明                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `-h, --help`               | 本ツールおよび使用可能なオプションを説明する。                                                                                             |
+| `--print`                  | 使用可能な検証器をリストアップする                                                                                                         |
+| `-m, --map_file`           | 検証する Lanelet2 地図のファイルパス                                                                                                       |
+| `-i, --input_requirements` | JSON 形式の要求仕様リストのファイルパス                                                                                                    |
+| `-o, --output_directory`   | JSON 形式の検証結果の保存ディレクトリ                                                                                                      |
+| `-v, --validator`          | カンマ区切りおよび正規表現で与えられた検証器のみを実行する。例えば、 `mapping.*` と指定すると `mapping` から始まる全ての検証器を実行する。 |
+| `-p, --projector`          | Lanelet2 地図の投影法。　`mgrs`, `utm`, `transverse_mercator` から選択。                                                                   |
+| `-l, --location`           | 地図の場所に関する情報 (未使用)                                                                                                            |
+| `--participants`           | 自動車や歩行者など交通ルールの対象の指定 (未使用)                                                                                          |
+| `--lat`                    | 地図原点の緯度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
+| `--lon`                    | 地図原点の軽度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
 
-## Inputs and Outputs
+## 入出力
 
-This section explains the details of the input/output of `autoware_lanelet2_map_validator`.
+本節では `autoware_lanelet2_map_validator` の入出力の詳細を解説します。
 
-### Requirement set (Input JSON file)
+### 要求仕様リスト (入力 JSON ファイル)
 
-The JSON file input should follow the structure like this example.
+本ツールに入力される JSON ファイルを以下のような構成をしています。
 
 ```json
 {
@@ -238,19 +238,19 @@ The JSON file input should follow the structure like this example.
 }
 ```
 
-- MUST have a single `requirements` field.
-- The `requirements` field MUST be a list of requirements. A requirement MUST have
-  - `id` : The id of the requirement. Its name is arbitrary.
-  - `validators` : A list of validators that structures the requirement.
-    - A validator MUST be given with its name on the `name` field.
-    - The name list of available validators can be obtained from the `--print` option.
-    - You can add a list of `prerequisites` to each validator. Then, the validator will only be run when the prerequisites pass the validation.
-    - In the `prerequisites` field, you can add `forgive_warnings: true` in order to run the validator even if the prerequisites output warning issues. (Error issues from prerequisites will still skip the validation.). Note that NOT writing the `forgive_warnings` field and writing `forgive_warnings: false` means the same.
-- The user can write any other field (like `version`) besides `requirements`.
+- 必ず一つの `requirements` フィールドを持つこと
+- `requirements` フィールドは要求仕様のリストの形で構成されること。要求仕様は必ず以下を持つ。
+  - `id`: 要求仕様の ID。ID 名は任意。
+  - `validators`: 本要求仕様を検証する検証器のリスト。
+    - 検証器は `name` フィールドに検証器名を入力することで指定する。
+    - 検証器名は `--print` オプションで表示されるものである。
+    - 各検証器には前提条件を `prerequisites` として与えることができる。前提条件が設定された場合、前提条件で指定された検証器がパスしたときに限り検証を実行し、イシューが検出された場合は検証は実行されない。
+    - さらに `prerequisites` フィールド内に `forgive_warnings: true` と指定することで、WARNING レベルのイシューでは検証はスキップされなくなる。（ERROR レベルのイシューがあった場合はスキップされる。）`forgive_warnings` を記載しないことは `forgive_warnings: false` と記載することと同義であり、ERROR レベルのイシューでも WARNING レベルのイシューでも対応する検証器は実行されない。
+- `requirements` 外については自由に情報を付与できる。
 
-### Validation results (Output JSON file)
+### 検証結果ファイル (出力 JSON ファイル)
 
-When the `--input_requirements` is thrown to `autoware_lanelet2_map_validator`, validation results will be appended and generates a new output file `lanelet2_validation_results.json` which looks like the following example.
+`--input_requirements` オプションで要求仕様リストが入力されたとき、検証結果が追記された新たな JSON ファイル `lanelet2_validation_results.json` が出力されます。検知された仕様違反は「イシュー」と呼ばれる形で出力されます。
 
 ```json
 {
@@ -376,39 +376,39 @@ When the `--input_requirements` is thrown to `autoware_lanelet2_map_validator`, 
 }
 ```
 
-- `lanelet2_validation_results.json` inherits the JSON file of `--input_requirements` and add results to it.
-  - So additional input information not related to this validator also remains in the output.
-- `autoware_lanelet2_map_validator` adds a boolean `passed` field to each requirement. If all validators of the requirement have been passed, the `passed` field of the requirement will be `true` (`false` if not).
-- The `passed` field is also given to each validator. If the validator found any issues the `passed` field will turn to be `false` (`true` if not), and adds an `issues` field which is a list of issues found. Each issue contains information of `severity`, `primitive`, `id`, `message` and `issue_code`.
-  - `severity` tells the level of the issue (Error, Warning, or info). However, a concrete definition of each severity class is not settled and depends on the contributors.
-  - `primitive` tells what object is having the issue such like Lanelet, Linestring, Regualatory Element and more.
-  - `id` refers to the id of the primitive
-  - `message` describes what kind of issue is detected
-  - `issue_code` is a code that correspond to a specific issue `message` which is prepared to work with other tools. It is not necessary to check for general purpose use.
+- `lanelet2_validation_results.json` は `--input_requirements` で渡された入力ファイルの内容を引き継ぎ、それに検証結果を追記した新規 JSON ファイルを出力する。
+  - `requirements` 外の内容もそのままコピーされます。
+- 各要求仕様オブジェクトに対して、`passed` フィールドが追加されます。 要求仕様を検証する全検証器がパスした場合は `true` に、何か一つでも ERROR, WARNING 相当のイシューが検知された場合は `false` になります。
+- 各検証器についても `passed` フィールドが追加されます。検証器が何か一つでも ERROR, WARNING 相当のイシューが検知された場合は `false` になり、見つからなかった場合は `true` になります。各イシューは `severity`, `primitive`, `id`, `message` and `issue_code` から構成されます。
+  - `severity` は検知されたイシューの重大性を表現しています (Error, Warning, info)。ただし、各 severity レベルの定義はなく、実装者の判断に任されています。
+  - `primitive` は Lanelet2 地図のどの要素における仕様違反であるかを示しています。(Lanelet, Linestring, Regulatory Element, etc...)
+  - `id` は上記 primitive の ID を指しています。
+  - `message` は具体的なイシューの内容を記しています。
+  - `issue_code` 上記 `message` に紐付けられるエラーコードのようなもので、他ツールとの接続を意識して設けられています（現状未使用）。一般用途では確認する必要はありません。
 
-### Validation signature
+### 検証内容の印字
 
-`autoware_lanelet2_map_validator` will append the following information of the validation to the osm file, `--input-requirements` is given.
+`--input-requirements` で JSON ファイルが入力されたとき、`autoware_lanelet2_map_validator` は以下の内容を Lanelet2 地図 (osm ファイル)に追記します。
 
-- `name` of this package (always be `autoware_lanelet2_map_validator`)
-- `validator_version` (The version of the `autoware_lanelet2_map_validator`)
-- `requirements` (The file name of the requirement set)
-- `requirements_version` (The version of the requirement set file which should be written inside it. Empty if it doesn't have a version)
+- 本ツール名 (常に `autoware_lanelet2_map_validator`)
+- 本ツールのバージョン (The version of the `autoware_lanelet2_map_validator`)
+- 入力された JSON ファイル名
+- 入力された JSON ファイルのバージョン。（存在しない場合は空欄）
 
-These information will be summarized to a `validation` tab.
+これらの情報は `validation` タブとして追記されます。
 
 ```xml
 <validation name="autoware_lanelet2_map_validator" validator_version="1.0.0" requirements="autoware_requirement_set.json" requirements_version="0.0.0" />
 ```
 
-## How to add a new validator
+## 新しい検証器を作成する場合
 
-If you want to contribute to `autoware_lanelet2_map_validator`, please check out the [how_to_contribute](./docs/how_to_contribute.md) page.
+`autoware_lanelet2_map_validator` に新しく検証器を実装したい場合は [how_to_contribute](./docs/how_to_contribute.md) (英語版のみ)を参照してください。
 
-## Relationship between requirements and validators
+## 各要求仕様と検証器の対応表
 
-This is a table describing the correspondence between the validators that each requirement consists of.
-The "Validators" column will be blank if it hasn't be implemented.
+下表は Autoware Documentation の [Vector Map creation requirement specifications (in Autoware Documentation)](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/) に書かれている各要求仕様に対応する検証器の対応表になります。
+"Validators" が空欄である項目は未実装・未対応であることを意味します。
 
 | ID       | Requirements                                            | Validators                                                                                                                                                                                                                                                                                                                                                      |
 | -------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
