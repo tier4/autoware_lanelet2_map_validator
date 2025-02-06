@@ -121,4 +121,4 @@ jobs:
             echo "build-and-test-differential has no errors"
           else
             exit 1
-          exit
+          fi
