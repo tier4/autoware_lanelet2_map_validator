@@ -15,7 +15,7 @@ The list of small validators will be defined as a JSON file (see [`autoware_requ
 
 ![autoware_lanelet2_map_validator_input_and_output](../media/autoware_lanelet2_map_validator_io.svg)
 
-Please note that the validators are categorized according to [the vector map requirements written in the Autoware Documentation](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/). If there are any suggestions for new categories please let the pull request (PR) reviewers know. The available categories as of now are
+Please note that the validators are categorized according to [the vector map requirements written in the Autoware Documentation](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/). If there are any suggestions for new categories please let the pull request (PR) reviewers know. The available categories as of now are...
 
 - Lane
 - Stop line

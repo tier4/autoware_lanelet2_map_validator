@@ -85,7 +85,5 @@ int main(int argc, char * argv[])
     lanelet::validation::printAllIssues(issues);
   }
 
-  std::cout << "po" < std::endl;
-
   return 0;
 }
