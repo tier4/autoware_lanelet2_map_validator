@@ -31,13 +31,13 @@ jobs:
           if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
             echo "changes detected"
             echo "changed=true" >> "$GITHUB_OUTPUT"
+            if  [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
+              echo "label tag:run-build-and-test-differential not set yet"
+              exit 1
+            fi
           else
             echo "changes not detected"
             echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-          if  [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
-            echo "label tag:run-build-and-test-differential not set yet"
-            exit 1
           fi
 
   build-and-test-differential:
