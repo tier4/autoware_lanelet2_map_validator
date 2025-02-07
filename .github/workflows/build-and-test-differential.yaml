@@ -96,12 +96,12 @@ jobs:
 
       - name: Check job results
         run: |
-          if [[ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]]; then
+          if [[ "${{ needs.prevent-no-label-execution.outputs.run }}" != "true" ]]; then
             if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
               echo "autoware_lanelet2_map_validator directory has changed but label tag:run-build-and-test-differential not set yet"
               exit 1
             fi
-          elif [[ "${{ needs.build-and-test-differential.result }}" == 'skipped' || "${{ needs.build-and-test-differential.result }}" == 'success' ]]; then
+          elif [[ "${{ needs.build-and-test-differential.result }}" == "skipped" || "${{ needs.build-and-test-differential.result }}" == "success" ]]; then
             echo "build-and-test-differential has no errors"
           else
             echo "colcon build or colcon test has failed"

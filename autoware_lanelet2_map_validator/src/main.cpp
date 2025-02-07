@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
     } else {
       std::cout << "The following checks are available:" << std::endl;
       for (auto & check : checks) {
-        std::cout << check < std::endl;
+        std::cout << check << std::endl;
       }
     }
     return 0;
