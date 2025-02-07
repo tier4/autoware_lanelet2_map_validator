@@ -13,38 +13,10 @@ jobs:
     with:
       label: tag:run-build-and-test-differential
 
-  check-directory-changes-and-label:
-    needs: prevent-no-label-execution
-    runs-on: ubuntu-22.04
-    outputs:
-      changes_detected: ${{ steps.check-changes-and-label.outputs.changed }}
-    steps:
-      - name: Checkout PR branch and all PR commits
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: Check for changes in a specific directory and label
-        id: check-changes-and-label
-        run: |
-          if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
-            echo "changes detected"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "changes not detected"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-          if  [ "${{ needs.prevent-no-label-execution.outputs.run }}" != 'true' ]; then
-            echo "label tag:run-build-and-test-differential not set yet"
-            exit 1
-          fi
-
   build-and-test-differential:
     needs:
-      - check-directory-changes-and-label
       - prevent-no-label-execution
-    if: ${{ needs.check-directory-changes-and-label.outputs.changes_detected == 'true' && needs.prevent-no-label-execution.outputs.run == 'true' }}
+    if: ${{ needs.prevent-no-label-execution.outputs.run == 'true' }}
     runs-on: ubuntu-22.04
     container: ${{ matrix.container }}${{ matrix.container-suffix }}
     strategy:
@@ -108,3 +80,30 @@ jobs:
 
       - name: Show disk space after the tasks
         run: df -h
+
+  summarize-jobs:
+    needs:
+      - prevent-no-label-execution
+      - build-and-test-differential
+    runs-on: ubuntu-22.04
+    if: always()
+    steps:
+      - name: Checkout PR branch and all PR commits
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Check job results
+        run: |
+          if [[ "${{ needs.prevent-no-label-execution.outputs.run }}" != "true" ]]; then
+            if git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -q '^autoware_lanelet2_map_validator/'; then
+              echo "autoware_lanelet2_map_validator directory has changed but label tag:run-build-and-test-differential not set yet"
+              exit 1
+            fi
+          elif [[ "${{ needs.build-and-test-differential.result }}" == "skipped" || "${{ needs.build-and-test-differential.result }}" == "success" ]]; then
+            echo "build-and-test-differential has no errors"
+          else
+            echo "colcon build or colcon test has failed"
+            exit 1
+          fi
