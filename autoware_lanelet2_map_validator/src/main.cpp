@@ -54,19 +54,27 @@ int main(int argc, char * argv[])
     return 0;
   }
 
-  // Validation start
+  // Check map file
   if (meta_config.command_line_config.mapFile.empty()) {
     throw std::invalid_argument("No map file specified!");
   }
   if (!std::filesystem::is_regular_file(meta_config.command_line_config.mapFile)) {
     throw std::invalid_argument("Map file doesn't exist or is not a file!");
   }
-  const auto [lanelet_map_ptr, map_issue] = lanelet::autoware::validation::loadAndValidateMap(
+
+  // Load map and catch loading_issues
+  const auto [lanelet_map_ptr, loading_issues] = lanelet::autoware::validation::loadAndValidateMap(
     meta_config.projector_type, meta_config.command_line_config.mapFile,
     meta_config.command_line_config.validationConfig);
 
+  if (!loading_issues[0].issues.empty()) {
+    std::cout << "Errors found on map loading." << std::endl;
+    lanelet::validation::printAllIssues(loading_issues);
+  }
+
+  // Validattion against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {
-    lanelet::validation::printAllIssues(map_issue);
+    throw std::invalid_argument("The map file was not possible to load!");
   } else if (!meta_config.requirements_file.empty()) {
     if (!std::filesystem::is_regular_file(meta_config.requirements_file)) {
       throw std::invalid_argument("Input JSON file doesn't exist or is not a file!");
@@ -74,11 +82,21 @@ int main(int argc, char * argv[])
     std::ifstream input_file(meta_config.requirements_file);
     json json_data;
     input_file >> json_data;
-    lanelet::autoware::validation::process_requirements(json_data, meta_config, *lanelet_map_ptr);
+
+    const auto mapping_issues = lanelet::autoware::validation::validate_all_requirements(
+      json_data, meta_config, *lanelet_map_ptr);
+
+    lanelet::autoware::validation::summarize_validator_results(json_data);
+    lanelet::validation::printAllIssues(mapping_issues);
+
     lanelet::autoware::validation::insert_validator_info_to_map(
       meta_config.command_line_config.mapFile,
       std::filesystem::path(meta_config.requirements_file).filename().string(),
       json_data.value("version", ""));
+
+    if (!meta_config.output_file_path.empty()) {
+      lanelet::autoware::validation::export_results(json_data, meta_config.output_file_path);
+    }
   } else {
     const auto issues = lanelet::autoware::validation::apply_validation(
       *lanelet_map_ptr, meta_config.command_line_config.validationConfig);
