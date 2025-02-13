@@ -72,7 +72,7 @@ int main(int argc, char * argv[])
     lanelet::validation::printAllIssues(loading_issues);
   }
 
-  // Validattion against lanelet::LaneletMap object
+  // Validation against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {
     throw std::invalid_argument("The map file was not possible to load!");
   } else if (!meta_config.requirements_file.empty()) {
