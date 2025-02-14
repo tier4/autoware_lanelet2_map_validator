@@ -4,6 +4,7 @@ Changelog for package autoware_lanelet2_map_validator
 
 Forthcoming
 -----------
+* Added fix_changelog_url
 * refactor: extract mapping_issues to main (`#13 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/13>`_)
 * Contributors: TaikiYamada4
 
