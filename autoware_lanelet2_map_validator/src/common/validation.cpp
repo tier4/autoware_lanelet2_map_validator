@@ -283,8 +283,8 @@ lanelet::validation::ValidationConfig replace_validator(
   return temp;
 }
 
-void process_requirements(
-  json json_data, const MetaConfig & validator_config, const lanelet::LaneletMap & lanelet_map)
+std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
+  json & json_data, const MetaConfig & validator_config, const lanelet::LaneletMap & lanelet_map)
 {
   std::vector<lanelet::validation::DetectedIssues> total_issues;
   std::regex issue_code_pattern(R"(\[(.+?)\]\s*(.+))");
@@ -357,21 +357,19 @@ void process_requirements(
     appendIssues(total_issues, issues);
   }
 
-  // Show results
-  summarize_validator_results(json_data);
-  lanelet::validation::printAllIssues(total_issues);
+  return total_issues;
+}
 
-  // Save results
-  if (!validator_config.output_file_path.empty()) {
-    if (!std::filesystem::is_directory(validator_config.output_file_path)) {
-      throw std::invalid_argument("Output path doesn't exist or is not a directory!");
-    }
-    std::filesystem::path file_directory = validator_config.output_file_path;
-    std::filesystem::path file_path = file_directory / "lanelet2_validation_results.json";
-    std::ofstream output_file(file_path);
-    output_file << std::setw(4) << json_data;
-    std::cout << "Results are output to " << file_path << std::endl;
+void export_results(json & json_data, const std::string output_file_path)
+{
+  if (!std::filesystem::is_directory(output_file_path)) {
+    throw std::invalid_argument("Output path doesn't exist or is not a directory!");
   }
+  std::filesystem::path file_directory = output_file_path;
+  std::filesystem::path file_path = file_directory / "lanelet2_validation_results.json";
+  std::ofstream output_file(file_path);
+  output_file << std::setw(4) << json_data;
+  std::cout << "Results are output to " << file_path << std::endl;
 }
 
 }  // namespace lanelet::autoware::validation
