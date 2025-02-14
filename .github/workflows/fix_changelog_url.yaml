@@ -1,12 +1,11 @@
-name: Auto Fix Changelog
-
+name: Auto Fix Changelog URL
 on:
   pull_request:
     paths:
       - autoware_lanelet2_map_validator/CHANGELOG.rst
 
 jobs:
-  fix-changelog:
+  fix-changelog-url:
     runs-on: ubuntu-22.04
 
     steps:
