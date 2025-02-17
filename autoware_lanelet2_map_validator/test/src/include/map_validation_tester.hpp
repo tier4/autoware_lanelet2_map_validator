@@ -37,7 +37,7 @@ protected:
 
     map_ = lanelet::load(
       package_share_directory + "/data/map/" + file_name, *projector, &loading_errors_);
-
+    // dummy comment...
     EXPECT_NE(map_, nullptr);
   }
 
