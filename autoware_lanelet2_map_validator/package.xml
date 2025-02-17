@@ -3,7 +3,7 @@
 <package format="3">
   <name>autoware_lanelet2_map_validator</name>
   <version>1.0.0</version>
-  <description>Validation tool for lanelet2 maps especially for Autoware usage</description>
+  <description>Validation tool for lanelet2 maps especially for Autoware usage...</description>
   <maintainer email="taiki.yamada@tier4.jp">Taiki Yamada</maintainer>
   <maintainer email="mamoru.sobue@tier4.jp">Mamoru Sobue</maintainer>
   <maintainer email="yamato.ando@tier4.jp">Yamato Ando</maintainer>

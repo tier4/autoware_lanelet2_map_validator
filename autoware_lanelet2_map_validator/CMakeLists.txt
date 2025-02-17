@@ -48,7 +48,7 @@ if(BUILD_TESTING)
     autoware_lanelet2_map_validator_lib
   )
 
-  # test for general lanelet2 map validators...
+  # test for general lanelet2 map validators
   function(add_validation_test TEST_FILE)
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     string(REPLACE "test_" "" VALIDATION_NAME ${TEST_NAME})
