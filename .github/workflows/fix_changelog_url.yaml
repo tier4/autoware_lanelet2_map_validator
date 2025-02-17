@@ -13,11 +13,25 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set git config
+        uses: autowarefoundation/autoware-github-actions/set-git-config@v1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Apply Fixes to CHANGELOG.rst
         run: |
@@ -35,8 +49,6 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions@github.com"
           git add autoware_lanelet2_map_validator/CHANGELOG.rst
           if git diff --cached --quiet; then
             echo "No changes to commit."
