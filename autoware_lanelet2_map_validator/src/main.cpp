@@ -102,6 +102,6 @@ int main(int argc, char * argv[])
       *lanelet_map_ptr, meta_config.command_line_config.validationConfig);
     lanelet::validation::printAllIssues(issues);
   }
-
+  // dummy comment...
   return 0;
 }
