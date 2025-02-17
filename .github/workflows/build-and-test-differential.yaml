@@ -41,6 +41,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: ${{ env.PR_FETCH_DEPTH }}
+          path: autoware_lanelet2_map_validator
 
       - name: Show disk space before the tasks
         run: df -h
