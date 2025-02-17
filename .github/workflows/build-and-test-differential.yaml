@@ -43,6 +43,11 @@ jobs:
           fetch-depth: ${{ env.PR_FETCH_DEPTH }}
           path: autoware_lanelet2_map_validator
 
+      - name: Debug
+        run: |
+          echo "$GITHUB_WORKSPACE"
+          tree
+
       - name: Show disk space before the tasks
         run: df -h
 
