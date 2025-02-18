@@ -6,7 +6,7 @@ Forthcoming
 -----------
 * Merge pull request `#6 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/6>`_ from tier4/feat/manage_version_control
   feat: apply version control
-* remove CHANGELOG.rst brought from autoware_tools and make a new one
+* remove CHANGELOG.rst brought from autoware_tools and make a new one...
 * added test code for version control functions
 * apply verions to package and autoware_requirement_set.json
 * add feature of version control

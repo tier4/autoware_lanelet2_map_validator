@@ -1,5 +1,6 @@
 {
   "version": "0.0.0",
+  "comment": "comment",
   "requirements": [
     {
       "id": "vm-02-02",
