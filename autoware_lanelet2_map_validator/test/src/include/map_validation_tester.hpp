@@ -40,7 +40,7 @@ protected:
 
     EXPECT_NE(map_, nullptr);
   }
-
+  // comment
   lanelet::LaneletMapPtr map_{nullptr};
   std::vector<std::string> loading_errors_;
 };
