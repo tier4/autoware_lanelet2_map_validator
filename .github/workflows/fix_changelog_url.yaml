@@ -1,0 +1,58 @@
+name: Auto Fix Changelog URL
+on:
+  pull_request:
+    paths:
+      - autoware_lanelet2_map_validator/CHANGELOG.rst
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fix-changelog-url:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set git config
+        uses: autowarefoundation/autoware-github-actions/set-git-config@v1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Apply Fixes to CHANGELOG.rst
+        run: |
+          START_WORD=https://github.com/tier4/autoware_lanelet2_map_validator/issues/6
+
+          awk -v start_word="$START_WORD" '
+          BEGIN { found=0 }
+          {
+            if (found) {
+              gsub("tier4/autoware_lanelet2_map_validator", "autowarefoundation/autoware_tools")
+            }
+            if ($0 ~ start_word) { found=1 }
+            print $0
+          }'  autoware_lanelet2_map_validator/CHANGELOG.rst > tmpfile.rst && mv tmpfile.rst autoware_lanelet2_map_validator/CHANGELOG.rst
+
+      - name: Commit and push changes
+        run: |
+          git add autoware_lanelet2_map_validator/CHANGELOG.rst
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -s -m "auto-fix CHANGELOG.rst formatting"
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
