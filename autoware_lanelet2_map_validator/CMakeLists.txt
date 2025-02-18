@@ -35,7 +35,7 @@ install(PROGRAMS
   template/create_new_validator.py
   DESTINATION lib/${PROJECT_NAME}
 )
-# comment
+
 if(BUILD_TESTING)
   file(GLOB_RECURSE test_src "test/src/test_*.cpp")
   ament_auto_add_library(autoware_lanelet2_map_validator_test_lib ${test_src})
