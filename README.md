@@ -16,6 +16,7 @@ The official Autoware requirements for Lanelet2 maps are described in [Vector Ma
   - [Validation using a requirement set](#usage-a-validation-using-a-requirement-set-a-list-of-validators)
   - [Validation with with specific validators](#usage-b-validation-with-specific-validators)
   - [Advanced usages](#advanced-usages)
+  - [Available command options](#available-command-options)
 - [Inputs and outputs](#inputs-and-outputs)
   - [Requirement set (Input JSON file, recommended)](#requirement-set-input-json-file-recommended)
   - [Validation results (Output JSON file)](#validation-results-output-json-file)
