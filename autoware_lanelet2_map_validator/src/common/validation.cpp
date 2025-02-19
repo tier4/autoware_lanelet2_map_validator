@@ -177,12 +177,12 @@ std::vector<lanelet::validation::DetectedIssues> describe_unused_validators_to_j
 }
 
 std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
-  const Validators & validators, const std::string validator_name_name)
+  const Validators & validators, const std::string target_validator_name)
 {
   lanelet::validation::Issues issues;
   std::vector<lanelet::validation::DetectedIssues> detected_issues;
 
-  ValidatorInfo current_validator_info = validators.at(validator_name_name);
+  ValidatorInfo current_validator_info = validators.at(target_validator_name);
 
   bool prerequisite_complete = true;
   for (const auto & [prereq, forgive_warnings] :
@@ -206,7 +206,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
   }
 
   if (issues.size() > 0) {
-    detected_issues.push_back({validator_name_name, issues});
+    detected_issues.push_back({target_validator_name, issues});
   }
 
   return detected_issues;
