@@ -408,7 +408,7 @@ When the `--input_requirements` is thrown to `autoware_lanelet2_map_validator`, 
 
 ### Exclusion list (Input JSON file, optional)
 
-If there are primitves that do have errors but not possible to fix for some reason, users can exclude them from the validation.
+If there are primitives that do have errors but not possible to fix for some reason, users can exclude them from the validation.
 You can create an "exclusion list" in a JSON format to tell `autoware_lanelet2_map_validator` which primitive to ignore.
 As you can see in the `sample_exclusion_list.json`, the exclusion list must look like this.
 
@@ -436,8 +436,8 @@ As you can see in the `sample_exclusion_list.json`, the exclusion list must look
 ```
 
 - MUST have a single `exclusion` field.
-- The `exclusion` field MUST be a list of primitives. A primitve MUST have
-  - `primitive`: The type of the primitve. It must be either `point`, `linestring`, `polygon`, `lanelet`, `area`, `regulatory element`, or `primitive`.
+- The `exclusion` field MUST be a list of primitives. A primitive MUST have
+  - `primitive`: The type of the primitive. It must be either `point`, `linestring`, `polygon`, `lanelet`, `area`, `regulatory element`, or `primitive`.
   - `id`: ID of the primitive.
 - You can add a `validators` field to a primitive to specify which validator to ignore that primitive.
   - The `validators` field MUST be a list of validator names. You CANNOT write the validator name directly to the `validators` field even if there is only one validator to write.
