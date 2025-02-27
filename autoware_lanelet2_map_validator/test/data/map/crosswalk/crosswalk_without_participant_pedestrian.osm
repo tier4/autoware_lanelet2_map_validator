@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="2"/>
+  <MetaInfo format_version="1" map_version="3" validation_version="1"/>
   <node id="1" lat="35.90311164941" lon="139.93321316748">
     <tag k="local_x" v="3733.8173"/>
     <tag k="local_y" v="73727.7802"/>
@@ -50,26 +50,6 @@
     <tag k="local_x" v="3740.5363"/>
     <tag k="local_y" v="73737.2225"/>
     <tag k="ele" v="19.3342"/>
-  </node>
-  <node id="19" lat="35.90319860143" lon="139.93328361742">
-    <tag k="local_x" v="3740.2802"/>
-    <tag k="local_y" v="73737.3554"/>
-    <tag k="ele" v="19.3398"/>
-  </node>
-  <node id="20" lat="35.90310780884" lon="139.93334429449">
-    <tag k="local_x" v="3745.6459"/>
-    <tag k="local_y" v="73727.225"/>
-    <tag k="ele" v="19.5744"/>
-  </node>
-  <node id="22" lat="35.90311865117" lon="139.93336826618">
-    <tag k="local_x" v="3747.8223"/>
-    <tag k="local_y" v="73728.404"/>
-    <tag k="ele" v="19.5843"/>
-  </node>
-  <node id="23" lat="35.90320841011" lon="139.93330702788">
-    <tag k="local_x" v="3742.4047"/>
-    <tag k="local_y" v="73738.4203"/>
-    <tag k="ele" v="19.338"/>
   </node>
   <node id="25" lat="35.90317105575" lon="139.93328165228">
     <tag k="local_x" v="3740.0695"/>
@@ -146,7 +126,7 @@
   <relation id="11">
     <member type="way" role="left" ref="10"/>
     <member type="way" role="right" ref="3"/>
-    <member type="relation" role="regulatory_element" ref="31"/>
+    <member type="relation" role="regulatory_element" ref="32"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="10"/>
@@ -161,10 +141,14 @@
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="participant:pedestrian" v="yes"/>
   </relation>
   <relation id="31">
     <member type="way" role="ref_line" ref="27"/>
+    <member type="relation" role="refers" ref="18"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="crosswalk"/>
+  </relation>
+  <relation id="32">
     <member type="way" role="ref_line" ref="30"/>
     <member type="relation" role="refers" ref="18"/>
     <tag k="type" v="regulatory_element"/>

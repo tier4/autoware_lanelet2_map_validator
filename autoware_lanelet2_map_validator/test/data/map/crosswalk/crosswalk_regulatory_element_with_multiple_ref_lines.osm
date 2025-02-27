@@ -138,7 +138,7 @@
     <nd ref="20"/>
     <nd ref="22"/>
     <nd ref="23"/>
-    <tag k="type" v="detection_area"/>
+    <tag k="type" v="crosswalk_polygon"/>
     <tag k="area" v="yes"/>
   </way>
   <relation id="7">
