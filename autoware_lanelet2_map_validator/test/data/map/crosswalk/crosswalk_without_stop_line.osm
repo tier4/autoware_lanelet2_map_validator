@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <osm generator="VMB">
-	<validation name="autoware_lanelet2_map_validator" validator_version="1.0.1" requirements="autoware_requirement_set.json" requirements_version="0.0.0" />
 	<MetaInfo format_version="1" map_version="3" validation_version="1" />
 	<node id="1" lat="35.90311164941" lon="139.93321316748">
 		<tag k="local_x" v="3733.8173" />
