@@ -19,8 +19,6 @@
 #include <autoware_lanelet2_extension/regulatory_elements/crosswalk.hpp>
 #include <range/v3/view/filter.hpp>
 
-#include <boost/optional/optional_io.hpp>
-
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_validation/Validation.h>
 
