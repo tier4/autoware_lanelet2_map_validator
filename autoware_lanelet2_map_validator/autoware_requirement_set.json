@@ -77,6 +77,14 @@
       ]
     },
     {
+      "id": "vm-04-03",
+      "validators": [
+        {
+          "name": "mapping.traffic_light.light_bulb_tagging"
+        }
+      ]
+    },
+    {
       "id": "vm-05-01",
       "validators": [
         {

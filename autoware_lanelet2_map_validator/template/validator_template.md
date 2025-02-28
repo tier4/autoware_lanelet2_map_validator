@@ -8,9 +8,9 @@ mapping.validator.template
 
 Feature explanation here.
 
-| Issue Code | Message | Severity | Description | Approach |
-| ---------- | ------- | -------- | ----------- | -------- |
-|            |         |          |             |          |
+| Issue Code | Message | Severity | Primitive | Description | Approach |
+| ---------- | ------- | -------- | --------- | ----------- | -------- |
+|            |         |          |           |             |          |
 
 ## Related source codes
 
