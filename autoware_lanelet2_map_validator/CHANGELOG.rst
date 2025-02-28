@@ -2,8 +2,15 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.0.1 (2025-02-18)
+1.1.0 (2025-02-28)
 ------------------
+* feat: follow to the latest vm-05-01 (`#26 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/26>`_)
+* Contributors: TaikiYamada4
+
+1.0.1 (2025-02-20)
+------------------
+* chore: bump version to 1.0.1 (`#24 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/24>`_)
+  Co-authored-by: github-actions <github-actions@github.com>
 * docs: fix internal links (`#20 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/20>`_)
 * chore: move docs into autoware_lanelet2_map_validator directory (`#18 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/18>`_)
 * refactor: extract mapping_issues to main (`#13 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/13>`_)
