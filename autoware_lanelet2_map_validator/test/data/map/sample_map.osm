@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="52"/>
+  <MetaInfo format_version="1" map_version="54" validation_version=""/>
   <node id="285" lat="35.90327302784" lon="139.9336616108">
     <tag k="local_x" v="3774.4814"/>
     <tag k="local_y" v="73745.2383"/>
@@ -6660,38 +6660,6 @@
     <tag k="type" v="no_stopping_area"/>
     <tag k="area" v="yes"/>
   </way>
-  <way id="10340">
-    <nd ref="343"/>
-    <nd ref="363"/>
-    <nd ref="361"/>
-    <nd ref="345"/>
-    <tag k="type" v="crosswalk_polygon"/>
-    <tag k="area" v="yes"/>
-  </way>
-  <way id="10347">
-    <nd ref="346"/>
-    <nd ref="422"/>
-    <nd ref="420"/>
-    <nd ref="348"/>
-    <tag k="type" v="crosswalk_polygon"/>
-    <tag k="area" v="yes"/>
-  </way>
-  <way id="10354">
-    <nd ref="423"/>
-    <nd ref="287"/>
-    <nd ref="285"/>
-    <nd ref="425"/>
-    <tag k="type" v="crosswalk_polygon"/>
-    <tag k="area" v="yes"/>
-  </way>
-  <way id="10361">
-    <nd ref="397"/>
-    <nd ref="290"/>
-    <nd ref="288"/>
-    <nd ref="360"/>
-    <tag k="type" v="crosswalk_polygon"/>
-    <tag k="area" v="yes"/>
-  </way>
   <relation id="13">
     <member type="way" role="left" ref="245"/>
     <member type="way" role="right" ref="248"/>
@@ -6758,15 +6726,15 @@
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
   </relation>
-  <relation id="49" visible="true" version="1">
+  <relation id="49">
     <member type="way" role="left" ref="197"/>
     <member type="way" role="right" ref="204"/>
-    <tag k="location" v="urban" />
-    <tag k="one_way" v="yes" />
-    <tag k="speed_limit" v="30" />
-    <tag k="subtype" v="road" />
-    <tag k="turn_direction" v="straight" />
-    <tag k="type" v="lanelet" />
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="30"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+    <tag k="turn_direction" v="straight"/>
   </relation>
   <relation id="50">
     <member type="way" role="left" ref="199"/>
@@ -7224,14 +7192,10 @@
     <member type="way" role="refers" ref="369"/>
     <member type="way" role="refers" ref="371"/>
     <member type="way" role="refers" ref="373"/>
-    <member type="way" role="refers" ref="375"/>
-    <member type="way" role="refers" ref="377"/>
     <member type="way" role="ref_line" ref="367"/>
     <member type="way" role="light_bulbs" ref="368"/>
     <member type="way" role="light_bulbs" ref="370"/>
     <member type="way" role="light_bulbs" ref="372"/>
-    <member type="way" role="light_bulbs" ref="374"/>
-    <member type="way" role="light_bulbs" ref="376"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_light"/>
   </relation>
@@ -7239,14 +7203,10 @@
     <member type="way" role="refers" ref="380"/>
     <member type="way" role="refers" ref="382"/>
     <member type="way" role="refers" ref="384"/>
-    <member type="way" role="refers" ref="386"/>
-    <member type="way" role="refers" ref="388"/>
     <member type="way" role="ref_line" ref="378"/>
     <member type="way" role="light_bulbs" ref="379"/>
     <member type="way" role="light_bulbs" ref="381"/>
     <member type="way" role="light_bulbs" ref="383"/>
-    <member type="way" role="light_bulbs" ref="385"/>
-    <member type="way" role="light_bulbs" ref="387"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_light"/>
   </relation>
@@ -7254,14 +7214,10 @@
     <member type="way" role="refers" ref="391"/>
     <member type="way" role="refers" ref="393"/>
     <member type="way" role="refers" ref="395"/>
-    <member type="way" role="refers" ref="397"/>
-    <member type="way" role="refers" ref="399"/>
     <member type="way" role="ref_line" ref="389"/>
     <member type="way" role="light_bulbs" ref="390"/>
     <member type="way" role="light_bulbs" ref="392"/>
     <member type="way" role="light_bulbs" ref="394"/>
-    <member type="way" role="light_bulbs" ref="396"/>
-    <member type="way" role="light_bulbs" ref="398"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_light"/>
   </relation>
@@ -7269,14 +7225,10 @@
     <member type="way" role="refers" ref="402"/>
     <member type="way" role="refers" ref="404"/>
     <member type="way" role="refers" ref="406"/>
-    <member type="way" role="refers" ref="408"/>
-    <member type="way" role="refers" ref="410"/>
     <member type="way" role="ref_line" ref="400"/>
     <member type="way" role="light_bulbs" ref="401"/>
     <member type="way" role="light_bulbs" ref="403"/>
     <member type="way" role="light_bulbs" ref="405"/>
-    <member type="way" role="light_bulbs" ref="407"/>
-    <member type="way" role="light_bulbs" ref="409"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_light"/>
   </relation>
@@ -7346,25 +7298,21 @@
     <tag k="subtype" v="no_stopping_area"/>
   </relation>
   <relation id="10334">
-    <member type="way" role="crosswalk_polygon" ref="10340"/>
     <member type="relation" role="refers" ref="164"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="crosswalk"/>
   </relation>
   <relation id="10341">
-    <member type="way" role="crosswalk_polygon" ref="10347"/>
     <member type="relation" role="refers" ref="163"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="crosswalk"/>
   </relation>
   <relation id="10353">
-    <member type="way" role="crosswalk_polygon" ref="10354"/>
     <member type="relation" role="refers" ref="166"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="crosswalk"/>
   </relation>
   <relation id="10360">
-    <member type="way" role="crosswalk_polygon" ref="10361"/>
     <member type="relation" role="refers" ref="165"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="crosswalk"/>

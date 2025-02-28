@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="2"/>
+  <MetaInfo format_version="1" map_version="3" validation_version="1"/>
   <node id="1" lat="35.90311164941" lon="139.93321316748">
     <tag k="local_x" v="3733.8173"/>
     <tag k="local_y" v="73727.7802"/>
@@ -50,26 +50,6 @@
     <tag k="local_x" v="3740.5363"/>
     <tag k="local_y" v="73737.2225"/>
     <tag k="ele" v="19.3342"/>
-  </node>
-  <node id="19" lat="35.90319860143" lon="139.93328361742">
-    <tag k="local_x" v="3740.2802"/>
-    <tag k="local_y" v="73737.3554"/>
-    <tag k="ele" v="19.3398"/>
-  </node>
-  <node id="20" lat="35.90310780884" lon="139.93334429449">
-    <tag k="local_x" v="3745.6459"/>
-    <tag k="local_y" v="73727.225"/>
-    <tag k="ele" v="19.5744"/>
-  </node>
-  <node id="22" lat="35.90311865117" lon="139.93336826618">
-    <tag k="local_x" v="3747.8223"/>
-    <tag k="local_y" v="73728.404"/>
-    <tag k="ele" v="19.5843"/>
-  </node>
-  <node id="23" lat="35.90320841011" lon="139.93330702788">
-    <tag k="local_x" v="3742.4047"/>
-    <tag k="local_y" v="73738.4203"/>
-    <tag k="ele" v="19.338"/>
   </node>
   <node id="25" lat="35.90317105575" lon="139.93328165228">
     <tag k="local_x" v="3740.0695"/>
@@ -132,14 +112,6 @@
     <nd ref="29"/>
     <tag k="type" v="stop_line"/>
     <tag k="subtype" v="solid"/>
-  </way>
-  <way id="24">
-    <nd ref="19"/>
-    <nd ref="20"/>
-    <nd ref="22"/>
-    <nd ref="23"/>
-    <tag k="type" v="crosswalk_polygon"/>
-    <tag k="area" v="yes"/>
   </way>
   <relation id="7">
     <member type="way" role="left" ref="6"/>
