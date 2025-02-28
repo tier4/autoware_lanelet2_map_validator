@@ -38,10 +38,13 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
     "map_file,m", po::value<std::string>(), "Path to the map to be validated"
   )(
     "input_requirements,i", po::value<std::string>(),
-    "Path to the yaml file where the list of requirements and validators is written"
+    "Path to the JSON file where the list of requirements and validators is written"
   )(
     "output_directory,o", po::value<std::string>(),
-    "Directory to save the list of validation results in a yaml format"
+    "Directory to save the list of validation results in a JSON format"
+  )(
+    "exclusion_list,x", po::value<std::string>(),
+    "List of primitives that should be excluded from the validation in a JSON format"
   )(
     "validator,v", po::value(&validation_config.checksFilter),
     "Comma separated list of regexes to filter the applicable validators. Will run all "
@@ -85,6 +88,9 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
   }
   if (vm.count("output_directory") != 0) {
     config.output_file_path = vm["output_directory"].as<std::string>();
+  }
+  if (vm.count("exclusion_list") != 0) {
+    config.exclusion_list = vm["exclusion_list"].as<std::string>();
   }
   if (
     (vm.count("lat") != 0 && vm.count("lon") != 0) &&

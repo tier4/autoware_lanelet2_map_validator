@@ -1,0 +1,40 @@
+{
+  "exclusion": [
+    {
+      "primitive": "point",
+      "id": 1
+    },
+    {
+      "primitive": "linestring",
+      "id": 2,
+      "validators": [
+        {
+          "name": "mapping.traffic_light.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.traffic_light.correct_facing"
+        }
+      ]
+    },
+    {
+      "primitive": "polygon",
+      "id": 3
+    },
+    {
+      "primitive": "lanelet",
+      "id": 4
+    },
+    {
+      "primitive": "area",
+      "id": 5
+    },
+    {
+      "primitive": "regulatory element",
+      "id": 6
+    },
+    {
+      "primitive": "primitive",
+      "id": 7
+    }
+  ]
+}
