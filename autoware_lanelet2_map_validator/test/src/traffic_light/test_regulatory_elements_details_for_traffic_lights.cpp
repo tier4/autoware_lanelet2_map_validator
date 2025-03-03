@@ -190,9 +190,9 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotEnough)  // NO
     "same.");
 }
 
-TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotInjective)  // NOLINT for gtest
+TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotOneByOne)  // NOLINT for gtest
 {
-  load_target_map("traffic_light/crosswalk_with_traffic_lights_but_light_bulbs_not_injective.osm");
+  load_target_map("traffic_light/crosswalk_with_traffic_lights_but_light_bulbs_not_one_by_one.osm");
 
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);

@@ -35,7 +35,7 @@ public:
 
 private:
   bool isPedestrianTrafficLight(const lanelet::ConstLineStrings3d & traffic_lights);
-  bool isInjective(
+  bool isOneByOne(
     const lanelet::ConstLineStrings3d & traffic_lights,
     const lanelet::ConstLineStrings3d & light_bulbs);
   lanelet::validation::Issues checkRegulatoryElementOfTrafficLights(

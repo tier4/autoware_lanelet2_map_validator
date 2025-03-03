@@ -54,7 +54,7 @@ bool RegulatoryElementsDetailsForTrafficLightsValidator::isPedestrianTrafficLigh
   return true;
 }
 
-bool RegulatoryElementsDetailsForTrafficLightsValidator::isInjective(
+bool RegulatoryElementsDetailsForTrafficLightsValidator::isOneByOne(
   const lanelet::ConstLineStrings3d & traffic_lights,
   const lanelet::ConstLineStrings3d & light_bulbs)
 {
@@ -163,7 +163,7 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
         elem->id(),
         append_issue_code_prefix(
           this->name(), 6, "The amount of refers and light_bulbs are not the same."));
-    } else if (!isInjective(refers, light_bulbs)) {
+    } else if (!isOneByOne(refers, light_bulbs)) {
       issues.emplace_back(
         lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
         elem->id(),
