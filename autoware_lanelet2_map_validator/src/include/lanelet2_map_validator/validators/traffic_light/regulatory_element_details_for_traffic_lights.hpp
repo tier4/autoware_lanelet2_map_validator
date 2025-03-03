@@ -34,7 +34,10 @@ public:
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  bool isPedestrianTrafficLight(const std::vector<lanelet::ConstLineString3d> & traffic_lights);
+  bool isPedestrianTrafficLight(const lanelet::ConstLineStrings3d & traffic_lights);
+  bool isInjective(
+    const lanelet::ConstLineStrings3d & traffic_lights,
+    const lanelet::ConstLineStrings3d & light_bulbs);
   lanelet::validation::Issues checkRegulatoryElementOfTrafficLights(
     const lanelet::LaneletMap & map);
 };
