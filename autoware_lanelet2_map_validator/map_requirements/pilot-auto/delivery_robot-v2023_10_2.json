@@ -1,0 +1,13 @@
+{
+  "version": "1.0.1",
+  "requirements": [
+    {
+      "id": "vm-02-04",
+      "validators": [
+        {
+          "name": "mapping.stop_line.missing_regulatory_elements"
+        }
+      ]
+    }
+  ]
+}
