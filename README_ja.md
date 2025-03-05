@@ -94,7 +94,8 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --package
 
 ## 使い方
 
-`autoware_lanelet2_map_validator` の使い方は「要求仕様リストを用いた検証」と「検証器を指定した検証」の2通りがあります。基本的には要求仕様リスト `autoware_requirement_set.json` を使って使用することをおすすめします。
+`autoware_lanelet2_map_validator` の使い方は「要求仕様リストを用いた検証」と「検証器を指定した検証」の2通りがあります。
+基本的には要求仕様リストを使って使用することをおすすめします。
 
 ### 使用方法A: 要求仕様リストを用いた検証
 
@@ -127,14 +128,16 @@ source install/setup.bash
 ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -p mgrs \
 -m $HOME/autoware_map/area1/lanelet2_map.osm \
--i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/autoware_requirement_set.json
+-i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements/autoware_requirement_set.json
 -o ./
 ```
 
-実行後、検証結果ファイル (`lanelet2_validation_results.json`)が現在のディレクトリ下にあることが確認できます。`autoware_requirement_set.json` と `lanelet2_validation_results.json` の詳細については[入出力](#入出力)を参照してください。
+実行後、検証結果ファイル (`lanelet2_validation_results.json`)が現在のディレクトリ下にあることが確認できます。要求仕様リストと出力ファイル（`lanelet2_validation_results.json`）の詳細については[入出力](#入出力)を参照してください。
 
 **また、以下の点に注意してください。**
 
+- 検証目的と合致した要求仕様リストを `autoware_lanelet2_map_validator/map_requirements` ディレクトリから探してください。
+  - 特に指定の要求仕様リストがなければ Autoware の地図仕様に即した `autoware_lanelet2_map_validator` を使ってください。
 - `lanelet2_validation_results.json` が既に存在する場合は上書きされてしまいます。
 - 下記のようなタブが Lanelet2 地図 (`osm` ファイル) に追記されます。このタブは Autoware の挙動に影響はしません。
 
