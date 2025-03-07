@@ -423,8 +423,9 @@ void filter_out_primitives(
 {
   const auto has_same_primitive = [&](lanelet::validation::Issue issue) {
     SimplePrimitive issue_primitive = {lanelet::validation::toString(issue.primitive), issue.id};
-    return std::find(primitive_list.begin(), primitive_list.end(), issue_primitive) !=
-           primitive_list.end();
+    return std::find(
+             primitive_list_to_exclude.begin(), primitive_list_to_exclude.end(), issue_primitive) !=
+           primitive_list_to_exclude.end();
   };
 
   for (auto & issues : issues_vector) {
