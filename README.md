@@ -15,9 +15,12 @@ The official Autoware requirements for Lanelet2 maps are described in [Vector Ma
 - [How to use](#how-to-use)
   - [Validation using a requirement set](#usage-a-validation-using-a-requirement-set-a-list-of-validators)
   - [Validation with with specific validators](#usage-b-validation-with-specific-validators)
+  - [Advanced usages](#advanced-usages)
+  - [Available command options](#available-command-options)
 - [Inputs and outputs](#inputs-and-outputs)
-  - [Requirement set (Input JSON file)](#requirement-set-input-json-file)
+  - [Requirement set (Input JSON file, recommended)](#requirement-set-input-json-file-recommended)
   - [Validation results (Output JSON file)](#validation-results-output-json-file)
+  - [Exclusion list (Input JSON file, optional)](#exclusion-list-input-json-file-optional)
   - [Validation signature](#validation-signature)
 - [How to add a new validator (Contributing)](#how-to-add-a-new-validator)
 - [Relationship between requirements and validators](#relationship-between-requirements-and-validators)
@@ -167,6 +170,22 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 - This usage does NOT output `lanelet2_validation_results.json` even if it has an `--output_directory` option.
 - You CAN select multiple validators by a comma separated string (`"mapping.traffic_light.correct_facing,mapping.traffic_light.missing_regulatory_elements"`), or regexes like `mapping.traffic_light.*`.
 
+### Advanced usages
+
+You can input an "exclusion list" to `autoware_lanelet2_map_validator` to inform what primitive to ignore during the validation.
+Add the `--exclusion_list` or `-x` option to the command to pass the exclusion list (JSON format) like the example below.
+This option works for both usages above.
+See [Exclusion list](#exclusion-list-input-json-file-optional) for more information how to write the exclusion list.
+
+```bash
+ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
+-p mgrs \
+-m $HOME/autoware_map/area1/lanelet2_map.osm \
+-i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/autoware_requirement_set.json
+-o ./
+-x ./my_exclusion_list.json
+```
+
 ### Available command options
 
 | option                     | description                                                                                                                                                     |
@@ -176,6 +195,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 | `-m, --map_file`           | Path to the map to be validated                                                                                                                                 |
 | `-i, --input_requirements` | Path to the JSON file where the list of requirements and validators is written                                                                                  |
 | `-o, --output_directory`   | Directory to save the list of validation results in a JSON format                                                                                               |
+| `-x, --exclusion_list`     | Path to the JSON file where the list of primitives to exclude is written                                                                                        |
 | `-v, --validator`          | Comma separated list of regexes to filter the applicable validators. Will run all validators by default. Example: `mapping.*` to run all checks for the mapping |
 | `-p, --projector`          | Projector used for loading lanelet map. Available projectors are: `mgrs`, `utm`, and `transverse_mercator`.                                                     |
 | `-l, --location`           | Location of the map (for instantiating the traffic rules), e.g. de for Germany (currently not used)                                                             |
@@ -187,7 +207,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 This section explains the details of the input/output of `autoware_lanelet2_map_validator`.
 
-### Requirement set (Input JSON file)
+### Requirement set (Input JSON file, recommended)
 
 The JSON file input should follow the structure like this example.
 
@@ -246,7 +266,7 @@ The JSON file input should follow the structure like this example.
     - The name list of available validators can be obtained from the `--print` option.
     - You can add a list of `prerequisites` to each validator. Then, the validator will only be run when the prerequisites pass the validation.
     - In the `prerequisites` field, you can add `forgive_warnings: true` in order to run the validator even if the prerequisites output warning issues. (Error issues from prerequisites will still skip the validation.). Note that NOT writing the `forgive_warnings` field and writing `forgive_warnings: false` means the same.
-- The user can write any other field (like `version`) besides `requirements`.
+- Users can write any other field (like `version`) besides `requirements`.
 
 ### Validation results (Output JSON file)
 
@@ -385,6 +405,45 @@ When the `--input_requirements` is thrown to `autoware_lanelet2_map_validator`, 
   - `id` refers to the id of the primitive
   - `message` describes what kind of issue is detected
   - `issue_code` is a code that correspond to a specific issue `message` which is prepared to work with other tools. It is not necessary to check for general purpose use.
+
+### Exclusion list (Input JSON file, optional)
+
+If there are primitives that do have errors but not possible to fix for some reason, users can exclude them from the validation.
+You can create an "exclusion list" in a JSON format to tell `autoware_lanelet2_map_validator` which primitive to ignore.
+As you can see in the `sample_exclusion_list.json`, the exclusion list must look like this.
+
+```json
+{
+  "exclusion": [
+    {
+      "primitive": "lanelet",
+      "id": 123
+    },
+    {
+      "primitive": "linestring",
+      "id": 9876,
+      "validators": [
+        {
+          "name": "mapping.traffic_light.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.traffic_light.regulatory_element_details"
+        }
+      ]
+    }
+  ]
+}
+```
+
+- MUST have a single `exclusion` field.
+- The `exclusion` field MUST be a list of primitives. A primitive MUST have
+  - `primitive`: The type of the primitive. It must be either `point`, `linestring`, `polygon`, `lanelet`, `area`, `regulatory element`, or `primitive`.
+  - `id`: ID of the primitive.
+- You can add a `validators` field to a primitive to specify which validator to ignore that primitive.
+  - The `validators` field MUST be a list of validator names. You CANNOT write the validator name directly to the `validators` field even if there is only one validator to write.
+  - **If you do not add the `validators` field, the primitive will be ignored by ALL validators.**
+  - Taking the example above, Lanelet 123 will be excluded from the validation, and Linestring 9876 will be ignored only for the validation "mapping.traffic_light.missing_regulatory_elements" and "mapping.traffic_light.regulatory_element_details".
+- Users can write any other field besides `exclusion`.
 
 ### Validation signature
 

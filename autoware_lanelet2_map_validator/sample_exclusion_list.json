@@ -1,0 +1,20 @@
+{
+  "exclusion": [
+    {
+      "primitive": "lanelet",
+      "id": 123
+    },
+    {
+      "primitive": "linestring",
+      "id": 9876,
+      "validators": [
+        {
+          "name": "mapping.traffic_light.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.traffic_light.regulatory_element_details"
+        }
+      ]
+    }
+  ]
+}

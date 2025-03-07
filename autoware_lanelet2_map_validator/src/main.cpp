@@ -25,6 +25,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <vector>
 
 int main(int argc, char * argv[])
 {
@@ -72,6 +73,24 @@ int main(int argc, char * argv[])
     lanelet::validation::printAllIssues(loading_issues);
   }
 
+  // Load exclusion list
+  lanelet::autoware::validation::ValidatorExclusionMap exclusion_map;
+  if (!meta_config.exclusion_list.empty()) {
+    if (!std::filesystem::is_regular_file(meta_config.exclusion_list)) {
+      throw std::invalid_argument("Exclusion list doesn't exist or is not a file!");
+    }
+    std::ifstream exclusion_list(meta_config.exclusion_list);
+    json exclusion_list_json;
+    exclusion_list >> exclusion_list_json;
+
+    exclusion_map = lanelet::autoware::validation::import_exclusion_list(exclusion_list_json);
+  } else {
+    for (const std::string & validator_name :
+         lanelet::validation::availabeChecks(".*")) {  // cspell:disable-line
+      exclusion_map[validator_name] = std::vector<lanelet::autoware::validation::SimplePrimitive>();
+    }
+  }
+
   // Validation against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {
     throw std::invalid_argument("The map file was not possible to load!");
@@ -84,7 +103,7 @@ int main(int argc, char * argv[])
     input_file >> json_data;
 
     const auto mapping_issues = lanelet::autoware::validation::validate_all_requirements(
-      json_data, meta_config, *lanelet_map_ptr);
+      json_data, meta_config, *lanelet_map_ptr, exclusion_map);
 
     lanelet::autoware::validation::summarize_validator_results(json_data);
     lanelet::validation::printAllIssues(mapping_issues);
@@ -98,8 +117,13 @@ int main(int argc, char * argv[])
       lanelet::autoware::validation::export_results(json_data, meta_config.output_file_path);
     }
   } else {
-    const auto issues = lanelet::autoware::validation::apply_validation(
+    auto issues = lanelet::autoware::validation::apply_validation(
       *lanelet_map_ptr, meta_config.command_line_config.validationConfig);
+    for (const std::string & validator_name :
+         lanelet::validation::availabeChecks(".*")) {  // cspell:disable-line
+      lanelet::autoware::validation::filter_out_primitives(
+        issues, exclusion_map.at(validator_name));
+    }
     lanelet::validation::printAllIssues(issues);
   }
 

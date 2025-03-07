@@ -23,6 +23,7 @@
 #include <map>
 #include <queue>
 #include <regex>
+#include <set>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -284,7 +285,8 @@ lanelet::validation::ValidationConfig replace_validator(
 }
 
 std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
-  json & json_data, const MetaConfig & validator_config, const lanelet::LaneletMap & lanelet_map)
+  json & json_data, const MetaConfig & validator_config, const lanelet::LaneletMap & lanelet_map,
+  const ValidatorExclusionMap & exclusion_map)
 {
   std::vector<lanelet::validation::DetectedIssues> total_issues;
   std::regex issue_code_pattern(R"(\[(.+?)\]\s*(.+))");
@@ -309,12 +311,15 @@ std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
     const auto prerequisite_issues = check_prerequisite_completion(validators, validator_name);
 
     // NOTE: if prerequisite_issues is not empty, skip the content validation process
-    const auto issues =
+    auto issues =
       prerequisite_issues.empty()
         ? apply_validation(
             lanelet_map, replace_validator(
                            validator_config.command_line_config.validationConfig, validator_name))
         : std::move(prerequisite_issues);
+
+    // Remove issues of primitives to ignore
+    filter_out_primitives(issues, exclusion_map.at(validator_name));
 
     // Add validation results to the json data
     json & validator_json = find_validator_block(json_data, validator_name);
@@ -370,6 +375,64 @@ void export_results(json & json_data, const std::string output_file_path)
   std::ofstream output_file(file_path);
   output_file << std::setw(4) << json_data;
   std::cout << "Results are output to " << file_path << std::endl;
+}
+
+ValidatorExclusionMap import_exclusion_list(const json & json_data)
+{
+  ValidatorExclusionMap result_map;
+  const std::vector<std::string> checks =
+    lanelet::validation::availabeChecks(".*");  // cspell:disable-line
+  const std::set<std::string> valid_primitives = {
+    "point", "linestring", "polygon", "lanelet", "area", "regulatory element", "primitive"};
+
+  for (const std::string & check : checks) {
+    result_map[check] = {};
+  }
+
+  for (const auto & object : json_data["exclusion"]) {
+    const std::string primitive = object["primitive"];
+    const lanelet::Id id = object["id"];
+
+    if (valid_primitives.find(primitive) == valid_primitives.end()) {
+      throw std::invalid_argument(
+        "Invalid primitive " + primitive + " was found in the exclusion list");
+    }
+
+    if (object.contains("validators")) {
+      for (const auto & validator : object["validators"]) {
+        std::string validator_name = validator["name"];
+        if (result_map.find(validator_name) == result_map.end()) {
+          throw std::invalid_argument(
+            "Invalid validator " + validator_name + " was found in the exclusion list");
+        }
+        result_map[validator_name].push_back({primitive, id});
+      }
+    } else {
+      for (const std::string & check : checks) {
+        result_map[check].push_back({primitive, id});
+      }
+    }
+  }
+
+  return result_map;
+}
+
+void filter_out_primitives(
+  std::vector<lanelet::validation::DetectedIssues> & issues_vector,
+  std::vector<SimplePrimitive> primitive_list_to_exclude)
+{
+  const auto has_same_primitive = [&](lanelet::validation::Issue issue) {
+    SimplePrimitive issue_primitive = {lanelet::validation::toString(issue.primitive), issue.id};
+    return std::find(
+             primitive_list_to_exclude.begin(), primitive_list_to_exclude.end(), issue_primitive) !=
+           primitive_list_to_exclude.end();
+  };
+
+  for (auto & issues : issues_vector) {
+    issues.issues.erase(
+      std::remove_if(issues.issues.begin(), issues.issues.end(), has_same_primitive),
+      issues.issues.end());
+  }
 }
 
 }  // namespace lanelet::autoware::validation
