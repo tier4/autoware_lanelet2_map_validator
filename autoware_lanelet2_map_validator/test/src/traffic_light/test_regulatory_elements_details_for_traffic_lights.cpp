@@ -112,6 +112,101 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongRefLineType)  // NOLIN
     "have type of stop_line.");
 }
 
+TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongLightBulbsType)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/traffic_light_with_wrong_light_bulbs_type.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues[0].id, 415);
+  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
+  EXPECT_EQ(
+    issues[0].message,
+    "[TrafficLight.RegulatoryElementDetails-004] light_bulbs of traffic light regulatory element "
+    "must have type of light_bulbs.");
+}
+
+TEST_F(TestRegulatoryElementDetailsForTrafficLights, MissingTrafficLightId)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/traffic_light_without_traffic_light_id.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 2);
+  EXPECT_EQ(issues[0].id, 415);
+  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
+  EXPECT_EQ(
+    issues[0].message,
+    "[TrafficLight.RegulatoryElementDetails-005] light_bulbs linestrings must have a corresponding "
+    "traffic_light_id.");
+
+  EXPECT_EQ(issues[1].id, 1025);
+  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::RegulatoryElement);
+  EXPECT_EQ(
+    issues[1].message,
+    "[TrafficLight.RegulatoryElementDetails-007] refers and light_bulbs don't have one-to-one "
+    "correspondence in this regulatory element.");
+}
+
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficLights,
+  LightBulbsMissingFromRegulatoryElement)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/traffic_light_without_light_bulbs_in_regulatory_element.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues[0].id, 1025);
+  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
+  EXPECT_EQ(
+    issues[0].message,
+    "[TrafficLight.RegulatoryElementDetails-006] The amount of refers and light_bulbs are not the "
+    "same.");
+}
+
+TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotEnough)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/crosswalk_with_traffic_lights_but_not_enough_light_bulbs.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues[0].id, 131);
+  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
+  EXPECT_EQ(
+    issues[0].message,
+    "[TrafficLight.RegulatoryElementDetails-006] The amount of refers and light_bulbs are not the "
+    "same.");
+}
+
+TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotOneByOne)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/crosswalk_with_traffic_lights_but_light_bulbs_not_one_by_one.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues[0].id, 131);
+  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
+  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
+  EXPECT_EQ(
+    issues[0].message,
+    "[TrafficLight.RegulatoryElementDetails-007] refers and light_bulbs don't have one-to-one "
+    "correspondence in this regulatory element.");
+}
+
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, CorrectDetails)  // NOLINT for gtest
 {
   load_target_map("traffic_light/traffic_light_with_regulatory_element.osm");
