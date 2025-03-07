@@ -419,7 +419,7 @@ ValidatorExclusionMap import_exclusion_list(const json & json_data)
 
 void filter_out_primitives(
   std::vector<lanelet::validation::DetectedIssues> & issues_vector,
-  std::vector<SimplePrimitive> primitive_list)
+  std::vector<SimplePrimitive> primitive_list_to_exclude)
 {
   const auto has_same_primitive = [&](lanelet::validation::Issue issue) {
     SimplePrimitive issue_primitive = {lanelet::validation::toString(issue.primitive), issue.id};
