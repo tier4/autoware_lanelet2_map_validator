@@ -26,7 +26,7 @@ The overview of the algorithm is illustrated in the flow chart below.
 
 ![flow_chart](../../media/border_sharing_flow_chart.drawio.svg)
 
-After we get a set of pairs violating the border sharing rule, we will classify whether a pair has its opposite pair. If the validator finds both pairs (Lanelet1, Lanelet2) and (Lanelet2, Lanelet1), it means that the expanded polygon covers the border ofthe other and vise versa which will be classified to issue code `Lane.BorderSharing-001`. If there is only one pair and the opposite doesn't exist, then this issue will be classifed as `Lane.BorderSharing-002`. If there are pairs like (Lanelet 1, Lanelet2) and (Lanelet 1, Lanelet 3) but (Lanelet 2, Lanelet 1) and (Lanelet 3, Lanelet 1) don't exist, everything will be summarize to one issue of Lanelet 1, whose issue message mentioning about Lanelet 2 and 3.
+After we get a set of pairs violating the border sharing rule, we will classify whether a pair has its opposite pair. If the validator finds both pairs (Lanelet1, Lanelet2) and (Lanelet2, Lanelet1), it means that the expanded polygon covers the border of the other and vise versa which will be classified to issue code `Lane.BorderSharing-001`. If there is only one pair and the opposite doesn't exist, then this issue will be classified as `Lane.BorderSharing-002`. If there are pairs like (Lanelet 1, Lanelet2) and (Lanelet 1, Lanelet 3) but (Lanelet 2, Lanelet 1) and (Lanelet 3, Lanelet 1) don't exist, everything will be summarize to one issue of Lanelet 1, whose issue message mentioning about Lanelet 2 and 3.
 
 ### Example Case 1
 
@@ -51,7 +51,7 @@ Let's see another example. where the lanelet division is different with the adja
 
 ![wrong_division](../../media/border_sharing_wrong_division.drawio.svg)
 
-In this case, the expanded polygon of Lanelet X covers the border of Lanelet Y and Z, but the expaneded polygon of Lanelet Y doesn't cover the border of Lanelet X. In this case, the issue of issue code `Lane.BorderSharing-002` will be called against Lanelet X.
+In this case, the expanded polygon of Lanelet X covers the border of Lanelet Y and Z, but the expanded polygon of Lanelet Y doesn't cover the border of Lanelet X. In this case, the issue of issue code `Lane.BorderSharing-002` will be called against Lanelet X.
 
 ## Difficult cases
 

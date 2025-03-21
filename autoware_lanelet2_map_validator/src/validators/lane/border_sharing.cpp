@@ -59,7 +59,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
 
   std::vector<std::pair<lanelet::Id, lanelet::Id>> suspicious_pairs;
   for (const lanelet::ConstLanelet & current_lane : map.laneletLayer) {
-    // Get the surrouding polygon of the lanelet
+    // Get the surrounding polygon of the lanelet
     const lanelet::BasicPolygon2d surrounding_polygon =
       expanded_lanelet_polygon(current_lane, 1.05);
 
@@ -98,8 +98,8 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
         continue;
       }
 
-      // If the surrouding_polygon covers the border of a non-related lanelet, that lanelet might be
-      // suspicious
+      // If the surrounding_polygon covers the border of a non-related lanelet, that lanelet might
+      // be suspicious
       if (
         boost::geometry::covered_by(
           candidate_lane.leftBound2d().basicLineString(), surrounding_polygon) ||
@@ -110,7 +110,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
     }
   }
 
-  // Sort out pairs by their directivity
+  // Sort out pairs by their directionality
   std::set<std::pair<lanelet::Id, lanelet::Id>> unidirectional_pairs;
   std::set<std::pair<lanelet::Id, lanelet::Id>> bidirectional_pairs;
 
@@ -143,7 +143,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
 
   // Emplace issues violating vm-01-04
   // Output issue only for the longest lanelet and show a list of lanelets
-  // that the surronding polygon covers
+  // that the surrounding polygon covers
   const auto issue_message2 = [](const lanelet::Ids & ids) {
     std::string result = "Seems to be adjacent with Lanelets ";
     for (const auto & id : ids) {
@@ -277,10 +277,10 @@ lanelet::traffic_rules::RegisterTrafficRules<BorderValidationRules> rules(
 Optional<bool> BorderValidationRules::canPass(
   const std::string & type, const std::string & /*location*/) const
 {
-  using ParticantsMap = std::map<std::string, std::vector<std::string>>;
+  using ParticipantsMap = std::map<std::string, std::vector<std::string>>;
   using Value = AttributeValueString;
   // All lanelets will have a vehicle participant for this validation
-  static const ParticantsMap ParticipantMap{
+  static const ParticipantsMap ParticipantMap{
     {"", {Participants::Vehicle}},
     {Value::Road, {Participants::Vehicle, Participants::Bicycle}},
     {"road_shoulder", {Participants::Vehicle, Participants::Bicycle, Participants::Pedestrian}},
