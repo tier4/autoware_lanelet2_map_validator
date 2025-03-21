@@ -20,6 +20,7 @@
 
 #include <gtest/gtest.h>
 #include <lanelet2_io/Io.h>
+#include <lanelet2_validation/Issue.h>
 
 #include <memory>
 #include <string>
@@ -39,6 +40,34 @@ protected:
       package_share_directory + "/data/map/" + file_name, *projector, &loading_errors_);
 
     EXPECT_NE(map_, nullptr);
+  }
+
+  bool is_same_issue(
+    const lanelet::validation::Issue & issue1, const lanelet::validation::Issue & issue2)
+  {
+    return issue1.id == issue2.id && issue1.severity == issue2.severity &&
+           issue1.primitive == issue2.primitive && issue1.message == issue2.message;
+  }
+
+  // They don't have to be in the same order
+  bool are_same_issues(
+    const lanelet::validation::Issues & issues1, const lanelet::validation::Issues & issues2)
+  {
+    if (issues1.size() != issues2.size()) {
+      return false;
+    }
+
+    for (const auto & issue1 : issues1) {
+      bool check = std::any_of(
+        issues2.begin(), issues2.end(), [this, &issue1](const lanelet::validation::Issue & target) {
+          return is_same_issue(issue1, target);
+        });
+      if (!check) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   lanelet::LaneletMapPtr map_{nullptr};
