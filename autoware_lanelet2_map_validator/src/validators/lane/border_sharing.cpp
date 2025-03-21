@@ -23,7 +23,6 @@
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
-#include <iostream>
 #include <map>
 #include <set>
 #include <stdexcept>
@@ -69,8 +68,6 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
     lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox2d);
 
     // Collect suspicious pairs of lanelets violating the border sharing rule
-    std::cout << "Lanelet " << current_lane.id() << ": " << nearby_lanelets.size() << " neighbors"
-              << std::endl;
     for (const auto & candidate_lane : nearby_lanelets) {
       // Ignore its own self
       if (current_lane.id() == candidate_lane.id()) {
@@ -83,8 +80,6 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
       if (
         relation != lanelet::routing::RelationType::Conflicting &&
         relation != lanelet::routing::RelationType::None) {
-        std::cout << "    - " << candidate_lane.id() << " is "
-                  << lanelet::routing::relationToString(relation) << std::endl;
         continue;
       }
 
@@ -93,7 +88,6 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
         relation == lanelet::routing::RelationType::Conflicting &&
         intersection_over_union(surrounding_polygon, candidate_lane.polygon2d().basicPolygon()) >
           0.05) {
-        std::cout << "    - " << candidate_lane.id() << " is conflicting to much" << std::endl;
         continue;
       }
 
@@ -101,7 +95,6 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
       if (
         candidate_lane.rightBound() == current_lane.rightBound().invert() ||
         candidate_lane.leftBound() == current_lane.leftBound().invert()) {
-        std::cout << "    - " << candidate_lane.id() << " is opposite" << std::endl;
         continue;
       }
 
@@ -112,14 +105,9 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
           candidate_lane.leftBound2d().basicLineString(), surrounding_polygon) ||
         boost::geometry::covered_by(
           candidate_lane.rightBound2d().basicLineString(), surrounding_polygon)) {
-        std::cout << "    - " << candidate_lane.id() << " is suspicious" << std::endl;
         suspicious_pairs.push_back({current_lane.id(), candidate_lane.id()});
-      } else {
-        std::cout << "    - " << candidate_lane.id() << " is nothing" << std::endl;
       }
     }
-    std::cout << "Lanelet " << current_lane.id()
-              << ": sus_pairs.size() = " << suspicious_pairs.size() << std::endl;
   }
 
   // Sort out pairs by their directivity
