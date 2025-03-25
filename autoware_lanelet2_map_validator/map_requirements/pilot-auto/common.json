@@ -1,8 +1,16 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "requirements": [
     {
-      "id": "vm-02-04",
+      "id": "vm-01-03_vm-01-04",
+      "validators": [
+        {
+          "name": "mapping.lane.border_sharing"
+        }
+      ]
+    },
+    {
+      "id": "vm-02-02",
       "validators": [
         {
           "name": "mapping.stop_line.missing_regulatory_elements"
@@ -73,6 +81,14 @@
               "name": "mapping.traffic_light.regulatory_element_details"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "vm-04-03",
+      "validators": [
+        {
+          "name": "mapping.traffic_light.light_bulb_tagging"
         }
       ]
     },
