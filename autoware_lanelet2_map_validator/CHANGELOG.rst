@@ -2,8 +2,18 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2025-03-13)
+------------------
+* feat: check light bulb attributes (`#28 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/28>`_)
+* feat: check light bulbs pairing (`#29 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/29>`_)
+* feat: exclude specific primitives (`#25 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/25>`_)
+  Co-authored-by: Mamoru Sobue <hilo.soblin@gmail.com>
+* Contributors: TaikiYamada4
+
 1.1.0 (2025-02-28)
 ------------------
+* chore: bump version to 1.1.0 (`#27 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/27>`_)
+  Co-authored-by: github-actions <github-actions@github.com>
 * feat: follow to the latest vm-05-01 (`#26 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/26>`_)
 * Contributors: TaikiYamada4
 

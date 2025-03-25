@@ -30,6 +30,7 @@ struct MetaConfig
   std::string projector_type;
   std::string requirements_file;
   std::string output_file_path;
+  std::string exclusion_list;
 };
 
 MetaConfig parseCommandLine(int argc, const char * argv[]);

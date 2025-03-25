@@ -15,9 +15,12 @@ Autoware が求める Lanelet2 地図の要求は [Vector Map creation requireme
 - [使い方](#使い方)
   - [使用方法A: 要求仕様リストを用いた検証](#使用方法a-要求仕様リストを用いた検証)
   - [使用方法B: 検証器を指定した検証](#使用方法b-検証器を指定した検証)
+  - [その他応用例](#その他応用例)
+  - [オプション一覧](#オプション一覧)
 - [入出力](#入出力)
-  - [要求仕様リスト (入力 JSON ファイル)](#要求仕様リスト-入力-json-ファイル)
+  - [要求仕様リスト (入力 JSON ファイル、推奨)](#要求仕様リスト-入力-json-ファイル推奨)
   - [検証結果ファイル (出力 JSON ファイル)](#検証結果ファイル-出力-json-ファイル)
+  - [除外リスト（入力 JSON ファイル、任意）](#除外リスト-入力-json-ファイル任意)
   - [検証内容の印字](#検証内容の印字)
 - [新しい検証器を作成する場合](#新しい検証器を作成する場合)
 - [各要求仕様と検証器の対応表](#各要求仕様と検証器の対応表)
@@ -170,6 +173,22 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 - この使用方法では、`--output_directory` で指定しても `lanelet2_validation_results.json` は出力されません。
 - 複数の検証機を指定する場合はコンマ区切りの文字列 (例：`"mapping.traffic_light.correct_facing,mapping.traffic_light.missing_regulatory_elements"`) か、正規表現 (例：`mapping.traffic_light.*`) を用いて指定してください。
 
+### その他応用例
+
+`autoware_lanelet2_map_validator`は「除外リスト」を一緒に入力することで、どの地図要素を検証対象としないかを指定することができます。
+除外リストは `--exclusion_list` もしくは `-x` オプションで渡すことができます（下のコマンド例参照）。
+上記で説明された両使用方法に対して適用することが可能です。
+除外リストの詳細な説明は[除外リスト](#除外リスト-入力-json-ファイル任意)を参照してください。
+
+```bash
+ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
+-p mgrs \
+-m $HOME/autoware_map/area1/lanelet2_map.osm \
+-i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/autoware_requirement_set.json
+-o ./
+-x ./my_exclusion_list.json
+```
+
 ### オプション一覧
 
 | オプション                 | 説明                                                                                                                                       |
@@ -179,6 +198,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 | `-m, --map_file`           | 検証する Lanelet2 地図のファイルパス                                                                                                       |
 | `-i, --input_requirements` | JSON 形式の要求仕様リストのファイルパス                                                                                                    |
 | `-o, --output_directory`   | JSON 形式の検証結果の保存ディレクトリ                                                                                                      |
+| `-x, --exclusion_list`     | JSON 形式の除外リストのファイルパス                                                                                                        |
 | `-v, --validator`          | カンマ区切りおよび正規表現で与えられた検証器のみを実行する。例えば、 `mapping.*` と指定すると `mapping` から始まる全ての検証器を実行する。 |
 | `-p, --projector`          | Lanelet2 地図の投影法。　`mgrs`, `utm`, `transverse_mercator` から選択。                                                                   |
 | `-l, --location`           | 地図の場所に関する情報 (未使用)                                                                                                            |
@@ -190,7 +210,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 本節では `autoware_lanelet2_map_validator` の入出力の詳細を解説します。
 
-### 要求仕様リスト (入力 JSON ファイル)
+### 要求仕様リスト (入力 JSON ファイル、推奨)
 
 本ツールに入力される JSON ファイルを以下のような構成をしています。
 
@@ -388,6 +408,45 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
   - `id` は上記 primitive の ID を指しています。
   - `message` は具体的なイシューの内容を記しています。
   - `issue_code` 上記 `message` に紐付けられるエラーコードのようなもので、他ツールとの接続を意識して設けられています（現状未使用）。一般用途では確認する必要はありません。
+
+### 除外リスト (入力 JSON ファイル、任意)
+
+もしも仕様を違反しているがどうしても修正することができない地図要素がある場合は、その地図要素だけを検証対象から外すことができます。
+ユーザーは「除外リスト」を作成することで `autoware_lanelet2_map_validator` がどの地図要素を無視するかを指定することができます。
+`sample_exclusion_list.json` に書かれている通り、除外リストは以下のような構造を持ちます。
+
+```json
+{
+  "exclusion": [
+    {
+      "primitive": "lanelet",
+      "id": 123
+    },
+    {
+      "primitive": "linestring",
+      "id": 9876,
+      "validators": [
+        {
+          "name": "mapping.traffic_light.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.traffic_light.regulatory_element_details"
+        }
+      ]
+    }
+  ]
+}
+```
+
+- 必ず一つの `exclusion` フィールドを持つこと
+- `exclusion` フィールドは primitive (地図要素) のリストの形で構成されること。primitive は必ず以下を持つ。
+  - `primitive`: primitive のタイプ。`point`, `linestring`, `polygon`, `lanelet`, `area`, `regulatory element`, `primitive` のいずれかである。
+  - `id`: primitive の ID。
+- 必要があれば `primitive` に `validators` フィールドを追加することができる。これによって、`validators` で指定された検証器に対してのみ検証対象から除外される。
+  - `validators` は検証器名のリストとして構成されること。`validators` に直接検証器名を書いてはならない。
+  - **もし `validators` フィールドが書かれていない場合、その primitive は全ての検証器において無視される。**
+  - 上記を例に取ると、Lanelet 123 は全ての検証工程から除外され、Linestring 9876 は検証器 "mapping.traffic_light.missing_regulatory_elements" と "mapping.traffic_light.regulatory_element_details" の検証においてのみ無視される。
+- 除外リストにはユーザー都合で `exclusion` 以外のフィールドを追記しても良い。
 
 ### 検証内容の印字
 

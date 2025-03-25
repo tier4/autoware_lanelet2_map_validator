@@ -23,8 +23,10 @@
 #include <lanelet2_validation/Cli.h>
 #include <lanelet2_validation/Validation.h>
 
+#include <map>
 #include <queue>
 #include <regex>
+#include <set>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -44,6 +46,9 @@ struct ValidatorInfo
 };
 
 using Validators = std::unordered_map<std::string, ValidatorInfo>;
+
+using SimplePrimitive = std::pair<std::string, lanelet::Id>;
+using ValidatorExclusionMap = std::map<std::string, std::vector<SimplePrimitive>>;
 
 std::vector<lanelet::validation::DetectedIssues> apply_validation(
   const lanelet::LaneletMap & lanelet_map,
@@ -70,9 +75,15 @@ lanelet::validation::ValidationConfig replace_validator(
 
 std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
   json & json_data, const lanelet::autoware::validation::MetaConfig & validator_config,
-  const lanelet::LaneletMap & lanelet_map);
+  const lanelet::LaneletMap & lanelet_map, const ValidatorExclusionMap & exclusion_map);
 
 void export_results(json & json_data, const std::string output_file_path);
+
+ValidatorExclusionMap import_exclusion_list(const json & json_data);
+
+void filter_out_primitives(
+  std::vector<lanelet::validation::DetectedIssues> & issues_vector,
+  std::vector<SimplePrimitive> primitive_list);
 }  // namespace lanelet::autoware::validation
 
 #endif  // LANELET2_MAP_VALIDATOR__VALIDATION_HPP_
