@@ -97,7 +97,8 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --package
 
 ## How to use
 
-There are two ways to run `autoware_lanelet2_map_validator`: run with a requirement set, or run against specific validators. The most general usage is to run with the requirement set `autoware_requirement_set.json`.
+There are two ways to run `autoware_lanelet2_map_validator`: run with a requirement set, or run against specific validators.
+The most general usage is to run with the requirement set.
 
 ### Usage-A: Validation using a requirement set (a list of validators)
 
@@ -130,14 +131,16 @@ source install/setup.bash
 ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -p mgrs \
 -m $HOME/autoware_map/area1/lanelet2_map.osm \
--i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/autoware_requirement_set.json
+-i ./install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements/autoware_requirement_set.json
 -o ./
 ```
 
-Then you will see `lanelet2_validation_results.json` in your current working directory. See [Inputs and outputs](#inputs-and-outputs) for more information of `autoware_requirement_set.json` and `lanelet2_validation_results.json`.
+Then you will see `lanelet2_validation_results.json` in your current working directory. See [Inputs and outputs](#inputs-and-outputs) for more information of the input requirements and the output result (`lanelet2_validation_results.json`).
 
 **Be aware that...**
 
+- Choose your input requirement set from the `autoware_lanelet2_map_validator/map_requirements` directory that suits your purpose the most.
+  - `autoware_requirement_set.json` is the most general file for Autoware if you don't have any specifications.
 - `lanelet2_validation_results.json` will be overwritten if it already exists!!
 - The following tab will be appended to the lanelet2 map (`.osm` file). This tab shouldn't harm the Autoware behaviour.
 
