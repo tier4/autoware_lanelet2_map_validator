@@ -144,16 +144,17 @@ Optional<bool> LongitudinalSubtypeConnectionValidationPedestrianRules::canPass(
 {
   using ParticipantsMap = std::map<std::string, std::vector<std::string>>;
   using Value = AttributeValueString;
-  // All lanelets will have a vehicle participant for this validation
+  // All lanelets will have a pedestrian participant for this validation
   static const ParticipantsMap ParticipantMap{
     {"", {Participants::Pedestrian}},
-    {Value::Road, {Participants::Vehicle, Participants::Bicycle}},
+    {Value::Road, {Participants::Vehicle, Participants::Bicycle, Participants::Pedestrian}},
     {"road_shoulder", {Participants::Vehicle, Participants::Bicycle, Participants::Pedestrian}},
     {"pedestrian_lane", {Participants::Vehicle, Participants::Bicycle, Participants::Pedestrian}},
-    {Value::Highway, {Participants::Vehicle}},
-    {Value::BicycleLane, {Participants::Vehicle, Participants::Bicycle}},
+    {Value::Highway, {Participants::Vehicle, Participants::Pedestrian}},
+    {Value::BicycleLane, {Participants::Vehicle, Participants::Bicycle, Participants::Pedestrian}},
     {Value::PlayStreet, {Participants::Pedestrian, Participants::Bicycle, Participants::Vehicle}},
-    {Value::EmergencyLane, {Participants::Vehicle, Participants::VehicleEmergency}},
+    {Value::EmergencyLane,
+     {Participants::Vehicle, Participants::VehicleEmergency, Participants::Pedestrian}},
     {Value::Exit, {Participants::Pedestrian, Participants::Bicycle, Participants::Vehicle}},
     {Value::Walkway, {Participants::Vehicle, Participants::Pedestrian}},
     {Value::Crosswalk, {Participants::Pedestrian}},
