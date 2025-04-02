@@ -69,6 +69,14 @@ In Autoware, lanelets are intended to be unidirectional. Therefore, when we want
 
 This is why we have the IoU (intersection over union) calculation for conflicting lanelets since the expanded the polygon will cover the border of other lanelets. We assume that if the IoU is higher than 0.05 and the polygon covers the border linestring, it is likely to be pseudo-bidirectional lanelets like this case. In other words, this validator only judges a pair of lanelets to be adjacent when they have a small IoU.
 
+## Parameters
+
+This validator has the following parameter.
+
+| Parameter     | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| iou_threshold | 0.05          | The threshold to distinguish whether the overlap of the extended polygon and the candidate lanelet is not large enough to infer that it is intentional. If the IoU is smaller than this value, the validator assume that thay are physically adjacent. For a numerical example, the IoU will be about 0.024 if there are two adjacent rectangles with the same shape and one of them have expanded from the center of 5 %. |
+
 ## Related source codes
 
 - border_sharing.cpp

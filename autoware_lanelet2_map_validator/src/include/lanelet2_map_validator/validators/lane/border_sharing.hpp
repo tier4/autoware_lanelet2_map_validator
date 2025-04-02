@@ -15,6 +15,8 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 
+#include "lanelet2_map_validator/parameter.hpp"
+
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/GenericTrafficRules.h>
 #include <lanelet2_validation/Validation.h>
@@ -30,6 +32,8 @@ public:
   // Write the validator's name here
   constexpr static const char * name() { return "mapping.lane.border_sharing"; }
 
+  BorderSharingValidator() : parameter_loader_(name()) {}
+
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
@@ -41,6 +45,8 @@ private:
     const lanelet::ConstLanelet to);
   double intersection_over_union(
     const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2);
+
+  ParameterLoader parameter_loader_;
 };
 
 namespace traffic_rules
