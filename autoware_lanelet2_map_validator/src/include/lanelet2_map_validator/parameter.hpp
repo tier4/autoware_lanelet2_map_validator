@@ -77,7 +77,7 @@ public:
       }
     }
 
-    std::cerr << "Couldn't find paramter \"" << param_name << "\". Return nullopt instead."
+    std::cerr << "Couldn't find parameter \"" << param_name << "\". Return nullopt instead."
               << std::endl;
     return std::nullopt;
   }
@@ -95,7 +95,7 @@ public:
       }
     }
 
-    std::cerr << "Couldn't find paramter \"" << param_name << "\". Use default value instead."
+    std::cerr << "Couldn't find parameter \"" << param_name << "\". Use default value instead."
               << std::endl;
     return default_value;
   }
