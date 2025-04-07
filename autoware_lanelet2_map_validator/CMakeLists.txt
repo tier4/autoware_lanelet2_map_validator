@@ -73,7 +73,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  FILES package.xml autoware_requirement_set.json
+  FILES package.xml
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -81,4 +81,5 @@ ament_auto_package(
   INSTALL_TO_SHARE
   test/data
   config
+  map_requirements
 )

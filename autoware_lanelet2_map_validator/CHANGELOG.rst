@@ -2,8 +2,16 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2025-03-28)
+------------------
+* feat: add new input requirements (`#30 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/30>`_)
+* feat: validator for lanelets sharing their borders correctly (`#32 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/32>`_)
+* Contributors: TaikiYamada4
+
 1.2.0 (2025-03-13)
 ------------------
+* chore: bump version to 1.2.0 (`#31 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/31>`_)
+  Co-authored-by: github-actions <github-actions@github.com>
 * feat: check light bulb attributes (`#28 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/28>`_)
 * feat: check light bulbs pairing (`#29 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/29>`_)
 * feat: exclude specific primitives (`#25 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/25>`_)
