@@ -46,15 +46,22 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, MissingRefers)  // NOLINT f
   // and should be mentioned in the loading_errors
 
   bool found_error_on_loading = false;
-  int target_primitive_id = 1025;
-  std::string target_message =
-    "Error parsing primitive " + std::to_string(target_primitive_id) +
+
+  const int target_primitive_id = 1025;
+  const std::string target_message =
+    "\t- Error parsing primitive " + std::to_string(target_primitive_id) +
     ": Creating a regulatory element of type traffic_light failed: No traffic light defined!";
 
-  for (const auto & error : loading_errors_) {
-    if (error.find(target_message) != std::string::npos) {
-      found_error_on_loading = true;
-      break;
+  const lanelet::validation::Issue expected_issue(
+    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, lanelet::InvalId,
+    target_message);
+
+  for (const auto & detected_issues : loading_issues_) {
+    for (const auto & issue : detected_issues.issues) {
+      if (is_same_issue(issue, expected_issue)) {
+        found_error_on_loading = true;
+        break;
+      }
     }
   }
 

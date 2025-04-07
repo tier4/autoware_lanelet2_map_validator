@@ -1,0 +1,12 @@
+mapping.foo.foo:
+  AAA: 5.0
+  BBB: 1234
+  CCC: -2.5
+mapping.bar.bar:
+  DDD: Apple
+  EEE: banana
+  FFF: 3.14
+mapping.baz.baz:
+  GGG: true
+  FFF: false
+  HHH: true

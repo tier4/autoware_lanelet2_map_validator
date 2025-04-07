@@ -25,6 +25,7 @@
   <depend>lanelet2_validation</depend>
   <depend>nlohmann-json-dev</depend>
   <depend>pugixml-dev</depend>
+  <depend>yaml-cpp</depend>
 
   <test_depend>ament_cmake_ros</test_depend>
 

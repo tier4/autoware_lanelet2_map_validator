@@ -15,6 +15,8 @@
 #ifndef MAP_VALIDATION_TESTER_HPP_
 #define MAP_VALIDATION_TESTER_HPP_
 
+#include "lanelet2_map_validator/map_loader.hpp"
+
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <autoware_lanelet2_extension/projection/mgrs_projector.hpp>
 
@@ -31,13 +33,13 @@ class MapValidationTester : public ::testing::Test
 protected:
   void load_target_map(std::string file_name)
   {
-    const auto projector = std::make_unique<lanelet::projection::MGRSProjector>();
-
-    std::string package_share_directory =
+    const std::string package_share_directory =
       ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+    const std::string map_file_path = package_share_directory + "/data/map/" + file_name;
+    lanelet::validation::ValidationConfig config;
 
-    map_ = lanelet::load(
-      package_share_directory + "/data/map/" + file_name, *projector, &loading_errors_);
+    std::tie(map_, loading_issues_) =
+      lanelet::autoware::validation::loadAndValidateMap("mgrs", map_file_path, config);
 
     EXPECT_NE(map_, nullptr);
   }
@@ -71,7 +73,7 @@ protected:
   }
 
   lanelet::LaneletMapPtr map_{nullptr};
-  std::vector<std::string> loading_errors_;
+  std::vector<lanelet::validation::DetectedIssues> loading_issues_;
 };
 
 #endif  // MAP_VALIDATION_TESTER_HPP_

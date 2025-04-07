@@ -51,6 +51,9 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
 {
   lanelet::validation::Issues issues;
 
+  const double iou_threshold =
+    parameter_loader_.get_parameter_or(std::string("iou_threshold"), 0.05);
+
   lanelet::traffic_rules::TrafficRulesPtr traffic_rules =
     lanelet::traffic_rules::TrafficRulesFactory::create(
       "validator", lanelet::Participants::Vehicle);
@@ -87,7 +90,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
       if (
         relation == lanelet::routing::RelationType::Conflicting &&
         intersection_over_union(surrounding_polygon, candidate_lane.polygon2d().basicPolygon()) >
-          0.05) {
+          iou_threshold) {
         continue;
       }
 
