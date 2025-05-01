@@ -36,7 +36,8 @@ private:
   lanelet::validation::Issues check_virtual_traffic_light_line_order(
     const lanelet::LaneletMap & map);
   lanelet::Optional<lanelet::ConstLanelet> belonging_lanelet(
-    const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map);
+    const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map,
+    const lanelet::ConstLanelets & excepts = {});
   lanelet::Optional<lanelet::ConstLineString3d> select_end_line(
     const lanelet::ConstLineStrings3d & candidate_lines,
     const lanelet::ConstLanelet & base_lanelet);
