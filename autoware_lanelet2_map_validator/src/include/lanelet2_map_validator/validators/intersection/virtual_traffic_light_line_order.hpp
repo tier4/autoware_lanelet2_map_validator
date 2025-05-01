@@ -36,15 +36,16 @@ private:
   lanelet::validation::Issues check_virtual_traffic_light_line_order(
     const lanelet::LaneletMap & map);
   lanelet::Optional<lanelet::ConstLanelet> belonging_lanelet(
-    const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map,
-    const lanelet::ConstLanelets & excepts = {});
+    const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map);
   lanelet::Optional<lanelet::ConstLineString3d> select_end_line(
     const lanelet::ConstLineStrings3d & candidate_lines,
     const lanelet::ConstLanelet & base_lanelet);
   double intersection_ratio(
+    const lanelet::ConstLineString3d & linestring, const lanelet::CompoundPolygon3d & polygon);
+  double intersection_ratio(
     const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane);
   lanelet::ConstLineString3d get_aligned_linestring(
-    const lanelet::ConstLineString3d & linestring, const lanelet::ConstLineString3d & base_arc);
+    const lanelet::ConstLineString3d & linestring, const lanelet::CompoundLineString3d & base_arc);
   lanelet::CompoundLineString3d get_concatenated_bound(
     const lanelet::routing::LaneletPath & path, const bool get_left = true);
   bool is_ordered_in_length_manner(

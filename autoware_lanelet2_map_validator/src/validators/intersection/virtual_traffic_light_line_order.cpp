@@ -67,105 +67,93 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
       continue;
     }
 
-    // get pairs of end_line and referrer lanelets
-    std::vector<std::pair<lanelet::Optional<lanelet::ConstLineString3d>, lanelet::ConstLanelet>>
-      end_pairs;
-    const ConstLineStrings3d end_lines =
-      reg_elem->getParameters<lanelet::ConstLineString3d>("end_line");
-    const ConstLanelets referrer_lanelets = map.laneletLayer.findUsages(reg_elem);
-    for (const auto & lane : referrer_lanelets) {
-      end_pairs.push_back({select_end_line(end_lines, lane), lane});
+    // retrieve start_line and stop_line with their corresponding lanelet.
+    const lanelet::ConstLineString3d start_line =
+      reg_elem->getParameters<lanelet::ConstLineString3d>("start_line").front();
+    const lanelet::ConstLineString3d stop_line =
+      reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine).front();
+    const lanelet::Optional<lanelet::ConstLanelet> start_lanelet =
+      belonging_lanelet(start_line, map);
+    const lanelet::Optional<lanelet::ConstLanelet> stop_lanelet = belonging_lanelet(stop_line, map);
+
+    if (!start_lanelet) {
+      issues.emplace_back(
+        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
+        start_line.id(),
+        append_issue_code_prefix(this->name(), 1, "The start_line isn't placed on a lanelet."));
+      continue;
     }
 
-    for (const auto & [end_line_opt, referrer_lanelet] : end_pairs) {
-      const lanelet::ConstLineString3d start_line =
-        reg_elem->getParameters<lanelet::ConstLineString3d>("start_line").front();
-      const lanelet::ConstLineString3d stop_line =
-        reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine).front();
-
+    // get pairs of end_line and referrer lanelets and check start_line not touching the referrer
+    // meanwhile
+    std::vector<std::pair<lanelet::ConstLineString3d, lanelet::ConstLanelet>> end_pairs;
+    const lanelet::ConstLineStrings3d end_lines =
+      reg_elem->getParameters<lanelet::ConstLineString3d>("end_line");
+    const lanelet::ConstLanelets referrer_lanelets = map.laneletLayer.findUsages(reg_elem);
+    bool is_start_line_intersecting = false;
+    for (const auto & lane : referrer_lanelets) {
+      const auto end_line_opt = select_end_line(end_lines, lane);
       if (!end_line_opt) {
         const std::string issue_message = "Cannot find the end_line for referrer lanelet " +
-                                          std::to_string(referrer_lanelet.id()) +
-                                          ". The end_line should cover the referrer lanelet.";
+                                          std::to_string(lane.id()) +
+                                          ". The end_line should be on the referrer lanelet.";
         issues.emplace_back(
           lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(), append_issue_code_prefix(this->name(), 1, issue_message));
+          reg_elem->id(), append_issue_code_prefix(this->name(), 2, issue_message));
         continue;
       }
-      const lanelet::ConstLineString3d end_line = end_line_opt.get();
+      end_pairs.push_back({end_line_opt.get(), lane});
 
-      const lanelet::Optional<lanelet::ConstLanelet> start_lanelet =
-        belonging_lanelet(start_line, map);
-      if (!start_lanelet) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          start_line.id(),
-          append_issue_code_prefix(this->name(), 2, "The start_line isn't placed over a lanelet."));
-        continue;
-      }
       if (boost::geometry::intersects(
-            lanelet::traits::to2D(start_line.basicLineString()),
-            referrer_lanelet.polygon2d().basicPolygon())) {
+            lanelet::traits::to2D(start_line.basicLineString()), lane.polygon2d().basicPolygon())) {
+        is_start_line_intersecting = true;
+      }
+    }
+
+    if (is_start_line_intersecting) {
+      issues.emplace_back(
+        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
+        start_line.id(),
+        append_issue_code_prefix(
+          this->name(), 3,
+          "The start_line must not intersect with the referrer lanelet of the virtual traffic "
+          "light."));
+      continue;
+    }
+
+    // Validate line orders for each end_line
+    for (const auto & [end_line, referrer_lanelet] : end_pairs) {
+      lanelet::Optional<lanelet::routing::LaneletPath> start_to_end_path_opt =
+        routing_graph_ptr->shortestPath(start_lanelet.get(), referrer_lanelet, {}, false);
+      if (!start_to_end_path_opt) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          start_line.id(),
+          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
+          reg_elem->id(),
           append_issue_code_prefix(
-            this->name(), 3,
-            "The start_line must not intersect with the referrer lanelet of the virtual traffic "
-            "light."));
+            this->name(), 4, "Cannot find a lanelet path from start_line to end_line."));
         continue;
       }
 
-      const lanelet::Optional<lanelet::ConstLanelet> stop_lanelet =
-        belonging_lanelet(stop_line, map, referrer_lanelets);
-      if (!stop_lanelet) {
+      const auto concat_left_bound = get_concatenated_bound(start_to_end_path_opt.get(), true);
+      const auto concat_right_bound = get_concatenated_bound(start_to_end_path_opt.get(), false);
+      const lanelet::CompoundPolygon3d concat_lanelet_polygon(
+        {concat_left_bound, concat_right_bound.invert()});
+
+      if (intersection_ratio(stop_line, concat_lanelet_polygon) < 0.1) {
         issues.emplace_back(
           lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
           stop_line.id(),
-          append_issue_code_prefix(this->name(), 4, "The stop_line isn't placed over a lanelet."));
-        continue;
+          append_issue_code_prefix(
+            this->name(), 5,
+            "The stop_line seems not to be placed on the path from start_line to end_line."));
       }
 
       const lanelet::ConstLineString3d start_line_aligned =
-        get_aligned_linestring(start_line, start_lanelet.get().leftBound());
+        get_aligned_linestring(start_line, concat_left_bound);
       const lanelet::ConstLineString3d stop_line_aligned =
-        get_aligned_linestring(stop_line, stop_lanelet.get().leftBound());
+        get_aligned_linestring(stop_line, concat_left_bound);
       const lanelet::ConstLineString3d end_line_aligned =
-        get_aligned_linestring(end_line, referrer_lanelet.leftBound());
-
-      lanelet::Optional<lanelet::routing::LaneletPath> start_to_stop_path_opt =
-        routing_graph_ptr->shortestPath(start_lanelet.get(), stop_lanelet.get(), {}, false);
-      if (!start_to_stop_path_opt) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(),
-          append_issue_code_prefix(
-            this->name(), 5, "Cannot find a lanelet path from start_line to end_line."));
-        continue;
-      }
-      std::cout << "start_to_stop" << std::endl;
-      for (const auto & ll : start_to_stop_path_opt.get()) {
-        std::cout << ll.id() << std::endl;
-      }
-      lanelet::Optional<lanelet::routing::LaneletPath> stop_to_end_path_opt =
-        routing_graph_ptr->shortestPath(stop_lanelet.get(), referrer_lanelet, {}, false);
-      std::cout << "stop_to_end" << std::endl;
-      if (!stop_to_end_path_opt) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(),
-          append_issue_code_prefix(
-            this->name(), 5, "Cannot find a lanelet path from start_line to end_line."));
-        continue;
-      }
-      for (const auto & ll : stop_to_end_path_opt.get()) {
-        std::cout << ll.id() << std::endl;
-      }
-
-      lanelet::routing::LaneletPath shortest_path =
-        routing_graph_ptr->shortestPath(start_lanelet.get(), referrer_lanelet, {}, false).get();
-      const auto concat_left_bound = get_concatenated_bound(shortest_path, true);
-      const auto concat_right_bound = get_concatenated_bound(shortest_path, false);
+        get_aligned_linestring(end_line, concat_left_bound);
 
       bool is_ok = is_ordered_in_length_manner(
                      start_line_aligned.front(), stop_line_aligned.front(),
@@ -175,10 +163,10 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
                      concat_right_bound);
       if (!is_ok) {
         const std::string issue_message =
-          "Then order of start line, stop line, and end line is wrong (end_line ID: " +
-          std::to_string(end_line.id()) + ")";
+          "The order of start line, stop line, and end line is wrong (end_line ID: " +
+          std::to_string(end_line.id()) + ").";
         issues.emplace_back(
-          lanelet::validation::Severity::Warning, lanelet::validation::Primitive::RegulatoryElement,
+          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
           reg_elem->id(), append_issue_code_prefix(this->name(), 6, issue_message));
         continue;
       }
@@ -189,8 +177,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
 }
 
 lanelet::Optional<lanelet::ConstLanelet> VirtualTrafficLightLineOrderValidator::belonging_lanelet(
-  const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map,
-  const lanelet::ConstLanelets & excepts)
+  const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map)
 {
   lanelet::BasicPoint3d centerpoint =
     (linestring.front().basicPoint() + linestring.back().basicPoint()) / 2;
@@ -202,9 +189,6 @@ lanelet::Optional<lanelet::ConstLanelet> VirtualTrafficLightLineOrderValidator::
   double max_ratio = -1.0;
   lanelet::ConstLanelet result;
   for (const auto & [_, lane] : candidate_lanelets) {
-    if (std::find(excepts.begin(), excepts.end(), lane) != excepts.end()) {
-      continue;
-    }
     const double ratio = intersection_ratio(linestring, lane);
     if (ratio > max_ratio) {
       max_ratio = ratio;
@@ -215,7 +199,6 @@ lanelet::Optional<lanelet::ConstLanelet> VirtualTrafficLightLineOrderValidator::
   if (max_ratio <= 0.0) {
     return {};
   }
-
   return result;
 }
 
@@ -236,17 +219,17 @@ VirtualTrafficLightLineOrderValidator::select_end_line(
   if (max_ratio <= 0.0) {
     return {};
   }
-
   return result;
 }
 
 double VirtualTrafficLightLineOrderValidator::intersection_ratio(
-  const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane)
+  const lanelet::ConstLineString3d & linestring, const lanelet::CompoundPolygon3d & polygon)
 {
   lanelet::BasicLineString2d linestring2d = lanelet::traits::to2D(linestring.basicLineString());
   std::vector<lanelet::BasicLineString2d> intersections;
 
-  boost::geometry::intersection(linestring2d, lane.polygon2d().basicPolygon(), intersections);
+  boost::geometry::intersection(
+    linestring2d, lanelet::traits::to2D(polygon).basicPolygon(), intersections);
   if (intersections.empty()) {
     return 0.0;
   }
@@ -255,12 +238,17 @@ double VirtualTrafficLightLineOrderValidator::intersection_ratio(
   for (const auto & segment : intersections) {
     covered_length += boost::geometry::length(segment);
   }
-
   return covered_length / boost::geometry::length(linestring2d);
 }
 
+double VirtualTrafficLightLineOrderValidator::intersection_ratio(
+  const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane)
+{
+  return intersection_ratio(linestring, lane.polygon3d());
+}
+
 lanelet::ConstLineString3d VirtualTrafficLightLineOrderValidator::get_aligned_linestring(
-  const lanelet::ConstLineString3d & linestring, const lanelet::ConstLineString3d & base_arc)
+  const lanelet::ConstLineString3d & linestring, const lanelet::CompoundLineString3d & base_arc)
 {
   // Align in the sense that linestrings are drawn from left to right as viewed from the vehicle
   lanelet::ArcCoordinates arc_front = lanelet::geometry::toArcCoordinates(
@@ -298,6 +286,6 @@ bool VirtualTrafficLightLineOrderValidator::is_ordered_in_length_manner(
   const auto p3_arc =
     lanelet::geometry::toArcCoordinates(lanelet::traits::to2D(base_arc), p3.basicPoint2d());
 
-  return p1_arc.length <= p2_arc.length && p2_arc.length <= p3_arc.length;
+  return p1_arc.length < p2_arc.length && p2_arc.length < p3_arc.length;
 }
 }  // namespace lanelet::autoware::validation
