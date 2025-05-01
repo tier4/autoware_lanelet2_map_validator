@@ -145,7 +145,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
           stop_line.id(),
           append_issue_code_prefix(
             this->name(), 5,
-            "The stop_line seems not to be placed on the path from start_line to end_line."));
+            "The stop_line is not placed on the path from start_line to end_line."));
       }
 
       const lanelet::ConstLineString3d start_line_aligned =

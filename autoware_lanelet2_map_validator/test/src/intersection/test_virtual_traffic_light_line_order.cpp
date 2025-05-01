@@ -130,7 +130,7 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedStopLine)  // NOLINT f
 
   const lanelet::validation::Issue expected_issue(
     lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11104,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line seems not to be placed on the "
+    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
     "path from start_line to end_line.");
 
   // There will be three same issues since this regulatory element is referred three times.
@@ -150,7 +150,7 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, StopLineNotOnPath)  // NOLINT 
 
   const lanelet::validation::Issue expected_issue(
     lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11107,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line seems not to be placed on the "
+    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
     "path from start_line to end_line.");
 
   // There will be three same issues since this regulatory element is referred three times.
@@ -230,11 +230,11 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStartEndStop)  // NOLIN
     "line is wrong (end_line ID: 11089).");
   const lanelet::validation::Issue expected_issue2(
     lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11099,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line seems not to be placed on the "
+    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
     "path from start_line to end_line.");
   const lanelet::validation::Issue expected_issue3(
     lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11099,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line seems not to be placed on the "
+    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
     "path from start_line to end_line.");
 
   // There will be three same issues since this regulatory element is referred three times.
