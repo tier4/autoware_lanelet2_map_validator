@@ -8,6 +8,14 @@
           "name": "mapping.stop_line.missing_regulatory_elements"
         }
       ]
+    },
+    {
+      "id": "vm-03-16",
+      "validators": [
+        {
+          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order"
+        }
+      ]
     }
   ]
 }

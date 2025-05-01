@@ -45,6 +45,14 @@
       ]
     },
     {
+      "id": "vm-03-16",
+      "validators": [
+        {
+          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order"
+        }
+      ]
+    },
+    {
       "id": "vm-04-01",
       "validators": [
         {
