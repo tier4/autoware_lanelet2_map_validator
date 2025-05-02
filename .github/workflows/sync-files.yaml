@@ -34,5 +34,4 @@ jobs:
           pr-labels: |
             tag:bot
             tag:sync-files
-          pr-reviewers: TaikiYamada4
           auto-merge-method: squash
