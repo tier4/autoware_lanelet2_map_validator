@@ -13,11 +13,13 @@
 // limitations under the License.
 
 #include "lanelet2_map_validator/cli.hpp"
+#include "lanelet2_map_validator/config_store.hpp"
 #include "lanelet2_map_validator/io.hpp"
 #include "lanelet2_map_validator/map_loader.hpp"
 #include "lanelet2_map_validator/utils.hpp"
 #include "lanelet2_map_validator/validation.hpp"
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <nlohmann/json.hpp>
 
 #include <filesystem>
@@ -90,6 +92,18 @@ int main(int argc, char * argv[])
       exclusion_map[validator_name] = std::vector<lanelet::autoware::validation::SimplePrimitive>();
     }
   }
+
+  // Load parameters and issues_info files
+  std::string package_share_directory =
+    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+  std::string parameters_file = (!meta_config.parameters_file.empty())
+                                  ? meta_config.parameters_file
+                                  : package_share_directory + "/config/params.yaml";
+  std::string issues_info_file =
+    package_share_directory +
+    "/config/issues_info.json";  // We think issues_info should NOT be derived for now
+  lanelet::autoware::validation::ValidatorConfigStore::initialize(
+    parameters_file, issues_info_file);
 
   // Validation against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {
