@@ -80,5 +80,6 @@ install(
 ament_auto_package(
   INSTALL_TO_SHARE
   test/data
+  config
   map_requirements
 )

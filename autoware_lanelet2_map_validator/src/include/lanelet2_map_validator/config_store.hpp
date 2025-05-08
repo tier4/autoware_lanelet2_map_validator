@@ -15,11 +15,17 @@
 #ifndef LANELET2_MAP_VALIDATOR__CONFIG_STORE_HPP_
 #define LANELET2_MAP_VALIDATOR__CONFIG_STORE_HPP_
 
+#include "lanelet2_map_validator/utils.hpp"
+
 #include <nlohmann/json.hpp>
 
+#include <lanelet2_validation/Issue.h>
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
+#include <iostream>
+#include <map>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -29,25 +35,52 @@ namespace lanelet::autoware::validation
 class ValidatorConfigStore
 {
 public:
-  static void initialize(
-    const std::string & params_yaml_file, const std::string & issues_info_json_file)
+  static void initialize(const std::string & params_yaml_file)
   {
     yaml_ = YAML::LoadFile(params_yaml_file);
-
-    std::ifstream json_ifs(issues_info_json_file);
-    if (!json_ifs.is_open()) {
-      throw std::runtime_error("Failed to open JSON file: " + issues_info_json_file);
-    }
-    json_ifs >> json_;
   }
-
   static const YAML::Node & parameters() { return yaml_; }
-  static const nlohmann::json & issues_info() { return json_; }
 
 private:
   static inline YAML::Node yaml_;
-  static inline nlohmann::json json_;
 };
+
+template <typename T>
+std::optional<T> get_parameter(const YAML::Node parent_node, const std::string & param_name)
+{
+  if (parent_node[param_name]) {
+    try {
+      return parent_node[param_name].as<T>();
+    } catch (const std::exception & e) {
+      std::cerr << "Type mismatch for parameter \"" << param_name << "\": " << e.what()
+                << std::endl;
+      std::cerr << "nullopt is returned." << std::endl;
+    }
+  }
+
+  std::cerr << "Couldn't find parameter \"" << param_name << "\". Return nullopt instead."
+            << std::endl;
+  return std::nullopt;
+}
+
+template <typename T>
+T get_parameter_or(
+  const YAML::Node & parent_node, const std::string & param_name, const T & default_value)
+{
+  if (parent_node[param_name]) {
+    try {
+      return parent_node[param_name].as<T>();
+    } catch (const std::exception & e) {
+      std::cerr << "Type mismatch for parameter \"" << param_name << "\": " << e.what()
+                << std::endl;
+      std::cerr << "Default value is used." << std::endl;
+    }
+  }
+
+  std::cerr << "Couldn't find parameter \"" << param_name << "\". Use default value instead."
+            << std::endl;
+  return default_value;
+}
 
 }  // namespace lanelet::autoware::validation
 
