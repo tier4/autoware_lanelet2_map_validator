@@ -143,6 +143,22 @@ If you feel typing these arguments exhausting, you can overwrite the `default` v
 - Currently, there are no rules to decide the severity of the issue. If you're not confident about your severity decisions please discuss them with your PR reviewers.
 - Other coding rules are mentioned in the [Autoware Documentation](https://autowarefoundation.github.io/autoware-documentation/main/contributing/). However, this coding rule doesn't hold if it conflicts with the Lanelet2 library.
 
+#### Parameters
+
+If your validator needs parameters, you can add them to [config/params.yaml](../config/params.yaml).
+Then, call [ValidatorConfigStore::parameters()](../src/include/lanelet2_map_validator/config_store.hpp) to get all the parameters from `params.yaml`.
+`ValidatorConfigStore::parameters()[\<name of validator\>]` will return the parameters for your validator only.
+You can call this code anywhere in your implementation.
+The parameters can be defined in the YAML map format like the following.
+
+```yaml
+mapping.category.validator_name:
+  parameter_a: 0.5
+  parameter_b: true
+```
+
+Note that you should declare the validator's name first and then write the parameters below it.
+
 ### 2. Write a test code
 
 Contributors must also provide test codes to ensure your validator is working properly and be able to be tested again when changes occur to the validator in the future.

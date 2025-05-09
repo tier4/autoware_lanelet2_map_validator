@@ -15,6 +15,8 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/GenericTrafficRules.h>
 #include <lanelet2_validation/Validation.h>
@@ -32,6 +34,12 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  BorderSharingValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    iou_threshold_ = get_parameter_or<double>(parameters, "iou_threshold", 0.05);
+  }
+
 private:
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
   lanelet::BasicPolygon2d expanded_lanelet_polygon(
@@ -41,6 +49,8 @@ private:
     const lanelet::ConstLanelet to);
   double intersection_over_union(
     const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2);
+
+  double iou_threshold_;
 };
 
 namespace traffic_rules

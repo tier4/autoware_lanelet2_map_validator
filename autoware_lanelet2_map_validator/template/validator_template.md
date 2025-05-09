@@ -12,6 +12,10 @@ Feature explanation here.
 | ---------- | ------- | -------- | --------- | ----------- | -------- |
 |            |         |          |           |             |          |
 
+## Parameters
+
+None.
+
 ## Related source codes
 
 - validator_template.cpp
