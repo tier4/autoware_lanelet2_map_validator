@@ -147,6 +147,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
     for (const auto & id : ids) {
       result += std::to_string(id) + " ";
     }
+    result.resize(result.size() - 1);
     return result;
   };
   for (auto it = unidirectional_pairs.begin(); it != unidirectional_pairs.end();) {
@@ -156,6 +157,10 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
     while (it != unidirectional_pairs.end() && it->first == current_first) {
       adjacents.push_back(it->second);
       ++it;
+    }
+
+    if (adjacents.size() <= 0) {
+      continue;
     }
 
     substitution_map2["lanelet_ids"] = ids_to_string(adjacents);
