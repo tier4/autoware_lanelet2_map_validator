@@ -208,6 +208,7 @@ Not all validators have parameters so take a look at the documents in [autoware_
 | `-x, --exclusion_list`     | Path to the JSON file where the list of primitives to exclude is written                                                                                        |
 | `-v, --validator`          | Comma separated list of regexes to filter the applicable validators. Will run all validators by default. Example: `mapping.*` to run all checks for the mapping |
 | `-p, --projector`          | Projector used for loading lanelet map. Available projectors are: `mgrs`, `utm`, and `transverse_mercator`.                                                     |
+| `--parameters`             | Path to the YAML file where the list of parameters is written. `config/params.yaml` will be used if not specified                                               |
 | `-l, --location`           | Location of the map (for instantiating the traffic rules), e.g. de for Germany (currently not used)                                                             |
 | `--participants`           | Participants for which the routing graph will be instantiated (default: vehicle) (currently not used)                                                           |
 | `--lat`                    | latitude coordinate of map origin. This is required for the transverse mercator and utm projector.                                                              |
