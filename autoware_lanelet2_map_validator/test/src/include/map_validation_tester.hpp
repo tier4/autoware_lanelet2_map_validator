@@ -37,7 +37,9 @@ public:
     std::string package_share_directory =
       ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
     std::string parameters_file = package_share_directory + "/config/params.yaml";
-    lanelet::autoware::validation::ValidatorConfigStore::initialize(parameters_file);
+    std::string issues_info_file = package_share_directory + "/confing/issues_info.json";
+    lanelet::autoware::validation::ValidatorConfigStore::initialize(
+      parameters_file, issues_info_file, "en");
   }
 
 protected:
