@@ -1,0 +1,18 @@
+{
+  "Lane.BorderSharing-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Seems to be adjacent with Lanelet {lanelet_id} but doesn't share a border linestring.",
+      "ja": "Lanelet {lanelet_id} と隣接しているようですが、境界線を同一の linestring で共有していません"
+    }
+  },
+  "Lane.BorderSharing-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Seems to be adjacent with Lanelets {lanelet_ids} but doesn't share a border linestring.",
+      "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません"
+    }
+  }
+}
