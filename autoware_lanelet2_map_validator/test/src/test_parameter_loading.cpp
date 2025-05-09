@@ -42,12 +42,7 @@ TEST_F(ParameterLoadingTest, CheckDefaultParamsFileHasValidValidators)
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks("");  // cspell:disable-line
 
-  const std::string package_share_directory =
-    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
-  const std::string full_path = package_share_directory + "/config/params.yaml";
-  YAML::Node root = YAML::LoadFile(full_path);
-
-  for (const auto & child : root) {
+  for (const auto & child : params) {
     std::string child_name = child.first.as<std::string>();
     EXPECT_TRUE(std::find(validators.begin(), validators.end(), child_name) != validators.end());
   }
