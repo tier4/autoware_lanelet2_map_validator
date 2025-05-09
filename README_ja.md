@@ -175,6 +175,8 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 ### その他応用例
 
+#### 除外リスト
+
 `autoware_lanelet2_map_validator`は「除外リスト」を一緒に入力することで、どの地図要素を検証対象としないかを指定することができます。
 除外リストは `--exclusion_list` もしくは `-x` オプションで渡すことができます（下のコマンド例参照）。
 上記で説明された両使用方法に対して適用することが可能です。
@@ -188,6 +190,11 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -o ./
 -x ./my_exclusion_list.json
 ```
+
+#### パラメータ
+
+もしも使用する検証器がパラメータを持つ場合は、[autoware_lanelet2_map_validator/config/params.yaml](./autoware_lanelet2_map_validator/config/params.yaml)で変更することができます。
+全ての検証器がパラメータを持っているわけではないので、各検証器のドキュメント [autoware_lanelet2_map_validator/docs](./autoware_lanelet2_map_validator/docs/) を参照して、パラメータがあるか、そしてそれがどのようなパラメータであるかを確認してください。
 
 ### オプション一覧
 

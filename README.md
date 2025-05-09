@@ -175,6 +175,8 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 ### Advanced usages
 
+#### Exclusion List
+
 You can input an "exclusion list" to `autoware_lanelet2_map_validator` to inform what primitive to ignore during the validation.
 Add the `--exclusion_list` or `-x` option to the command to pass the exclusion list (JSON format) like the example below.
 This option works for both usages above.
@@ -188,6 +190,11 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -o ./
 -x ./my_exclusion_list.json
 ```
+
+#### Parameters
+
+If the validator you want to modify parameters, you can change them in [autoware_lanelet2_map_validator/config/params.yaml](./autoware_lanelet2_map_validator/config/params.yaml).
+Not all validators have parameters so take a look at the documents in [autoware_lanelet2_map_validator/docs](./autoware_lanelet2_map_validator/docs/) to check whether the validator has parameters and how do they work.
 
 ### Available command options
 
