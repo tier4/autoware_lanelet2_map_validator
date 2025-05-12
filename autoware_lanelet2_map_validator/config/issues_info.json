@@ -4,7 +4,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Seems to be adjacent with Lanelet {lanelet_id} but doesn't share a border linestring.",
-      "ja": "Lanelet {lanelet_id} と隣接しているようですが、境界線を同一の linestring で共有していません"
+      "ja": "Lanelet {lanelet_id} と隣接しているようですが、境界線を同一の linestring で共有していません。"
     }
   },
   "Lane.BorderSharing-002": {
@@ -12,7 +12,71 @@
     "primitive": "lanelet",
     "message": {
       "en": "Seems to be adjacent with Lanelets {lanelet_ids} but doesn't share a border linestring.",
-      "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません"
+      "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません。"
+    }
+  },
+  "Lane.LongitudinalSubtypeConnection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A crosswalk or walkway type lanelet cannot have a successor lanelet.",
+      "ja": "crosswalk type もしくは walkway type の lanelet は続きの lanelet を持ってはいけません。"
+    }
+  },
+  "Lane.LongitudinalSubtypeConnection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A lanelet and its successor must have the same subtype.",
+      "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
+    }
+  },
+  "StopLine.MissingRegulatoryElement-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "No regulatory element refers to this stop_line.",
+      "ja": "この stop_line に対応する regulatory element がありません。"
+    }
+  },
+  "Intersection.IntersectionAreaDanglingReference-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Dangling reference to non-existing intersection area of ID ${area_id} is detected.",
+      "ja": "この lanelet が参照する intersection area (ID ${area_id}) が見つかりませんでした。"
+    }
+  },
+  "Intersection.TurnDirectionTagging-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is missing a turn_direction tag.",
+      "ja": "この lanelet に turn_direction タグが設定されていません。"
+    }
+  },
+  "Intersection.TurnDirectionTagging-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Invalid turn_direction tag ${invalid_tag} is found.",
+      "ja": "不適切な turn_direction タグ ${invalid_tag} が設定されています。"
+    }
+  },
+  "Intersection.IntersectionAreaValidity-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: ${boost_geometry_message})",
+      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： ${boost_geometry_message}）"
+    }
+  },
+  "Intersection.IntersectionAreaSegmentType-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: ${point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: ${point_ids}）"
     }
   }
 }
