@@ -22,7 +22,9 @@
 
 class TestLocalCoordinatesDeclarationValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::LocalCoordinatesDeclarationValidator::name());
 };
 
 TEST_F(TestLocalCoordinatesDeclarationValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -45,31 +47,14 @@ TEST_F(TestLocalCoordinatesDeclarationValidator, NotLocalFromStart)  // NOLINT f
   lanelet::autoware::validation::LocalCoordinatesDeclarationValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 3);
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 8);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 9);
+  const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 1), 11);
+  const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues[0].id, 8);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Lane.LocalCoordinatesDeclaration-001] This point doesn't have local coordinates while others "
-    "do.");
+  const auto comparison = compare_issues(expected_issues, issues);
 
-  EXPECT_EQ(issues[1].id, 9);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[1].message,
-    "[Lane.LocalCoordinatesDeclaration-001] This point doesn't have local coordinates while others "
-    "do.");
-
-  EXPECT_EQ(issues[2].id, 11);
-  EXPECT_EQ(issues[2].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[2].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[2].message,
-    "[Lane.LocalCoordinatesDeclaration-001] This point doesn't have local coordinates while others "
-    "do.");
+  EXPECT_TRUE(comparison.empty()) << comparison;
 }
 
 TEST_F(TestLocalCoordinatesDeclarationValidator, PartiallyDefected)  // NOLINT for gtest
@@ -79,21 +64,13 @@ TEST_F(TestLocalCoordinatesDeclarationValidator, PartiallyDefected)  // NOLINT f
   lanelet::autoware::validation::LocalCoordinatesDeclarationValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 2), 8);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 3), 17);
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  EXPECT_EQ(issues[0].id, 8);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Lane.LocalCoordinatesDeclaration-002] \"local_x\" is declared but \"local_y\" is not.");
+  const auto comparison = compare_issues(expected_issues, issues);
 
-  EXPECT_EQ(issues[1].id, 17);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[1].message,
-    "[Lane.LocalCoordinatesDeclaration-003] \"local_y\" is declared but \"local_x\" is not.");
+  EXPECT_TRUE(comparison.empty()) << comparison;
 }
 
 TEST_F(
