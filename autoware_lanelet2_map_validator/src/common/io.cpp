@@ -14,7 +14,10 @@
 
 #include "lanelet2_map_validator/io.hpp"
 
+#include "lanelet2_map_validator/cli.hpp"
+
 #include <ament_index_cpp/get_package_share_directory.hpp>
+#include <nlohmann/json.hpp>
 #include <pugixml.hpp>
 
 #include <filesystem>
@@ -89,5 +92,21 @@ void insert_validator_info_to_map(
   }
 
   std::cout << "Modified validator information in the osm file." << std::endl;
+}
+
+void insert_validation_info_to_json(nlohmann::json & json_data, MetaConfig config)
+{
+  const std::filesystem::path path(config.command_line_config.mapFile);
+  const std::string map_file_name =
+    path.parent_path().filename().string() + "/" + path.filename().string();
+  const std::string requirements_file_name =
+    std::filesystem::path(config.requirements_file).filename().string();
+
+  json_data["validation_info"] = {
+    {"target_map", map_file_name},
+    {"map_requirements",
+     {{"filename", requirements_file_name}, {"version", json_data.value("version", "")}}},
+    {"validator",
+     {{"name", "autoware_lanelet2_map_validator"}, {"version", get_validator_version()}}}};
 }
 }  // namespace lanelet::autoware::validation

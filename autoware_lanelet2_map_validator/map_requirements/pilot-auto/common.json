@@ -53,6 +53,14 @@
       ]
     },
     {
+      "id": "vm-03-16",
+      "validators": [
+        {
+          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+        }
+      ]
+    },
+    {
       "id": "vm-04-01",
       "validators": [
         {

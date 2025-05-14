@@ -128,6 +128,7 @@ int main(int argc, char * argv[])
       json_data.value("version", ""));
 
     if (!meta_config.output_file_path.empty()) {
+      lanelet::autoware::validation::insert_validation_info_to_json(json_data, meta_config);
       lanelet::autoware::validation::export_results(json_data, meta_config.output_file_path);
     }
   } else {
