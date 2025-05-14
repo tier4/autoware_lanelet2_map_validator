@@ -62,8 +62,8 @@ TEST_F(TestLongitudinalSubtypeConnectionValidator, SplitCrosswalkAndWalkway)  //
   const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 11057);
   const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const auto comparison = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(comparison.empty()) << comparison;
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLongitudinalSubtypeConnectionValidator, WrongLongitudinalConnection)  // NOLINT for gtest
@@ -78,8 +78,8 @@ TEST_F(TestLongitudinalSubtypeConnectionValidator, WrongLongitudinalConnection) 
   const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 2), 9178);
   const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3};
 
-  const auto comparison = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(comparison.empty()) << comparison;
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLongitudinalSubtypeConnectionValidator, SampleMap)  // NOLINT for gtest

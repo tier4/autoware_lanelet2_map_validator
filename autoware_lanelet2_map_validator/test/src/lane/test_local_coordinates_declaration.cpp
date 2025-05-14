@@ -52,9 +52,9 @@ TEST_F(TestLocalCoordinatesDeclarationValidator, NotLocalFromStart)  // NOLINT f
   const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 1), 11);
   const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3};
 
-  const auto comparison = compare_issues(expected_issues, issues);
+  const auto difference = compare_issues(expected_issues, issues);
 
-  EXPECT_TRUE(comparison.empty()) << comparison;
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLocalCoordinatesDeclarationValidator, PartiallyDefected)  // NOLINT for gtest
@@ -68,9 +68,9 @@ TEST_F(TestLocalCoordinatesDeclarationValidator, PartiallyDefected)  // NOLINT f
   const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 3), 17);
   const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const auto comparison = compare_issues(expected_issues, issues);
+  const auto difference = compare_issues(expected_issues, issues);
 
-  EXPECT_TRUE(comparison.empty()) << comparison;
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
