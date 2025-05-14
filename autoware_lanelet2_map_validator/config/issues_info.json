@@ -113,7 +113,7 @@
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-005": {
     "severity": "Error",
-    "primitive": "regulatory_element",
+    "primitive": "regulatory element",
     "message": {
       "en": "A virtual_traffic_light regulatory element must have a refers.",
       "ja": "virtual_traffic_light subtype の regulatory element は refers が設定されている必要があります。"
