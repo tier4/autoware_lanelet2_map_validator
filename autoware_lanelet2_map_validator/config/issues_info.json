@@ -15,6 +15,30 @@
       "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません。"
     }
   },
+  "Lane.LocalCoordinatesDeclaration-001": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "This point doesn't have local coordinates while others do.",
+      "ja": "この point は local 座標が定義されていません。"
+    }
+  },
+  "Lane.LocalCoordinatesDeclaration-002": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "\"local_x\" is declared but \"local_y\" is not.",
+      "ja": "この point は \"local_x\" が定義されていますが、\"local_y\" が定義されていません。"
+    }
+  },
+  "Lane.LocalCoordinatesDeclaration-003": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "\"local_y\" is declared but \"local_x\" is not.",
+      "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
+    }
+  },
   "Lane.LongitudinalSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",
