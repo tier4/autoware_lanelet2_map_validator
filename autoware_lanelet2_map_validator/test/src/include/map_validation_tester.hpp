@@ -85,6 +85,44 @@ protected:
     return true;
   }
 
+  std::string compare_an_issue(
+    const lanelet::validation::Issue & expected_issue,
+    const lanelet::validation::Issue & comparing_issue)
+  {
+    std::string result = "";
+    if (!is_same_issue(expected_issue, comparing_issue)) {
+      result = std::string("Issues are not the same\n") + "\tExpected -> " +
+               expected_issue.buildReport() + "\n" + "\tActual -> " +
+               comparing_issue.buildReport() + "\n";
+    }
+    return result;
+  }
+
+  std::string compare_issues(
+    const lanelet::validation::Issues & expected_issues,
+    const lanelet::validation::Issues & comparing_issues)
+  {
+    std::string result = "";
+    if (!are_same_issues(expected_issues, comparing_issues)) {
+      result += std::string("Issues are not the same\n");
+      result += "\tExpected -> (\n";
+      for (const auto & issue : expected_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+      result += "\tActual -> (\n";
+      for (const auto & issue : comparing_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+    }
+    return result;
+  }
+
   lanelet::LaneletMapPtr map_{nullptr};
   std::vector<lanelet::validation::DetectedIssues> loading_issues_;
 };
