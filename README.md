@@ -175,6 +175,8 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 ### Advanced usages
 
+#### Exclusion List
+
 You can input an "exclusion list" to `autoware_lanelet2_map_validator` to inform what primitive to ignore during the validation.
 Add the `--exclusion_list` or `-x` option to the command to pass the exclusion list (JSON format) like the example below.
 This option works for both usages above.
@@ -189,6 +191,11 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -x ./my_exclusion_list.json
 ```
 
+#### Parameters
+
+If the validator you want to modify parameters, you can change them in [autoware_lanelet2_map_validator/config/params.yaml](./autoware_lanelet2_map_validator/config/params.yaml).
+Not all validators have parameters so take a look at the documents in [autoware_lanelet2_map_validator/docs](./autoware_lanelet2_map_validator/docs/) to check whether the validator has parameters and how do they work.
+
 ### Available command options
 
 | option                     | description                                                                                                                                                     |
@@ -201,6 +208,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 | `-x, --exclusion_list`     | Path to the JSON file where the list of primitives to exclude is written                                                                                        |
 | `-v, --validator`          | Comma separated list of regexes to filter the applicable validators. Will run all validators by default. Example: `mapping.*` to run all checks for the mapping |
 | `-p, --projector`          | Projector used for loading lanelet map. Available projectors are: `mgrs`, `utm`, and `transverse_mercator`.                                                     |
+| `--parameters`             | Path to the YAML file where the list of parameters is written. `config/params.yaml` will be used if not specified                                               |
 | `-l, --location`           | Location of the map (for instantiating the traffic rules), e.g. de for Germany (currently not used)                                                             |
 | `--participants`           | Participants for which the routing graph will be instantiated (default: vehicle) (currently not used)                                                           |
 | `--lat`                    | latitude coordinate of map origin. This is required for the transverse mercator and utm projector.                                                              |

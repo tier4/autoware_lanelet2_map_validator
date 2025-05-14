@@ -31,6 +31,7 @@ struct MetaConfig
   std::string requirements_file;
   std::string output_file_path;
   std::string exclusion_list;
+  std::string parameters_file;
 };
 
 MetaConfig parseCommandLine(int argc, const char * argv[]);
