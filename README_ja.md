@@ -209,7 +209,8 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 | `-v, --validator`          | カンマ区切りおよび正規表現で与えられた検証器のみを実行する。例えば、 `mapping.*` と指定すると `mapping` から始まる全ての検証器を実行する。 |
 | `-p, --projector`          | Lanelet2 地図の投影法。　`mgrs`, `utm`, `transverse_mercator` から選択。                                                                   |
 | `--parameters`             | パラメータを格納する YAML ファイルのパス。指定されなければデフォルトで `config/params.yaml` を用いる。                                     |
-| `-l, --location`           | 地図の場所に関する情報 (未使用)                                                                                                            |
+| `-l, --language`           | 出力されるイシューメッセージの言語（"en" or "ja"）。指定されなければデフォルトで "en" になる。                                             |
+| `--location`               | 地図の場所に関する情報 (未使用)                                                                                                            |
 | `--participants`           | 自動車や歩行者など交通ルールの対象の指定 (未使用)                                                                                          |
 | `--lat`                    | 地図原点の緯度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
 | `--lon`                    | 地図原点の軽度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
