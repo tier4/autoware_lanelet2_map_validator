@@ -15,6 +15,10 @@
 #ifndef LANELET2_MAP_VALIDATOR__IO_HPP_
 #define LANELET2_MAP_VALIDATOR__IO_HPP_
 
+#include "lanelet2_map_validator/cli.hpp"
+
+#include <nlohmann/json.hpp>
+
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -22,6 +26,7 @@ namespace lanelet::autoware::validation
 std::string get_validator_version();
 void insert_validator_info_to_map(
   std::string osm_file, std::string requirements, std::string requirements_version);
+void insert_validation_info_to_json(nlohmann::json & json_data, MetaConfig config);
 }  // namespace lanelet::autoware::validation
 
 #endif  // LANELET2_MAP_VALIDATOR__IO_HPP_

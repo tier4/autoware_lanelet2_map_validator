@@ -87,7 +87,7 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
       if (
         relation == lanelet::routing::RelationType::Conflicting &&
         intersection_over_union(surrounding_polygon, candidate_lane.polygon2d().basicPolygon()) >
-          0.05) {
+          iou_threshold_) {
         continue;
       }
 

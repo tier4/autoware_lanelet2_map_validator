@@ -10,6 +10,14 @@
       ]
     },
     {
+      "id": "vm-01-21",
+      "validators": [
+        {
+          "name": "mapping.lane.longitudinal_subtype_connection"
+        }
+      ]
+    },
+    {
       "id": "vm-02-02",
       "validators": [
         {
@@ -48,7 +56,15 @@
       "id": "vm-03-16",
       "validators": [
         {
-          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order"
+          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+        },
+        {
+          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order",
+          "prerequisites": [
+            {
+              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+            }
+          ]
         }
       ]
     },

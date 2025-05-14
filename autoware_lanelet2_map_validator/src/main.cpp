@@ -13,11 +13,13 @@
 // limitations under the License.
 
 #include "lanelet2_map_validator/cli.hpp"
+#include "lanelet2_map_validator/config_store.hpp"
 #include "lanelet2_map_validator/io.hpp"
 #include "lanelet2_map_validator/map_loader.hpp"
 #include "lanelet2_map_validator/utils.hpp"
 #include "lanelet2_map_validator/validation.hpp"
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <nlohmann/json.hpp>
 
 #include <filesystem>
@@ -91,6 +93,14 @@ int main(int argc, char * argv[])
     }
   }
 
+  // Load parameters and issues_info files
+  std::string package_share_directory =
+    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+  std::string parameters_file = (!meta_config.parameters_file.empty())
+                                  ? meta_config.parameters_file
+                                  : package_share_directory + "/config/params.yaml";
+  lanelet::autoware::validation::ValidatorConfigStore::initialize(parameters_file);
+
   // Validation against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {
     throw std::invalid_argument("The map file was not possible to load!");
@@ -114,6 +124,7 @@ int main(int argc, char * argv[])
       json_data.value("version", ""));
 
     if (!meta_config.output_file_path.empty()) {
+      lanelet::autoware::validation::insert_validation_info_to_json(json_data, meta_config);
       lanelet::autoware::validation::export_results(json_data, meta_config.output_file_path);
     }
   } else {

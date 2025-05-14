@@ -1,10 +1,6 @@
 - repository: autowarefoundation/sync-file-templates
   source-dir: sources
   files:
-    - source: CODE_OF_CONDUCT.md
-    - source: CONTRIBUTING.md
-    - source: DISCLAIMER.md
-    - source: LICENSE
     - source: .github/ISSUE_TEMPLATE/bug.yaml
     - source: .github/ISSUE_TEMPLATE/config.yml
     - source: .github/ISSUE_TEMPLATE/task.yaml
@@ -12,6 +8,7 @@
     - source: .github/dependabot.yaml
     - source: .github/stale.yml
     - source: .github/workflows/cancel-previous-workflows.yaml
+    - source: .github/workflows/delete-closed-pr-docs.yaml
     - source: .github/workflows/github-release.yaml
     - source: .github/workflows/pre-commit.yaml
     - source: .github/workflows/pre-commit-optional.yaml
@@ -28,4 +25,3 @@
     - source: .yamllint.yaml
     - source: CPPLINT.cfg
     - source: setup.cfg
-    - source: .github/workflows/delete-closed-pr-docs.yaml
