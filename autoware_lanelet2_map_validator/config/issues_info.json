@@ -31,7 +31,7 @@
       "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
     }
   },
-  "StopLine.MissingRegulatoryElement-001": {
+  "StopLine.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {
@@ -79,6 +79,54 @@
       "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: ${point_ids}）"
     }
   },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line of a virtual_traffic_light regulatory element must be a \"virtual\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の start_line は \"virtual\" の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "A virtual_traffic_light regulatory element must only have a single ref_line.",
+      "ja": "virtual_traffic_light subtype の regulatory element の ref_line は複数設定できません。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The ref_line of a virtual_traffic_light regulatory element must be a \"stop_line\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The end_line of a virtual_traffic_light regulatory element must be a \"virtual\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の stop_line は \"virtual\" の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory_element",
+    "message": {
+      "en": "A virtual_traffic_light regulatory element must have a refers.",
+      "ja": "virtual_traffic_light subtype の regulatory element は refers が設定されている必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-006": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The refers of a virtual_traffic_light regulatory element must be an \"intersection_coordination\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -92,7 +140,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "Regulatory element of traffic light must have a stop_line (ref_line).",
-      "ja": "traffic_light type の regulatory element は stop_line (ref_line) を持つ必要があります。"
+      "ja": "traffic_light subtype の regulatory element は stop_line (ref_line) を持つ必要があります。"
     }
   },
   "TrafficLight.RegulatoryElementDetails-002": {
@@ -100,7 +148,7 @@
     "primitive": "linestring",
     "message": {
       "en": "refers of traffic light regulatory element must have a type of traffic_light.",
-      "ja": "traffic_light type の regulatory element の refers は traffic_light の type を持つ必要があります。"
+      "ja": "traffic_light subtype の regulatory element の refers は traffic_light の type を持つ必要があります。"
     }
   },
   "TrafficLight.RegulatoryElementDetails-003": {
@@ -108,7 +156,7 @@
     "primitive": "linestring",
     "message": {
       "en": "ref_line of traffic light regulatory element must have a type of stop_line.",
-      "ja": "traffic_light type の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+      "ja": "traffic_light subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
     }
   },
   "TrafficLight.RegulatoryElementDetails-004": {
@@ -116,7 +164,7 @@
     "primitive": "linestring",
     "message": {
       "en": "light_bulbs of traffic light regulatory element must have a type of light_bulbs.",
-      "ja": "traffic_light type の regulatory element の light_bulbs は light_bulbs の type を持つ必要があります。"
+      "ja": "traffic_light subtype の regulatory element の light_bulbs は light_bulbs の type を持つ必要があります。"
     }
   },
   "TrafficLight.RegulatoryElementDetails-005": {
@@ -252,7 +300,7 @@
     "primitive": "linestring",
     "message": {
       "en": "ref_line of a crosswalk regulatory element must have a type of stop_line.",
-      "ja": "crosswalk type の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+      "ja": "crosswalk subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
     }
   },
   "Crosswalk.RegulatoryElementDetails-008": {
@@ -260,7 +308,7 @@
     "primitive": "polygon",
     "message": {
       "en": "crosswalk_polygon of crosswalk regulatory element must have a type of crosswalk_polygon.",
-      "ja": "crosswalk type の regulatory element の crosswalk_polygon は crosswalk_polygon の type を持つ必要があります。"
+      "ja": "crosswalk subtype の regulatory element の crosswalk_polygon は crosswalk_polygon の type を持つ必要があります。"
     }
   },
   "Crosswalk.RegulatoryElementDetails-009": {
