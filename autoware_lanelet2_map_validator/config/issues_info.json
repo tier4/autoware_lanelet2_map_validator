@@ -67,8 +67,8 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Dangling reference to non-existing intersection area of ID ${area_id} is detected.",
-      "ja": "この lanelet が参照する intersection area (ID ${area_id}) が見つかりませんでした。"
+      "en": "Dangling reference to non-existing intersection area of ID {area_id} is detected.",
+      "ja": "この lanelet が参照する intersection area (ID {area_id}) が見つかりませんでした。"
     }
   },
   "Intersection.TurnDirectionTagging-001": {
@@ -83,24 +83,24 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Invalid turn_direction tag ${invalid_tag} is found.",
-      "ja": "不適切な turn_direction タグ ${invalid_tag} が設定されています。"
+      "en": "Invalid turn_direction tag {invalid_tag} is found.",
+      "ja": "不適切な turn_direction タグ {invalid_tag} が設定されています。"
     }
   },
   "Intersection.IntersectionAreaValidity-001": {
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: ${boost_geometry_message})",
-      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： ${boost_geometry_message}）"
+      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
+      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
     }
   },
   "Intersection.IntersectionAreaSegmentType-001": {
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: ${point_ids})",
-      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: ${point_ids}）"
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: {point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: {point_ids}）"
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
