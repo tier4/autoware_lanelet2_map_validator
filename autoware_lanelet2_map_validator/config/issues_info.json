@@ -1,0 +1,362 @@
+{
+  "Lane.BorderSharing-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Seems to be adjacent with Lanelet {lanelet_id} but doesn't share a border linestring.",
+      "ja": "Lanelet {lanelet_id} と隣接しているようですが、境界線を同一の linestring で共有していません。"
+    }
+  },
+  "Lane.BorderSharing-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Seems to be adjacent with Lanelets {lanelet_ids} but doesn't share a border linestring.",
+      "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません。"
+    }
+  },
+  "Lane.LocalCoordinatesDeclaration-001": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "This point doesn't have local coordinates while others do.",
+      "ja": "この point は local 座標が定義されていません。"
+    }
+  },
+  "Lane.LocalCoordinatesDeclaration-002": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "\"local_x\" is declared but \"local_y\" is not.",
+      "ja": "この point は \"local_x\" が定義されていますが、\"local_y\" が定義されていません。"
+    }
+  },
+  "Lane.LocalCoordinatesDeclaration-003": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "\"local_y\" is declared but \"local_x\" is not.",
+      "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
+    }
+  },
+  "Lane.LongitudinalSubtypeConnection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A crosswalk or walkway type lanelet cannot have a successor lanelet.",
+      "ja": "crosswalk type もしくは walkway type の lanelet は続きの lanelet を持ってはいけません。"
+    }
+  },
+  "Lane.LongitudinalSubtypeConnection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A lanelet and its successor must have the same subtype.",
+      "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
+    }
+  },
+  "StopLine.MissingRegulatoryElements-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "No regulatory element refers to this stop_line.",
+      "ja": "この stop_line に対応する regulatory element がありません。"
+    }
+  },
+  "Intersection.IntersectionAreaDanglingReference-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Dangling reference to non-existing intersection area of ID ${area_id} is detected.",
+      "ja": "この lanelet が参照する intersection area (ID ${area_id}) が見つかりませんでした。"
+    }
+  },
+  "Intersection.TurnDirectionTagging-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is missing a turn_direction tag.",
+      "ja": "この lanelet に turn_direction タグが設定されていません。"
+    }
+  },
+  "Intersection.TurnDirectionTagging-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Invalid turn_direction tag ${invalid_tag} is found.",
+      "ja": "不適切な turn_direction タグ ${invalid_tag} が設定されています。"
+    }
+  },
+  "Intersection.IntersectionAreaValidity-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: ${boost_geometry_message})",
+      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： ${boost_geometry_message}）"
+    }
+  },
+  "Intersection.IntersectionAreaSegmentType-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: ${point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: ${point_ids}）"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line of a virtual_traffic_light regulatory element must be a \"virtual\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の start_line は \"virtual\" の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "A virtual_traffic_light regulatory element must only have a single ref_line.",
+      "ja": "virtual_traffic_light subtype の regulatory element の ref_line は複数設定できません。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The ref_line of a virtual_traffic_light regulatory element must be a \"stop_line\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The end_line of a virtual_traffic_light regulatory element must be a \"virtual\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の stop_line は \"virtual\" の type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "A virtual_traffic_light regulatory element must have a refers.",
+      "ja": "virtual_traffic_light subtype の regulatory element は refers が設定されている必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-006": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The refers of a virtual_traffic_light regulatory element must be an \"intersection_coordination\" type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
+    }
+  },
+  "TrafficLight.MissingRegulatoryElements-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "No regulatory element refers to this traffic_light.",
+      "ja": "この traffic_light に対応する regulatory element がありません。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of traffic light must have a stop_line (ref_line).",
+      "ja": "traffic_light subtype の regulatory element は stop_line (ref_line) を持つ必要があります。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "refers of traffic light regulatory element must have a type of traffic_light.",
+      "ja": "traffic_light subtype の regulatory element の refers は traffic_light の type を持つ必要があります。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "ref_line of traffic light regulatory element must have a type of stop_line.",
+      "ja": "traffic_light subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-004": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "light_bulbs of traffic light regulatory element must have a type of light_bulbs.",
+      "ja": "traffic_light subtype の regulatory element の light_bulbs は light_bulbs の type を持つ必要があります。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-005": {
+    "severity": "info",
+    "primitive": "linestring",
+    "message": {
+      "en": "This light_bulbs linestrings doesn't have a corresponding traffic_light_id.",
+      "ja": "この light_bulbs linestring には対応する traffic_light_id がありません。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-006": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The amount of refers and light_bulbs are not the same.",
+      "ja": "refers と light_bulbs の数が一致しません。"
+    }
+  },
+  "TrafficLight.RegulatoryElementDetails-007": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "refers and light_bulbs don't have one-to-one correspondence in this regulatory element.",
+      "ja": "refers と light_bulbs が一対一対応していません。"
+    }
+  },
+  "TrafficLight.CorrectFacing-001": {
+    "severity": "info",
+    "primitive": "linestring",
+    "message": {
+      "en": "Lanelets referring this traffic_light have several divergent starting lines.",
+      "ja": "この traffic_light を参照する複数 Lanelet の開始線の向きが乖離しています。"
+    }
+  },
+  "TrafficLight.CorrectFacing-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The linestring direction seems to be wrong.",
+      "ja": "この traffic_light linestring の向きが誤っています。"
+    }
+  },
+  "TrafficLight.CorrectFacing-003": {
+    "severity": "Warning",
+    "primitive": "linestring",
+    "message": {
+      "en": "The linestring direction has been judged as both correct and wrong.",
+      "ja": "この traffic_light linestring の向きが誤っているとも、合っているとも判定されました。"
+    }
+  },
+  "TrafficLight.LightBulbTagging-001": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "A point representing a light bulb should have a color tag.",
+      "ja": "light bulb を構成する point は color タグを持つ必要があります。"
+    }
+  },
+  "TrafficLight.LightBulbTagging-002": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "The color of a light bulb should be either red, yellow, or green.",
+      "ja": "light bulb に設定できる color は red, yellow, green のいずれかです。"
+    }
+  },
+  "TrafficLight.LightBulbTagging-003": {
+    "severity": "Error",
+    "primitive": "point",
+    "message": {
+      "en": "The arrow of a light bulb should be either up, right, left, up_right, or up_left.",
+      "ja": "light bulb に設定できる arrow は up, right, left, up_right, up_left のいずれかです。"
+    }
+  },
+  "Crosswalk.MissingRegulatoryElements-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "No regulatory element refers to this crosswalk.",
+      "ja": "この crosswalk に対応する regulatory element がありません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk must have a lanelet of crosswalk(refers).",
+      "ja": "refers (crosswalk subtype の lanelet) が設定されていません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk must have only one lanelet of crosswalk(refers).",
+      "ja": "refers (crosswalk subtype の lanelet) は複数設定できません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-003": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk must have only one lanelet of crosswalk(refers).",
+      "ja": "ref_line (stop_line type の linestring) が設定されていません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-004": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk is nice to have a crosswalk_polygon.",
+      "ja": "crosswalk_polygon (crosswalk_polygon type の polygon) の設定が推奨されていますがされていません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk must have only one crosswalk_polygon.",
+      "ja": "crosswalk_polygon (crosswalk_polygon type の polygon) は複数設定できません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-006": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "refers of a crosswalk regulatory element must have a type of crosswalk.",
+      "ja": "crosswalk type の regulatory element の refers は crosswalk の subtype を持つ必要があります。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-007": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "ref_line of a crosswalk regulatory element must have a type of stop_line.",
+      "ja": "crosswalk subtype の regulatory element の ref_line は stop_line の type を持つ必要があります。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-008": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "crosswalk_polygon of crosswalk regulatory element must have a type of crosswalk_polygon.",
+      "ja": "crosswalk subtype の regulatory element の crosswalk_polygon は crosswalk_polygon の type を持つ必要があります。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-009": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of crosswalk should have only one stop line(ref_line).",
+      "ja": "ref_line (stop_line type の linestring) は複数設定できません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-010": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Attribute participant:pedestrian not found from refers.",
+      "ja": "refers lanelet にタグ participant:pedestrian が設定されていません。"
+    }
+  },
+  "Crosswalk.RegulatoryElementDetails-011": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\".",
+      "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
+    }
+  }
+}

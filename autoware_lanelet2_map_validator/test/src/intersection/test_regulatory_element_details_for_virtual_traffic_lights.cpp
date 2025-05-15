@@ -62,15 +62,25 @@ TEST_F(
   // virtual_traffic_light-type regulatory elements that has no start lines will not be loaded from
   // the start and should be mentioned in the loading_errors
 
+  bool found_error_on_loading = false;
   int target_primitive_id = 11074;
   const std::string target_message =
-    "Error parsing primitive " + std::to_string(target_primitive_id) +
+    "\t- Error parsing primitive " + std::to_string(target_primitive_id) +
     ": Creating a regulatory element of type virtual_traffic_light failed: There must be exactly "
     "one start_line defined!";
 
-  bool found_error_on_loading = std::any_of(
-    loading_errors_.begin(), loading_errors_.end(),
-    [&](const std::string & error) { return error.find(target_message) != std::string::npos; });
+  const lanelet::validation::Issue expected_issue(
+    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, lanelet::InvalId,
+    target_message);
+
+  for (const auto & detected_issues : loading_issues_) {
+    for (const auto & issue : detected_issues.issues) {
+      if (is_same_issue(issue, expected_issue)) {
+        found_error_on_loading = true;
+        break;
+      }
+    }
+  }
 
   EXPECT_TRUE(found_error_on_loading);
 }
@@ -84,15 +94,25 @@ TEST_F(
   // virtual_traffic_light-type regulatory elements that has multiple start lines will not be loaded
   // from the start and should be mentioned in the loading_errors
 
+  bool found_error_on_loading = false;
   int target_primitive_id = 11074;
   const std::string target_message =
-    "Error parsing primitive " + std::to_string(target_primitive_id) +
+    "\t- Error parsing primitive " + std::to_string(target_primitive_id) +
     ": Creating a regulatory element of type virtual_traffic_light failed: There must be exactly "
     "one start_line defined!";
 
-  bool found_error_on_loading = std::any_of(
-    loading_errors_.begin(), loading_errors_.end(),
-    [&](const std::string & error) { return error.find(target_message) != std::string::npos; });
+  const lanelet::validation::Issue expected_issue(
+    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, lanelet::InvalId,
+    target_message);
+
+  for (const auto & detected_issues : loading_issues_) {
+    for (const auto & issue : detected_issues.issues) {
+      if (is_same_issue(issue, expected_issue)) {
+        found_error_on_loading = true;
+        break;
+      }
+    }
+  }
 
   EXPECT_TRUE(found_error_on_loading);
 }
@@ -176,14 +196,24 @@ TEST_F(
   // virtual_traffic_light-type regulatory elements that has no end lines will not be loaded from
   // the start and should be mentioned in the loading_errors
 
+  bool found_error_on_loading = false;
   int target_primitive_id = 11074;
   const std::string target_message =
-    "Error parsing primitive " + std::to_string(target_primitive_id) +
+    "\t- Error parsing primitive " + std::to_string(target_primitive_id) +
     ": Creating a regulatory element of type virtual_traffic_light failed: No end_line defined!";
 
-  bool found_error_on_loading = std::any_of(
-    loading_errors_.begin(), loading_errors_.end(),
-    [&](const std::string & error) { return error.find(target_message) != std::string::npos; });
+  const lanelet::validation::Issue expected_issue(
+    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, lanelet::InvalId,
+    target_message);
+
+  for (const auto & detected_issues : loading_issues_) {
+    for (const auto & issue : detected_issues.issues) {
+      if (is_same_issue(issue, expected_issue)) {
+        found_error_on_loading = true;
+        break;
+      }
+    }
+  }
 
   EXPECT_TRUE(found_error_on_loading);
 }

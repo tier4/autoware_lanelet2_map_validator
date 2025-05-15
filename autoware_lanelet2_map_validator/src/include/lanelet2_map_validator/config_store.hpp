@@ -35,14 +35,28 @@ namespace lanelet::autoware::validation
 class ValidatorConfigStore
 {
 public:
-  static void initialize(const std::string & params_yaml_file)
+  static void initialize(
+    const std::string & params_yaml_file, const std::string & issues_info_json_file,
+    const std::string & language)
   {
     yaml_ = YAML::LoadFile(params_yaml_file);
+
+    std::ifstream json_ifs(issues_info_json_file);
+    if (!json_ifs.is_open()) {
+      throw std::runtime_error("Failed to open JSON file: " + issues_info_json_file);
+    }
+    json_ifs >> json_;
+
+    language_ = language;
   }
   static const YAML::Node & parameters() { return yaml_; }
+  static const nlohmann::json & issues_info() { return json_; }
+  static const std::string & language() { return language_; }
 
 private:
   static inline YAML::Node yaml_;
+  static inline nlohmann::json json_;
+  static inline std::string language_;
 };
 
 template <typename T>

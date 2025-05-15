@@ -14,7 +14,14 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include "lanelet2_map_validator/config_store.hpp"
+
+#include <fmt/args.h>
+#include <fmt/core.h>
+
+#include <map>
 #include <string>
+
 std::string snake_to_upper_camel(const std::string & snake_case)
 {
   std::string camel_case;
@@ -57,4 +64,56 @@ std::string append_issue_code_prefix(
   const std::string & name, const int number, const std::string & message)
 {
   return "[" + issue_code(name, number) + "] " + message;
+}
+
+lanelet::validation::Issue construct_issue_from_code(
+  const std::string & issue_code, const lanelet::Id primitive_id,
+  const std::map<std::string, std::string> & substitutions)
+{
+  lanelet::validation::Issue result;
+  const nlohmann::json issues_info =
+    lanelet::autoware::validation::ValidatorConfigStore::issues_info()[issue_code];
+  std::string severity_str = issues_info["severity"].get<std::string>();
+  std::string primitive_str = issues_info["primitive"].get<std::string>();
+
+  if (severity_str == "Error") {
+    result.severity = lanelet::validation::Severity::Error;
+  } else if (severity_str == "Warning") {
+    result.severity = lanelet::validation::Severity::Warning;
+  } else if (severity_str == "info") {
+    result.severity = lanelet::validation::Severity::Info;
+  } else {
+    throw std::invalid_argument("Invalid severity defined in the issues info!!");
+  }
+
+  if (primitive_str == "point") {
+    result.primitive = lanelet::validation::Primitive::Point;
+  } else if (primitive_str == "linestring") {
+    result.primitive = lanelet::validation::Primitive::LineString;
+  } else if (primitive_str == "polygon") {
+    result.primitive = lanelet::validation::Primitive::Polygon;
+  } else if (primitive_str == "lanelet") {
+    result.primitive = lanelet::validation::Primitive::Lanelet;
+  } else if (primitive_str == "area") {
+    result.primitive = lanelet::validation::Primitive::Area;
+  } else if (primitive_str == "regulatory element") {
+    result.primitive = lanelet::validation::Primitive::RegulatoryElement;
+  } else if (primitive_str == "primitive") {
+    result.primitive = lanelet::validation::Primitive::Primitive;
+  } else {
+    throw std::invalid_argument("Invalid primitive defined in the issues info!!");
+  }
+
+  result.id = primitive_id;
+
+  fmt::dynamic_format_arg_store<fmt::format_context> arg_store;
+  for (const auto & [key, value] : substitutions) {
+    arg_store.push_back(fmt::arg(key.c_str(), value));
+  }
+  const std::string language = lanelet::autoware::validation::ValidatorConfigStore::language();
+  const std::string main_message =
+    fmt::vformat(issues_info["message"][language].get<std::string>(), arg_store);
+  result.message = "[" + issue_code + "] " + main_message;
+
+  return result;
 }
