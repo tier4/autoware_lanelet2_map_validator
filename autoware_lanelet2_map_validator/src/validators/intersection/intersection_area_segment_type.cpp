@@ -23,6 +23,7 @@
 #include <lanelet2_core/primitives/Polygon.h>
 
 #include <limits>
+#include <map>
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -64,14 +65,10 @@ IntersectionAreaSegmentTypeValidator::check_intersection_area_segment_type(
       }
     }
     if (!invalid_point_ids.empty()) {
+      std::map<std::string, std::string> point_ids_map;
+      point_ids_map["point_ids"] = ids_to_string(invalid_point_ids);
       issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Polygon,
-        polygon3d.id(),
-        append_issue_code_prefix(
-          this->name(), 1,
-          "This intersection area is not made by points from road_border linestrings or lanelet "
-          "edges. (Point ID: " +
-            ids_to_string(invalid_point_ids) + ")"));
+        construct_issue_from_code(issue_code(this->name(), 1), polygon3d.id(), point_ids_map));
     }
   }
 
@@ -139,14 +136,13 @@ lanelet::LaneletSubmapUPtr IntersectionAreaSegmentTypeValidator::create_nearby_b
 
 std::string IntersectionAreaSegmentTypeValidator::ids_to_string(const lanelet::Ids ids)
 {
-  std::string result = "(";
+  std::string result = "";
   for (size_t i = 0; i < ids.size(); i++) {
     result += std::to_string(ids[i]);
     if (i < ids.size() - 1) {
       result += ", ";
     }
   }
-  result += ")";
   return result;
 }
 
