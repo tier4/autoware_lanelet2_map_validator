@@ -228,7 +228,7 @@
     "primitive": "linestring",
     "message": {
       "en": "The linestring direction seems to be wrong.",
-      "ja": "この traffic_light linstring の向きが誤っています。"
+      "ja": "この traffic_light linestring の向きが誤っています。"
     }
   },
   "TrafficLight.CorrectFacing-003": {
@@ -236,7 +236,7 @@
     "primitive": "linestring",
     "message": {
       "en": "The linestring direction has been judged as both correct and wrong.",
-      "ja": "この traffic_light linstring の向きが誤っているとも、合っているとも判定されました。"
+      "ja": "この traffic_light linestring の向きが誤っているとも、合っているとも判定されました。"
     }
   },
   "TrafficLight.LightBulbTagging-001": {
