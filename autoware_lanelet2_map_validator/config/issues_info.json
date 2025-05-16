@@ -159,6 +159,14 @@
       "ja": "この traffic_light に対応する regulatory element がありません。"
     }
   },
+  "TrafficLight.MissingReferrers-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of traffic light must be referred by at least one lanelet.",
+      "ja": "traffic light subtype の regulatory element は最低一つの lanelet に参照されている必要があります。"
+    }
+  },
   "TrafficLight.RegulatoryElementDetails-001": {
     "severity": "Error",
     "primitive": "regulatory element",
