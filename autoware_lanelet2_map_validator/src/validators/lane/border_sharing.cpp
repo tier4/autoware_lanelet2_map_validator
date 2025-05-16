@@ -127,29 +127,28 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
   // Emplace issues violating vm-01-03
   // Output issues for both lanelets
   // It may be redundant but couldn't come up with a better way.
-  const auto issue_message1 = [](const lanelet::Id & id) {
-    return "Seems to be adjacent with Lanelet " + std::to_string(id) +
-           " but doesn't share a border linestring.";
-  };
 
+  std::map<std::string, std::string> substitution_map1;
   for (const auto & pair : bidirectional_pairs) {
+    substitution_map1["lanelet_id"] = std::to_string(pair.second);
     issues.emplace_back(
-      lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, pair.first,
-      append_issue_code_prefix(this->name(), 1, issue_message1(pair.second)));
+      construct_issue_from_code(issue_code(this->name(), 1), pair.first, substitution_map1));
+    substitution_map1["lanelet_id"] = std::to_string(pair.first);
     issues.emplace_back(
-      lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, pair.second,
-      append_issue_code_prefix(this->name(), 1, issue_message1(pair.first)));
+      construct_issue_from_code(issue_code(this->name(), 1), pair.second, substitution_map1));
   }
 
   // Emplace issues violating vm-01-04
   // Output issue only for the longest lanelet and show a list of lanelets
   // that the surrounding polygon covers
-  const auto issue_message2 = [](const lanelet::Ids & ids) {
-    std::string result = "Seems to be adjacent with Lanelets ";
+  std::map<std::string, std::string> substitution_map2;
+  const auto ids_to_string = [](const lanelet::Ids & ids) {
+    std::string result = "";
     for (const auto & id : ids) {
       result += std::to_string(id) + " ";
     }
-    return result + "but doesn't share a border linestring.";
+    result.resize(result.size() - 1);
+    return result;
   };
   for (auto it = unidirectional_pairs.begin(); it != unidirectional_pairs.end();) {
     lanelet::Id current_first = it->first;
@@ -160,9 +159,14 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
       ++it;
     }
 
+    if (adjacents.size() <= 0) {
+      continue;
+    }
+
+    substitution_map2["lanelet_ids"] = ids_to_string(adjacents);
+
     issues.emplace_back(
-      lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, current_first,
-      append_issue_code_prefix(this->name(), 2, issue_message2(adjacents)));
+      construct_issue_from_code(issue_code(this->name(), 2), current_first, substitution_map2));
   }
 
   return issues;

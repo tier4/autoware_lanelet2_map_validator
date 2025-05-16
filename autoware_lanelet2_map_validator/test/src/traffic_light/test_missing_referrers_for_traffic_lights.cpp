@@ -22,7 +22,9 @@
 
 class TestMissingReferrersForTrafficLights : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::MissingReferrersForTrafficLightsValidator::name());
 };
 
 TEST_F(TestMissingReferrersForTrafficLights, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +47,12 @@ TEST_F(TestMissingReferrersForTrafficLights, MissingReferrers)  // NOLINT for gt
   lanelet::autoware::validation::MissingReferrersForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 1025);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 1025);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.MissingReferrers-001] Regulatory element of traffic light must be referred by "
-    "at least one lanelet.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestMissingReferrersForTrafficLights, ReferrerExists)  // NOLINT for gtest

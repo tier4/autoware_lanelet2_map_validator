@@ -62,36 +62,20 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
         start_line.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::Virtual)) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          start_line.id(),
-          append_issue_code_prefix(
-            this->name(), 1,
-            "The start_line of a virtual_traffic_light regulatory element must be a \"virtual\" "
-            "type."));
+          construct_issue_from_code(issue_code(this->name(), 1), start_line.id()));
       }
     }
 
     const lanelet::ConstLineStrings3d stop_lines =
       reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine);
     if (stop_lines.size() != 1) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        reg_elem->id(),
-        append_issue_code_prefix(
-          this->name(), 2,
-          "A virtual_traffic_light regulatory element must only have a single ref_line."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), reg_elem->id()));
     }
     for (const lanelet::ConstLineString3d & stop_line : stop_lines) {
       if (
         stop_line.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::StopLine)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          stop_line.id(),
-          append_issue_code_prefix(
-            this->name(), 3,
-            "The ref_line of a virtual_traffic_light regulatory element must be a \"stop_line\" "
-            "type."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), stop_line.id()));
       }
     }
 
@@ -103,36 +87,21 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
       if (
         end_line.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::Virtual)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          end_line.id(),
-          append_issue_code_prefix(
-            this->name(), 4,
-            "The end_line of a virtual_traffic_light regulatory element must be a \"virtual\" "
-            "type."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), end_line.id()));
       }
     }
 
     const lanelet::ConstLineStrings3d coordinations =
       reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
     if (coordinations.size() == 0) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        reg_elem->id(),
-        append_issue_code_prefix(
-          this->name(), 5, "A virtual_traffic_light regulatory element must have a refers."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
     }
     for (const lanelet::ConstLineString3d & coordination : coordinations) {
       if (
         coordination.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string("intersection_coordination")) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          coordination.id(),
-          append_issue_code_prefix(
-            this->name(), 6,
-            "The refers of a virtual_traffic_light regulatory element must be an "
-            "\"intersection_coordination\" type."));
+          construct_issue_from_code(issue_code(this->name(), 6), coordination.id()));
       }
     }
   }

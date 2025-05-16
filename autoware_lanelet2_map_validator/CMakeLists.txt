@@ -5,6 +5,7 @@ find_package(autoware_cmake REQUIRED)
 autoware_package()
 
 ament_auto_find_build_dependencies()
+find_package(fmt REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
@@ -26,6 +27,7 @@ ament_target_dependencies(autoware_lanelet2_map_validator_lib nlohmann_json)
 
 target_link_libraries(autoware_lanelet2_map_validator_lib
   yaml-cpp
+  fmt::fmt
 )
 
 ament_auto_add_executable(autoware_lanelet2_map_validator

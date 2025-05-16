@@ -78,19 +78,13 @@ LongitudinalSubtypeConnectionValidator::check_longitudinal_subtype_connection(
 
     const std::string current_subtype = lane.attributeOr(lanelet::AttributeName::Subtype, "");
     if (current_subtype == "crosswalk" || current_subtype == "walkway") {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-        append_issue_code_prefix(
-          this->name(), 1, "A crosswalk or walkway type lanelet cannot have a successor lanelet."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lane.id()));
       continue;
     }
 
     for (const lanelet::ConstLanelet & successor : unique_successors) {
       if (successor.attributeOr(lanelet::AttributeName::Subtype, "") != current_subtype) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-          append_issue_code_prefix(
-            this->name(), 2, "A lanelet and its successor must have the same subtype."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), lane.id()));
         break;
       }
     }

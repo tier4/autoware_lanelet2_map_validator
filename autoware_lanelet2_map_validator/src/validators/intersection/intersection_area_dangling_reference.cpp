@@ -18,6 +18,7 @@
 
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <optional>
 #include <string>
 #include <unordered_set>
@@ -74,13 +75,10 @@ IntersectionAreaDanglingReferenceValidator::check_intersection_area_dangling_ref
     if (const auto id_opt = is_intersection_with_area(lanelet); id_opt) {
       const auto id = id_opt.value();
       if (intersection_area_ids.find(id) == intersection_area_ids.end()) {
+        std::map<std::string, std::string> area_id_map;
+        area_id_map["area_id"] = std::to_string(id);
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet,
-          lanelet.id(),
-          append_issue_code_prefix(
-            this->name(), 1,
-            "Dangling reference to non-existing intersection area of ID " + std::to_string(id) +
-              " is detected"));
+          construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), area_id_map));
       }
     }
   }

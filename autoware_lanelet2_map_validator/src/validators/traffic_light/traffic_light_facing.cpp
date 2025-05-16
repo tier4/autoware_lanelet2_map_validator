@@ -109,11 +109,7 @@ lanelet::validation::Issues TrafficLightFacingValidator::check_traffic_light_fac
           pseudo_stop_line.dot(comparing_line) / (pseudo_stop_line.norm() * comparing_line.norm());
         if (cosine_angle < 0.707) {  // about 45 deg
           issues.emplace_back(
-            lanelet::validation::Severity::Info, lanelet::validation::Primitive::LineString,
-            refers_linestring.id(),
-            append_issue_code_prefix(
-              this->name(), 1,
-              "Lanelets referring this traffic_light have several divergent starting lines"));
+            construct_issue_from_code(issue_code(this->name(), 1), refers_linestring.id()));
         }
       }
 
@@ -132,14 +128,9 @@ lanelet::validation::Issues TrafficLightFacingValidator::check_traffic_light_fac
   // Digest the stop line non-existence and the traffic light facing error to issues
   for (const auto & [id, status] : traffic_light_facing_status) {
     if (status == FOUND_WRONG) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, id,
-        append_issue_code_prefix(this->name(), 2, "The linestring direction seems to be wrong."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), id));
     } else if (status == FOUND_AMBIGUOUS) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Warning, lanelet::validation::Primitive::LineString, id,
-        append_issue_code_prefix(
-          this->name(), 3, "The linestring direction has been judged as both correct and wrong."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), id));
     }
   }
 

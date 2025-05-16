@@ -54,12 +54,7 @@ MissingReferrersForTrafficLightsValidator::check_missing_referrers_for_traffic_l
     const lanelet::ConstLanelets referring_lanelets = map.laneletLayer.findUsages(reg_elem);
 
     if (referring_lanelets.size() == 0) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        reg_elem->id(),
-        append_issue_code_prefix(
-          this->name(), 1,
-          "Regulatory element of traffic light must be referred by at least one lanelet."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), reg_elem->id()));
       continue;
     }
   }

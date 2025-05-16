@@ -54,10 +54,7 @@ LocalCoordinatesDeclarationValidator::check_local_coordinates_declaration(
       if (local_x || local_y) {
         is_local_mode = true;
         for (const lanelet::Id & id : non_local_point_ids) {
-          issues.emplace_back(
-            lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, id,
-            append_issue_code_prefix(
-              this->name(), 1, "This point doesn't have local coordinates while others do."));
+          issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), id));
         }
       } else {
         non_local_point_ids.insert(point.id());
@@ -67,26 +64,18 @@ LocalCoordinatesDeclarationValidator::check_local_coordinates_declaration(
 
     // Points are assumed to have local_x and local_y from here
     if (!local_x && !local_y) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, point.id(),
-        append_issue_code_prefix(
-          this->name(), 1, "This point doesn't have local coordinates while others do."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), point.id()));
+      continue;
     }
 
     // Only one coordinate (local_x or local_y) is defined
     if (local_x && !local_y) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, point.id(),
-        append_issue_code_prefix(
-          this->name(), 2, "\"local_x\" is declared but \"local_y\" is not."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), point.id()));
       continue;
     }
 
     if (!local_x && local_y) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, point.id(),
-        append_issue_code_prefix(
-          this->name(), 3, "\"local_y\" is declared but \"local_x\" is not."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), point.id()));
       continue;
     }
   }

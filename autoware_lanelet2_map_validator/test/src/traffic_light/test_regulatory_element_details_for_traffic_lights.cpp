@@ -22,7 +22,9 @@
 
 class TestRegulatoryElementDetailsForTrafficLights : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator::name());
 };
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, ValidatorAvailability)  // NOLINT for gtest
@@ -74,14 +76,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, MissingRefLine)  // NOLINT 
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 1025);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 1025);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-001] Regulatory element of traffic light must have a "
-    "stop line(ref_line).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongRefersType)  // NOLINT for gtest
@@ -91,14 +91,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongRefersType)  // NOLINT
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 416);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 416);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-002] Refers of traffic light regulatory element must "
-    "have type of traffic_light.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongRefLineType)  // NOLINT for gtest
@@ -108,14 +106,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongRefLineType)  // NOLIN
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 414);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 414);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-003] ref_line of traffic light regulatory element must "
-    "have type of stop_line.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongLightBulbsType)  // NOLINT for gtest
@@ -125,14 +121,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, WrongLightBulbsType)  // NO
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 4), 415);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 415);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-004] light_bulbs of traffic light regulatory element "
-    "must have type of light_bulbs.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, MissingTrafficLightId)  // NOLINT for gtest
@@ -142,22 +136,13 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, MissingTrafficLightId)  // 
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_EQ(issues[0].id, 415);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-005] light_bulbs linestrings must have a corresponding "
-    "traffic_light_id.");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 5), 415);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 7), 1025);
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  EXPECT_EQ(issues[1].id, 1025);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[1].message,
-    "[TrafficLight.RegulatoryElementDetails-007] refers and light_bulbs don't have one-to-one "
-    "correspondence in this regulatory element.");
+  const auto difference = compare_issues(expected_issues, issues);
+
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -169,14 +154,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 6), 1025);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 1025);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-006] The amount of refers and light_bulbs are not the "
-    "same.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotEnough)  // NOLINT for gtest
@@ -186,14 +169,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotEnough)  // NO
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 6), 131);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 131);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-006] The amount of refers and light_bulbs are not the "
-    "same.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotOneByOne)  // NOLINT for gtest
@@ -203,14 +184,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, LightBulbsNotOneByOne)  // 
   lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 7), 131);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 131);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.RegulatoryElementDetails-007] refers and light_bulbs don't have one-to-one "
-    "correspondence in this regulatory element.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficLights, CorrectDetails)  // NOLINT for gtest

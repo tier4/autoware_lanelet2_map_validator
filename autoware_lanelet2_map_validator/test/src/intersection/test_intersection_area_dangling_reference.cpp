@@ -18,10 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestIntersectionAreaDanglingReference : public MapValidationTester
 {
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::IntersectionAreaDanglingReferenceValidator::name());
 };
 
 TEST_F(TestIntersectionAreaDanglingReference, ValidatorAvailability)  // NOLINT for gtest
@@ -43,14 +47,15 @@ TEST_F(TestIntersectionAreaDanglingReference, ValidateDanglingReference)  // NOL
   lanelet::autoware::validation::IntersectionAreaDanglingReferenceValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> area_id_map;
+  area_id_map["area_id"] = "777";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 53, area_id_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 53);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.IntersectionAreaDanglingReference-001] Dangling "
-    "reference to non-existing intersection area of ID 777 is detected");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionAreaDanglingReference, ValidIntersectionArea)  // NOLINT for gtest

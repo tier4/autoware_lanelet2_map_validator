@@ -60,45 +60,23 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
 
     // Report error if regulatory element does not have lanelet of crosswalk
     if (refers.empty()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 1,
-          "Regulatory element of crosswalk must have lanelet of crosswalk(refers)."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), elem->id()));
     } else if (refers.size() > 1) {  // Report error if regulatory element has two or more lanelet
                                      // of crosswalk
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 2,
-          "Regulatory element of crosswalk must have only one lanelet of crosswalk(refers)."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), elem->id()));
     }
 
     // Report Info if regulatory element does not have stop line
     if (ref_lines.empty()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Info, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 3, "Regulatory element of crosswalk does not have stop line(ref_line)."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), elem->id()));
     } else if (ref_lines.size() > 1) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 9,
-          "Regulatory element of crosswalk should have only one stop line(ref_line)."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 9), elem->id()));
     }
 
     // If this is a crosswalk type regulatory element, the "refers" has to be a "crosswalk" subtype
     // lanelet
-    const auto & issue_cw = lanelet::validation::Issue(
-      lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet,
-      lanelet::utils::getId(),
-      append_issue_code_prefix(
-        this->name(), 6, "Refers of crosswalk regulatory element must have type of crosswalk."));
+    const auto & issue_cw =
+      construct_issue_from_code(issue_code(this->name(), 6), lanelet::utils::getId());
     lanelet::autoware::validation::checkPrimitivesType(
       refers, lanelet::AttributeValueString::Lanelet, lanelet::AttributeValueString::Crosswalk,
       issue_cw, issues);
@@ -106,28 +84,18 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
     // The refers must have an attribute participant:pedestrian and set to "yes" or "true"
     for (const lanelet::ConstLanelet & lane : refers) {
       if (!lane.hasAttribute(lanelet::AttributeName::ParticipantPedestrian)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-          append_issue_code_prefix(
-            this->name(), 10, "Attribute participant:pedestrian not found from refers."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 10), lane.id()));
       } else if (!lane.attribute(lanelet::AttributeName::ParticipantPedestrian)
                     .asBool()
                     .value_or(false)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-          append_issue_code_prefix(
-            this->name(), 11,
-            "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\"."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 11), lane.id()));
       }
     }
 
     // If this is a crosswalk type regulatory element, the "ref_line" has to be a "stop_line" type
     // linestring
-    const auto & issue_sl = lanelet::validation::Issue(
-      lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-      lanelet::utils::getId(),
-      append_issue_code_prefix(
-        this->name(), 7, "ref_line of crosswalk regulatory element must have type of stopline."));
+    const auto & issue_sl =
+      construct_issue_from_code(issue_code(this->name(), 7), lanelet::utils::getId());
     lanelet::autoware::validation::checkPrimitivesType(
       ref_lines, lanelet::AttributeValueString::StopLine, issue_sl, issues);
   }

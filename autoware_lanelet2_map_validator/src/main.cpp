@@ -99,7 +99,11 @@ int main(int argc, char * argv[])
   std::string parameters_file = (!meta_config.parameters_file.empty())
                                   ? meta_config.parameters_file
                                   : package_share_directory + "/config/params.yaml";
-  lanelet::autoware::validation::ValidatorConfigStore::initialize(parameters_file);
+  std::string issues_info_file =
+    package_share_directory +
+    "/config/issues_info.json";  // We think issues_info should NOT be derived for now
+  lanelet::autoware::validation::ValidatorConfigStore::initialize(
+    parameters_file, issues_info_file, meta_config.language);
 
   // Validation against lanelet::LaneletMap object
   if (!lanelet_map_ptr) {

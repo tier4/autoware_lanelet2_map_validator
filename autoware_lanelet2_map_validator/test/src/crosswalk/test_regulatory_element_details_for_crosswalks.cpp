@@ -22,7 +22,9 @@
 
 class TestRegulatoryElementsDetailsForCrosswalks : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator::name());
 };
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +47,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MissingRefers)  // NOLINT for
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 31);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 31);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-001] Regulatory element of crosswalk must have "
-    "lanelet of crosswalk(refers).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MultipleRefers)  // NOLINT for gtest
@@ -62,14 +62,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MultipleRefers)  // NOLINT fo
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 31);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 31);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-002] Regulatory element of crosswalk must have "
-    "only one lanelet of crosswalk(refers).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MissingRefLine)  // NOLINT for gtest
@@ -79,14 +77,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MissingRefLine)  // NOLINT fo
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 31);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 31);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Info);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-003] Regulatory element of crosswalk does not "
-    "have stop line(ref_line).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MultipleRefLines)  // NOLINT for gtest
@@ -96,14 +92,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, MultipleRefLines)  // NOLINT 
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 9), 31);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 31);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-009] Regulatory element of crosswalk should have only one "
-    "stop line(ref_line).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongRefersType)  // NOLINT for gtest
@@ -113,21 +107,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongRefersType)  // NOLINT f
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_EQ(issues[0].id, 18);
-  EXPECT_EQ(issues[1].id, 18);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-006] Refers of crosswalk regulatory element must "
-    "have type of crosswalk.");
-  EXPECT_EQ(
-    issues[1].message,
-    "[Crosswalk.RegulatoryElementDetails-006] Refers of crosswalk regulatory element must "
-    "have type of crosswalk.");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 6), 18);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 6), 18);
+  const auto expected_issues = {expected_issue1, expected_issue2};
+
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongRefLineType)  // NOLINT for gtest
@@ -137,14 +122,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongRefLineType)  // NOLINT 
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 7), 27);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 27);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-007] ref_line of crosswalk regulatory element "
-    "must have type of stopline.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -155,21 +138,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_EQ(issues[0].id, 18);
-  EXPECT_EQ(issues[1].id, 18);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-010] Attribute participant:pedestrian not found from "
-    "refers.");
-  EXPECT_EQ(
-    issues[1].message,
-    "[Crosswalk.RegulatoryElementDetails-010] Attribute participant:pedestrian not found from "
-    "refers.");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 10), 18);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 10), 18);
+  const auto expected_issues = {expected_issue1, expected_issue2};
+
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongParticipantPedestrian)  // NOLINT for gtest
@@ -179,21 +153,12 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongParticipantPedestrian)  
   lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_EQ(issues[0].id, 18);
-  EXPECT_EQ(issues[1].id, 18);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[1].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(issues[1].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.RegulatoryElementDetails-011] Attribute participant:pedestrian of refers is not "
-    "set to \"yes\" or \"true\".");
-  EXPECT_EQ(
-    issues[1].message,
-    "[Crosswalk.RegulatoryElementDetails-011] Attribute participant:pedestrian of refers is not "
-    "set to \"yes\" or \"true\".");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 11), 18);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 11), 18);
+  const auto expected_issues = {expected_issue1, expected_issue2};
+
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, CorrectDetails)  // NOLINT for gtest
