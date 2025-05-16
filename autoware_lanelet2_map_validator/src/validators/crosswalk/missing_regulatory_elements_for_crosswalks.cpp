@@ -82,10 +82,7 @@ MissingRegulatoryElementsForCrosswalksValidator::checkMissingRegulatoryElementsF
   // Check if all lanelets of crosswalk referred by regulatory elements
   for (const auto & cw_id : cw_ids) {
     if (cw_ids_reg_elem.find(cw_id) == cw_ids_reg_elem.end()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, cw_id,
-        append_issue_code_prefix(
-          this->name(), 1, "No regulatory element refers to this crosswalk."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), cw_id));
     }
   }
 
