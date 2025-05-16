@@ -64,7 +64,7 @@ TEST_F(TestIntersectionTurnDirectionTagging, WrongTurnDirectionTag)  // NOLINT f
   const auto & issues = checker(*map_);
 
   std::map<std::string, std::string> invalid_tag_map;
-  invalid_tag_map["invalid_tag"] = "leftt";
+  invalid_tag_map["invalid_tag"] = "leftt";  // cspell:disable-line
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 2), 53, invalid_tag_map);
 
