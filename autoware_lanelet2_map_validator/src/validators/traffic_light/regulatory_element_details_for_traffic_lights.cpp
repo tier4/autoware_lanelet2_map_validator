@@ -104,23 +104,14 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
     // Report error if regulatory element does not have stop line and this is not a pedestrian
     // traffic light
     if (ref_lines.empty() && !isPedestrianTrafficLight(refers)) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 1, "Regulatory element of traffic light must have a stop line(ref_line)."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), elem->id()));
     }
 
     for (const auto & refer : refers) {
       if (
         refer.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::TrafficLight)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          refer.id(),
-          append_issue_code_prefix(
-            this->name(), 2,
-            "Refers of traffic light regulatory element must have type of traffic_light."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), refer.id()));
       }
     }
 
@@ -128,49 +119,26 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
       if (
         ref_line.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::StopLine)) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          ref_line.id(),
-          append_issue_code_prefix(
-            this->name(), 3,
-            "ref_line of traffic light regulatory element must have type of stop_line."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), ref_line.id()));
       }
     }
 
     for (const auto & light_bulb : light_bulbs) {
       if (light_bulb.attributeOr(lanelet::AttributeName::Type, "") != std::string("light_bulbs")) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          light_bulb.id(),
-          append_issue_code_prefix(
-            this->name(), 4,
-            "light_bulbs of traffic light regulatory element must have type of light_bulbs."));
+          construct_issue_from_code(issue_code(this->name(), 4), light_bulb.id()));
       }
 
       if (!light_bulb.hasAttribute("traffic_light_id")) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          light_bulb.id(),
-          append_issue_code_prefix(
-            this->name(), 5,
-            "light_bulbs linestrings must have a corresponding traffic_light_id."));
+          construct_issue_from_code(issue_code(this->name(), 5), light_bulb.id()));
       }
     }
 
     if (refers.size() != light_bulbs.size()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 6, "The amount of refers and light_bulbs are not the same."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 6), elem->id()));
     } else if (!isOneByOne(refers, light_bulbs)) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-        elem->id(),
-        append_issue_code_prefix(
-          this->name(), 7,
-          "refers and light_bulbs don't have one-to-one correspondence in this regulatory "
-          "element."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 7), elem->id()));
     }
   }
   return issues;
