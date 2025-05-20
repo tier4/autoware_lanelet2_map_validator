@@ -42,11 +42,21 @@ public:
 
 private:
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
+
+  /**
+   * @brief measure the length of entry/exit part, let middle = their average, and expand each point
+   * in left/right boundary by middle * (scale_factor-1)
+   */
   lanelet::BasicPolygon2d expanded_lanelet_polygon(
     const lanelet::ConstLanelet & lane, const double & scale_factor);
+
   lanelet::routing::RelationType get_relation(
     const lanelet::routing::RoutingGraphUPtr & routing_graph_ptr, const lanelet::ConstLanelet from,
     const lanelet::ConstLanelet to);
+
+  /**
+   * @brief return IoU
+   */
   double intersection_over_union(
     const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2);
 
