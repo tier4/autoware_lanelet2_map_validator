@@ -95,7 +95,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
         std::map<std::string, std::string> lane_id_map;
         lane_id_map["id"] = std::to_string(lane.id());
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 1), reg_elem->id(), lane_id_map));
+          construct_issue_from_code(issue_code(this->name(), 2), reg_elem->id(), lane_id_map));
         continue;
       }
       end_pairs.push_back({end_line_opt.get(), lane});
@@ -119,7 +119,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
         routing_graph_ptr->shortestPath(start_lanelet.get(), referrer_lanelet, {}, false);
       if (!start_to_end_path_opt) {
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id()), end_line_id_map);
+          construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id(), end_line_id_map));
         continue;
       }
 
@@ -130,7 +130,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
 
       if (intersection_ratio(stop_line, concat_lanelet_polygon) < 0.1) {
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 5), stop_line.id()), end_line_id_map);
+          construct_issue_from_code(issue_code(this->name(), 5), stop_line.id(), end_line_id_map));
       }
 
       const lanelet::ConstLineString3d start_line_aligned =
@@ -148,7 +148,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
                      concat_right_bound);
       if (!is_ok) {
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id()), end_line_id_map);
+          construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id(), end_line_id_map));
         continue;
       }
     }
