@@ -151,6 +151,14 @@
       "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
     }
   },
+  "Intersection.SingleVirtualTrafficLightReference-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A lanelet cannot refer to more than one virtual_traffic_light regulatory element.",
+      "ja": "lanelet は複数の virtual_traffic_light subtype の regulatory element を参照できません。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
