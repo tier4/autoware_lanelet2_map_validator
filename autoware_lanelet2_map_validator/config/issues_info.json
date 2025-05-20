@@ -151,6 +151,54 @@
       "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
     }
   },
+  "Intersection.VirtualTrafficLightLineOrder-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line isn't placed on a lanelet.",
+      "ja": "start_line が lanelet 上に引かれていません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Cannot find the end_line for referrer lanelet ${id}. The end_line should be on the referrer lanelet.",
+      "ja": "本 virtual traffic light を参照する lanelet ${id} に対応する end_line が見つかりません。いずれかの end_line は参照元の lanelet 上に引かれなければいけません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line must not intersect with the referrer lanelet of the virtual traffic light.",
+      "ja": "virtual traffic light を参照する lanelet の上に対応する start_line が引かれてはいけません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Cannot find a lanelet path from start_line to end_line. (end_line ID: ${id})",
+      "ja": "start_line から end_line へつながる lanelet 経路が見つかりません。(end_line ID: ${id})"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-005": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The stop_line is not placed on the path from start_line to end_line. (end_line ID: ${id})",
+      "ja": "stop_line が start_line から end_line までの lanelet 経路上に引かれていません。(end_line ID: ${id})"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The order of start line, stop line, and end line is wrong (end_line ID: ${id})",
+      "ja": "start_line, stop_line, end_line の順序が誤っています。(end_line ID: ${id})"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
