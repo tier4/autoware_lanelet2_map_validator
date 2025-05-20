@@ -18,6 +18,7 @@
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
+#include <map>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -85,5 +86,8 @@ std::string snake_to_upper_camel(const std::string & snake_case);
 std::string issue_code(const std::string & name, const int number);
 std::string append_issue_code_prefix(
   const std::string & name, const int number, const std::string & message);
+lanelet::validation::Issue construct_issue_from_code(
+  const std::string & issue_code, const lanelet::Id primitive_id,
+  const std::map<std::string, std::string> & substitutions = {});
 
 #endif  // LANELET2_MAP_VALIDATOR__UTILS_HPP_
