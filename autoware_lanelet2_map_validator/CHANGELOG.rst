@@ -4,6 +4,8 @@ Changelog for package autoware_lanelet2_map_validator
 
 1.4.0 (2025-05-21)
 ------------------
+* bump version to 1.4.0
+* fix: fix name mistakes about mapping.intersection.virtual_traffic_light_line_order (`#50 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/50>`_)
 * chore: write what validator fails for what prerequisite (`#49 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/49>`_)
 * chore: update map requirements, and change maintainers (`#48 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/48>`_)
 * feat: apply construct_issue_from_code to all validators (`#46 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/46>`_)
