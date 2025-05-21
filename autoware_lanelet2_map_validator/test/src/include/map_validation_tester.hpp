@@ -37,7 +37,9 @@ public:
     std::string package_share_directory =
       ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
     std::string parameters_file = package_share_directory + "/config/params.yaml";
-    lanelet::autoware::validation::ValidatorConfigStore::initialize(parameters_file);
+    std::string issues_info_file = package_share_directory + "/config/issues_info.json";
+    lanelet::autoware::validation::ValidatorConfigStore::initialize(
+      parameters_file, issues_info_file, "en");
   }
 
 protected:
@@ -81,6 +83,44 @@ protected:
     }
 
     return true;
+  }
+
+  std::string compare_an_issue(
+    const lanelet::validation::Issue & expected_issue,
+    const lanelet::validation::Issue & comparing_issue)
+  {
+    std::string result = "";
+    if (!is_same_issue(expected_issue, comparing_issue)) {
+      result = std::string("Issues are not the same\n") + "\tExpected -> " +
+               expected_issue.buildReport() + "\n" + "\tActual -> " +
+               comparing_issue.buildReport() + "\n";
+    }
+    return result;
+  }
+
+  std::string compare_issues(
+    const lanelet::validation::Issues & expected_issues,
+    const lanelet::validation::Issues & comparing_issues)
+  {
+    std::string result = "";
+    if (!are_same_issues(expected_issues, comparing_issues)) {
+      result += std::string("Issues are not the same\n");
+      result += "\tExpected -> (\n";
+      for (const auto & issue : expected_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+      result += "\tActual -> (\n";
+      for (const auto & issue : comparing_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+    }
+    return result;
   }
 
   lanelet::LaneletMapPtr map_{nullptr};

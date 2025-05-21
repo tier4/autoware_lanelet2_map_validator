@@ -23,6 +23,7 @@
 #include <lanelet2_core/primitives/Polygon.h>
 
 #include <limits>
+#include <map>
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -59,13 +60,10 @@ lanelet::validation::Issues IntersectionAreaValidityValidator::check_intersectio
     std::string reason;
     bool polygon_is_valid = boost::geometry::is_valid(basic_polygon2d, reason);
     if (!polygon_is_valid) {
+      std::map<std::string, std::string> reason_map;
+      reason_map["boost_geometry_message"] = reason;
       issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::Polygon,
-        polygon3d.id(),
-        append_issue_code_prefix(
-          this->name(), 1,
-          "This intersection_area doesn't satisfy boost::geometry::is_valid (reason: " + reason +
-            ")."));
+        construct_issue_from_code(issue_code(this->name(), 1), polygon3d.id(), reason_map));
     }
   }
 

@@ -81,10 +81,7 @@ MissingRegulatoryElementsForTrafficLightsValidator::checkMissingRegulatoryElemen
   // Check if all line strings of traffic light referred by regulatory elements
   for (const auto & tl_id : tl_ids) {
     if (tl_ids_reg_elem.find(tl_id) == tl_ids_reg_elem.end()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, tl_id,
-        append_issue_code_prefix(
-          this->name(), 1, "No regulatory element refers to this traffic light."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), tl_id));
     }
   }
 

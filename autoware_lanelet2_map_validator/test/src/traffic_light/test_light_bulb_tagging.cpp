@@ -22,7 +22,9 @@
 
 class TestLightBulbsTaggingValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::LightBulbsTaggingValidator::name());
 };
 
 TEST_F(TestLightBulbsTaggingValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +47,12 @@ TEST_F(TestLightBulbsTaggingValidator, MissingColor)  // NOLINT for gtest
   lanelet::autoware::validation::LightBulbsTaggingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 9298);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 9298);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.LightBulbTagging-001] A point representing a light bulb should have a color "
-    "tag.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLightBulbsTaggingValidator, InvalidColor)  // NOLINT for gtest
@@ -62,14 +62,12 @@ TEST_F(TestLightBulbsTaggingValidator, InvalidColor)  // NOLINT for gtest
   lanelet::autoware::validation::LightBulbsTaggingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 8792);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 8792);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.LightBulbTagging-002] The color of a light bulb should be either red, yellow, "
-    "or green.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLightBulbsTaggingValidator, InvalidArrowDirection)  // NOLINT for gtest
@@ -79,14 +77,12 @@ TEST_F(TestLightBulbsTaggingValidator, InvalidArrowDirection)  // NOLINT for gte
   lanelet::autoware::validation::LightBulbsTaggingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 9298);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 9298);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Point);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.LightBulbTagging-003] The arrow of a light bulb should be either up, right, "
-    "left, up_right, or up_left.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLightBulbsTaggingValidator, CorrectTrafficLight)  // NOLINT for gtest

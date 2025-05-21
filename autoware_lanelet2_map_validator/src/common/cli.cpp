@@ -57,7 +57,10 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
     "parameters", po::value<std::string>(),
     "Path to the YAML file where a list of parameters is written"
   )(
-    "location,l", po::value(&validation_config.location)->default_value(validation_config.location),
+    "language,l", po::value<std::string>()->default_value("en"),
+    "Language to display the issue messages."
+  )(
+    "location", po::value(&validation_config.location)->default_value(validation_config.location),
     "Location of the map (for instantiating the traffic rules), e.g. de for Germany"
   )(
     "participants", po::value(&validation_config.participants)->composing(),
@@ -98,6 +101,9 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
   if (vm.count("parameters") != 0) {
     config.parameters_file = vm["parameters"].as<std::string>();
   }
+
+  config.language = vm["language"].as<std::string>();
+
   if (
     (vm.count("lat") != 0 && vm.count("lon") != 0) &&
     (config.projector_type == "tm" || config.projector_type == "utm")) {

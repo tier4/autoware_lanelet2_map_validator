@@ -23,6 +23,7 @@
 #include <lanelet2_core/primitives/BoundingBox.h>
 #include <lanelet2_core/primitives/Polygon.h>
 
+#include <map>
 #include <set>
 #include <string>
 
@@ -73,19 +74,16 @@ lanelet::validation::Issues IntersectionTurnDirectionTaggingValidator::checkTurn
       }
 
       if (!lane.hasAttribute("turn_direction")) {
-        issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-          append_issue_code_prefix(
-            this->name(), 1, "This lanelet is missing a turn_direction tag."));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lane.id()));
         continue;
       }
 
       std::string turn_direction = lane.attribute("turn_direction").value();
       if (direction_set.find(turn_direction) == direction_set.end()) {
+        std::map<std::string, std::string> invalid_tag_map;
+        invalid_tag_map["invalid_tag"] = turn_direction;
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, lane.id(),
-          append_issue_code_prefix(
-            this->name(), 2, "Invalid turn_direction tag \"" + turn_direction + "\" is found."));
+          construct_issue_from_code(issue_code(this->name(), 2), lane.id(), invalid_tag_map));
       }
     }
   }
