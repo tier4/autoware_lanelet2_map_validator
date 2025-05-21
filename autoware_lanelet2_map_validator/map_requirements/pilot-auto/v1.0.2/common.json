@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.2",
   "requirements": [
     {
       "id": "vm-01-03_vm-01-04",
@@ -57,14 +57,6 @@
       "validators": [
         {
           "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-        },
-        {
-          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            }
-          ]
         }
       ]
     },
