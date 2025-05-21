@@ -2,8 +2,26 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.4.0 (2025-05-21)
+------------------
+* bump version to 1.4.0
+* fix: fix name mistakes about mapping.intersection.virtual_traffic_light_line_order (`#50 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/50>`_)
+* chore: write what validator fails for what prerequisite (`#49 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/49>`_)
+* chore: update map requirements, and change maintainers (`#48 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/48>`_)
+* feat: apply construct_issue_from_code to all validators (`#46 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/46>`_)
+* feat: create issues info for consistent issue information management (`#45 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/45>`_)
+* feat: validator line orders for virtual traffic lights (`#38 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/38>`_)
+* feat: check the details of regulatory elements for virtual traffic lights (`#36 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/36>`_)
+* feat: create ValidatorConfigStore to read parameters (`#43 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/43>`_)
+* feat: add validation_info to the lanelet2_validation_results.json (`#44 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/44>`_)
+* docs: add missing requirements (`#42 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/42>`_)
+* feat: check longitudinal connections of lanelets (`#33 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/33>`_)
+* Contributors: Taiki Yamada, TaikiYamada4
+
 1.3.0 (2025-03-28)
 ------------------
+* chore: bump to version 1.3.0 (`#34 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/34>`_)
+  Co-authored-by: github-actions <github-actions@github.com>
 * feat: add new input requirements (`#30 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/30>`_)
 * feat: validator for lanelets sharing their borders correctly (`#32 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/32>`_)
 * Contributors: TaikiYamada4
