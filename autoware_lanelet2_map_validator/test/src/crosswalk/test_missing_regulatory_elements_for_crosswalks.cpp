@@ -22,7 +22,9 @@
 
 class TestMissingRegulatoryElementsForCrosswalks : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::MissingRegulatoryElementsForCrosswalksValidator::name());
 };
 
 TEST_F(TestMissingRegulatoryElementsForCrosswalks, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +47,12 @@ TEST_F(TestMissingRegulatoryElementsForCrosswalks, MissingRegulatoryElement)  //
   lanelet::autoware::validation::MissingRegulatoryElementsForCrosswalksValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 18);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 18);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Crosswalk.MissingRegulatoryElements-001] No regulatory element refers to this "
-    "crosswalk.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestMissingRegulatoryElementsForCrosswalks, RegulatoryElementExists)  // NOLINT for gtest

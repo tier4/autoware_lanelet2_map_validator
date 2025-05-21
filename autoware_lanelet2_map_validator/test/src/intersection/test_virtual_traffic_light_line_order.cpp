@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestVirtualTrafficLightLineOrderValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator::name());
 };
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -45,12 +48,12 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedStartLine)  // NOLINT 
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11101,
-    "[Intersection.VirtualTrafficLightLineOrder-001] The start_line isn't placed on a lanelet.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 11101);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, EndLineCoveringWrongLanelet)  // NOLINT for gtest
@@ -60,13 +63,14 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, EndLineCoveringWrongLanelet)  
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-002] Cannot find the end_line for referrer lanelet "
-    "52. The end_line should be on the referrer lanelet.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "52";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 11074, id_map);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedEndLine)  // NOLINT for gtest
@@ -76,13 +80,14 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedEndLine)  // NOLINT fo
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-002] Cannot find the end_line for referrer lanelet "
-    "52. The end_line should be on the referrer lanelet.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "52";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 11074, id_map);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, StartLineCoveringReferrer)  // NOLINT for gtest
@@ -92,13 +97,12 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, StartLineCoveringReferrer)  //
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11101,
-    "[Intersection.VirtualTrafficLightLineOrder-003] The start_line must not intersect with the "
-    "referrer lanelet of the virtual traffic light.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 11101);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, InvalidPath)  // NOLINT for gtest
@@ -108,17 +112,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, InvalidPath)  // NOLINT for gt
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-004] Cannot find a lanelet path from start_line to "
-    "end_line.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11086";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 4), 11074, id_map);
+  id_map["id"] = "11089";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 4), 11074, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 4), 11074, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
-    expected_issue, expected_issue, expected_issue};
+    expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedStopLine)  // NOLINT for gtest
@@ -128,17 +137,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, DerailedStopLine)  // NOLINT f
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11104,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
-    "path from start_line to end_line.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11086";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11104, id_map);
+  id_map["id"] = "11089";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11104, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11104, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
-    expected_issue, expected_issue, expected_issue};
+    expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, StopLineNotOnPath)  // NOLINT for gtest
@@ -148,17 +162,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, StopLineNotOnPath)  // NOLINT 
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11107,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
-    "path from start_line to end_line.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11086";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11107, id_map);
+  id_map["id"] = "11089";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11107, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11107, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
-    expected_issue, expected_issue, expected_issue};
+    expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, MessyStopLine)  // NOLINT for gtest
@@ -168,25 +187,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, MessyStopLine)  // NOLINT for 
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11086).");
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11089).");
-  const lanelet::validation::Issue expected_issue3(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11091).");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11086";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
+  id_map["id"] = "11089";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
     expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStopStartEnd)  // NOLINT for gtest
@@ -196,25 +212,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStopStartEnd)  // NOLIN
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11086).");
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11089).");
-  const lanelet::validation::Issue expected_issue3(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11091).");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11086";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
+  id_map["id"] = "11089";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
     expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStartEndStop)  // NOLINT for gtest
@@ -224,25 +237,22 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStartEndStop)  // NOLIN
   lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.VirtualTrafficLightLineOrder-006] The order of start line, stop line, and end "
-    "line is wrong (end_line ID: 11089).");
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11099,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
-    "path from start_line to end_line.");
-  const lanelet::validation::Issue expected_issue3(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11099,
-    "[Intersection.VirtualTrafficLightLineOrder-005] The stop_line is not placed on the "
-    "path from start_line to end_line.");
+  std::map<std::string, std::string> id_map;
+  id_map["id"] = "11089";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 6), 11074, id_map);
+  id_map["id"] = "11086";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11099, id_map);
+  id_map["id"] = "11091";
+  const auto expected_issue3 =
+    construct_issue_from_code(issue_code(test_target_, 5), 11099, id_map);
 
-  // There will be three same issues since this regulatory element is referred three times.
   const lanelet::validation::Issues expected_issues = {
     expected_issue1, expected_issue2, expected_issue3};
 
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestVirtualTrafficLightLineOrderValidator, CorrectVirtualTrafficLight)  // NOLINT for gtest

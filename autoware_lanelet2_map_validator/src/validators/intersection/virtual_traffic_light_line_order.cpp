@@ -28,6 +28,7 @@
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -77,10 +78,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
     const lanelet::Optional<lanelet::ConstLanelet> stop_lanelet = belonging_lanelet(stop_line, map);
 
     if (!start_lanelet) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-        start_line.id(),
-        append_issue_code_prefix(this->name(), 1, "The start_line isn't placed on a lanelet."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), start_line.id()));
       continue;
     }
 
@@ -94,12 +92,10 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
     for (const auto & lane : referrer_lanelets) {
       const auto end_line_opt = select_end_line(end_lines, lane);
       if (!end_line_opt) {
-        const std::string issue_message = "Cannot find the end_line for referrer lanelet " +
-                                          std::to_string(lane.id()) +
-                                          ". The end_line should be on the referrer lanelet.";
+        std::map<std::string, std::string> lane_id_map;
+        lane_id_map["id"] = std::to_string(lane.id());
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(), append_issue_code_prefix(this->name(), 2, issue_message));
+          construct_issue_from_code(issue_code(this->name(), 2), reg_elem->id(), lane_id_map));
         continue;
       }
       end_pairs.push_back({end_line_opt.get(), lane});
@@ -111,26 +107,19 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
     }
 
     if (is_start_line_intersecting) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-        start_line.id(),
-        append_issue_code_prefix(
-          this->name(), 3,
-          "The start_line must not intersect with the referrer lanelet of the virtual traffic "
-          "light."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), start_line.id()));
       continue;
     }
 
     // Validate line orders for each end_line
     for (const auto & [end_line, referrer_lanelet] : end_pairs) {
+      std::map<std::string, std::string> end_line_id_map;
+      end_line_id_map["id"] = std::to_string(end_line.id());
       lanelet::Optional<lanelet::routing::LaneletPath> start_to_end_path_opt =
         routing_graph_ptr->shortestPath(start_lanelet.get(), referrer_lanelet, {}, false);
       if (!start_to_end_path_opt) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(),
-          append_issue_code_prefix(
-            this->name(), 4, "Cannot find a lanelet path from start_line to end_line."));
+          construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id(), end_line_id_map));
         continue;
       }
 
@@ -141,11 +130,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
 
       if (intersection_ratio(stop_line, concat_lanelet_polygon) < 0.1) {
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString,
-          stop_line.id(),
-          append_issue_code_prefix(
-            this->name(), 5,
-            "The stop_line is not placed on the path from start_line to end_line."));
+          construct_issue_from_code(issue_code(this->name(), 5), stop_line.id(), end_line_id_map));
       }
 
       const lanelet::ConstLineString3d start_line_aligned =
@@ -162,12 +147,8 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
                      start_line_aligned.back(), stop_line_aligned.back(), end_line_aligned.back(),
                      concat_right_bound);
       if (!is_ok) {
-        const std::string issue_message =
-          "The order of start line, stop line, and end line is wrong (end_line ID: " +
-          std::to_string(end_line.id()) + ").";
         issues.emplace_back(
-          lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement,
-          reg_elem->id(), append_issue_code_prefix(this->name(), 6, issue_message));
+          construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id(), end_line_id_map));
         continue;
       }
     }

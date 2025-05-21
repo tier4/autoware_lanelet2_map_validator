@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestIntersectionAreaValidity : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::IntersectionAreaValidityValidator::name());
 };
 
 TEST_F(TestIntersectionAreaValidity, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +48,15 @@ TEST_F(TestIntersectionAreaValidity, CheckWrongOrientation)  // NOLINT for gtest
   lanelet::autoware::validation::IntersectionAreaValidityValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> reason_map;
+  reason_map["boost_geometry_message"] = "Geometry has wrong orientation";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 10803, reason_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 10803);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Polygon);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.IntersectionAreaValidity-001] This intersection_area doesn't satisfy "
-    "boost::geometry::is_valid (reason: Geometry has wrong orientation).");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionAreaValidity, CheckSelfIntersection)  // NOLINT for gtest
@@ -62,16 +66,13 @@ TEST_F(TestIntersectionAreaValidity, CheckSelfIntersection)  // NOLINT for gtest
   lanelet::autoware::validation::IntersectionAreaValidityValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 10803);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Polygon);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.IntersectionAreaValidity-001] This intersection_area doesn't satisfy "
-    "boost::geometry::is_valid (reason: Geometry has invalid self-intersections. A "
+  std::map<std::string, std::string> reason_map;
+  reason_map["boost_geometry_message"] =
+    "Geometry has invalid self-intersections. A "
     "self-intersection point was found at (3757.52, 73751.8); method: i; operations: u/i; segment "
-    "IDs {source, multi, ring, segment}: {0, -1, -1, 21}/{0, -1, -1, 23}).");
+    "IDs {source, multi, ring, segment}: {0, -1, -1, 21}/{0, -1, -1, 23}";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 10803, reason_map);
 }
 
 TEST_F(TestIntersectionAreaValidity, ValidIntersectionArea)  // NOLINT for gtest
