@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-01-03_vm-01-04",
@@ -49,6 +49,22 @@
         },
         {
           "name": "mapping.intersection.intersection_area_segment_type"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-16",
+      "validators": [
+        {
+          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+        },
+        {
+          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order",
+          "prerequisites": [
+            {
+              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+            }
+          ]
         }
       ]
     },

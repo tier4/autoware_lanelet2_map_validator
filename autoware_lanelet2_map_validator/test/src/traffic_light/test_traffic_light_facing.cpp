@@ -18,12 +18,13 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
-#include <set>
 #include <string>
 
 class TestTrafficLightFacing : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::TrafficLightFacingValidator::name());
 };
 
 TEST_F(TestTrafficLightFacing, ValidatorAvailability)  // NOLINT for gtest
@@ -46,14 +47,12 @@ TEST_F(TestTrafficLightFacing, WrongReferrerLanelet)  // NOLINT for gtest
   lanelet::autoware::validation::TrafficLightFacingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 416);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 416);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Info);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.CorrectFacing-001] "
-    "Lanelets referring this traffic_light have several divergent starting lines");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestTrafficLightFacing, WrongTrafficLightFacing)  // NOLINT for gtest
@@ -63,13 +62,12 @@ TEST_F(TestTrafficLightFacing, WrongTrafficLightFacing)  // NOLINT for gtest
   lanelet::autoware::validation::TrafficLightFacingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 48);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 48);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.CorrectFacing-002] The linestring direction seems to be wrong.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestTrafficLightFacing, UncertainTrafficLightFacing)  // NOLINT for gtest
@@ -79,18 +77,14 @@ TEST_F(TestTrafficLightFacing, UncertainTrafficLightFacing)  // NOLINT for gtest
   lanelet::autoware::validation::TrafficLightFacingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::set<int> expected_ids = {48, 62, 74, 76};
-  EXPECT_EQ(issues.size(), expected_ids.size());
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 3), 48);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 3), 62);
+  const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 3), 74);
+  const auto expected_issue4 = construct_issue_from_code(issue_code(test_target_, 3), 76);
+  const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3, expected_issue4};
 
-  for (const auto & issue : issues) {
-    EXPECT_NE(expected_ids.find(issue.id), expected_ids.end());
-    EXPECT_EQ(issue.severity, lanelet::validation::Severity::Warning);
-    EXPECT_EQ(issue.primitive, lanelet::validation::Primitive::LineString);
-    EXPECT_EQ(
-      issue.message,
-      "[TrafficLight.CorrectFacing-003] The linestring direction has been judged as both correct "
-      "and wrong.");
-  }
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestTrafficLightFacing, CorrectFacing)  // NOLINT for gtest

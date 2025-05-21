@@ -22,7 +22,9 @@
 
 class TestMissingRegulatoryElementsForStopLines : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::MissingRegulatoryElementsForStopLinesValidator::name());
 };
 
 TEST_F(TestMissingRegulatoryElementsForStopLines, ValidatorAvailability)  // NOLINT for gtest
@@ -45,13 +47,12 @@ TEST_F(TestMissingRegulatoryElementsForStopLines, MissingRegulatoryElement)  // 
   lanelet::autoware::validation::MissingRegulatoryElementsForStopLinesValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 2156);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2156);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[StopLine.MissingRegulatoryElements-001] No regulatory element refers to this stop line.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestMissingRegulatoryElementsForStopLines, TrafficSignRegulatoryElement)  // NOLINT for gtest

@@ -15,6 +15,9 @@
 #ifndef MAP_VALIDATION_TESTER_HPP_
 #define MAP_VALIDATION_TESTER_HPP_
 
+#include "lanelet2_map_validator/config_store.hpp"
+#include "lanelet2_map_validator/map_loader.hpp"
+
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <autoware_lanelet2_extension/projection/mgrs_projector.hpp>
 
@@ -28,6 +31,17 @@
 
 class MapValidationTester : public ::testing::Test
 {
+public:
+  MapValidationTester()
+  {
+    std::string package_share_directory =
+      ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+    std::string parameters_file = package_share_directory + "/config/params.yaml";
+    std::string issues_info_file = package_share_directory + "/config/issues_info.json";
+    lanelet::autoware::validation::ValidatorConfigStore::initialize(
+      parameters_file, issues_info_file, "en");
+  }
+
 protected:
   void load_target_map(std::string file_name)
   {
@@ -35,9 +49,10 @@ protected:
 
     std::string package_share_directory =
       ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+    const std::string map_file_path = package_share_directory + "/data/map/" + file_name;
 
-    map_ = lanelet::load(
-      package_share_directory + "/data/map/" + file_name, *projector, &loading_errors_);
+    std::tie(map_, loading_issues_) = lanelet::autoware::validation::loadAndValidateMap(
+      "mgrs", map_file_path, lanelet::validation::ValidationConfig());
 
     EXPECT_NE(map_, nullptr);
   }
@@ -70,8 +85,46 @@ protected:
     return true;
   }
 
+  std::string compare_an_issue(
+    const lanelet::validation::Issue & expected_issue,
+    const lanelet::validation::Issue & comparing_issue)
+  {
+    std::string result = "";
+    if (!is_same_issue(expected_issue, comparing_issue)) {
+      result = std::string("Issues are not the same\n") + "\tExpected -> " +
+               expected_issue.buildReport() + "\n" + "\tActual -> " +
+               comparing_issue.buildReport() + "\n";
+    }
+    return result;
+  }
+
+  std::string compare_issues(
+    const lanelet::validation::Issues & expected_issues,
+    const lanelet::validation::Issues & comparing_issues)
+  {
+    std::string result = "";
+    if (!are_same_issues(expected_issues, comparing_issues)) {
+      result += std::string("Issues are not the same\n");
+      result += "\tExpected -> (\n";
+      for (const auto & issue : expected_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+      result += "\tActual -> (\n";
+      for (const auto & issue : comparing_issues) {
+        result += "\t\t";
+        result += issue.buildReport();
+        result += "\n";
+      }
+      result += "\t)\n";
+    }
+    return result;
+  }
+
   lanelet::LaneletMapPtr map_{nullptr};
-  std::vector<std::string> loading_errors_;
+  std::vector<lanelet::validation::DetectedIssues> loading_issues_;
 };
 
 #endif  // MAP_VALIDATION_TESTER_HPP_

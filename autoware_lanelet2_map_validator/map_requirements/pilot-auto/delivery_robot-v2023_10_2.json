@@ -1,11 +1,27 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-02-04",
       "validators": [
         {
           "name": "mapping.stop_line.missing_regulatory_elements"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-16",
+      "validators": [
+        {
+          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+        },
+        {
+          "name": "mapping.intersection.mapping.intersection.virtual_traffic_light_line_order",
+          "prerequisites": [
+            {
+              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+            }
+          ]
         }
       ]
     }

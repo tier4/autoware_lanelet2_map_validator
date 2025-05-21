@@ -175,6 +175,8 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator --print
 
 ### その他応用例
 
+#### 除外リスト
+
 `autoware_lanelet2_map_validator`は「除外リスト」を一緒に入力することで、どの地図要素を検証対象としないかを指定することができます。
 除外リストは `--exclusion_list` もしくは `-x` オプションで渡すことができます（下のコマンド例参照）。
 上記で説明された両使用方法に対して適用することが可能です。
@@ -189,6 +191,11 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 -x ./my_exclusion_list.json
 ```
 
+#### パラメータ
+
+もしも使用する検証器がパラメータを持つ場合は、[autoware_lanelet2_map_validator/config/params.yaml](./autoware_lanelet2_map_validator/config/params.yaml)で変更することができます。
+全ての検証器がパラメータを持っているわけではないので、各検証器のドキュメント [autoware_lanelet2_map_validator/docs](./autoware_lanelet2_map_validator/docs/) を参照して、パラメータがあるか、そしてそれがどのようなパラメータであるかを確認してください。
+
 ### オプション一覧
 
 | オプション                 | 説明                                                                                                                                       |
@@ -201,7 +208,9 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 | `-x, --exclusion_list`     | JSON 形式の除外リストのファイルパス                                                                                                        |
 | `-v, --validator`          | カンマ区切りおよび正規表現で与えられた検証器のみを実行する。例えば、 `mapping.*` と指定すると `mapping` から始まる全ての検証器を実行する。 |
 | `-p, --projector`          | Lanelet2 地図の投影法。　`mgrs`, `utm`, `transverse_mercator` から選択。                                                                   |
-| `-l, --location`           | 地図の場所に関する情報 (未使用)                                                                                                            |
+| `--parameters`             | パラメータを格納する YAML ファイルのパス。指定されなければデフォルトで `config/params.yaml` を用いる。                                     |
+| `-l, --language`           | 出力されるイシューメッセージの言語（"en" or "ja"）。指定されなければデフォルトで "en" になる。                                             |
+| `--location`               | 地図の場所に関する情報 (未使用)                                                                                                            |
 | `--participants`           | 自動車や歩行者など交通ルールの対象の指定 (未使用)                                                                                          |
 | `--lat`                    | 地図原点の緯度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
 | `--lon`                    | 地図原点の軽度。 これは transverse mercator 投影法や utm 投影法で用いる。                                                                  |
@@ -515,7 +524,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 | vm-03-13 | Merging from private area, sidewalk                                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | vm-03-14 | Road marking                                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | vm-03-15 | Exclusive bicycle lane                                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| vm-03-16 | Virtual Traffic Light for Intersection Coordination                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| vm-03-16 | Virtual Traffic Light for Intersection Coordination                      | [mapping.intersection.regulatory_element_details_for_virtual_traffic_lights](./autoware_lanelet2_map_validator/docs/intersection/regulatory_element_details_for_virtual_traffic_lights.md), [mapping.intersection.virtual_traffic_light_line_order](./autoware_lanelet2_map_validator/docs/intersection/virtual_traffic_light_line_order.md)                                                                                                                    |
 | vm-03-17 | Virtual Traffic Light's right_of_way for Intersection Coordination       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | vm-03-18 | Restrictions for the Virtual Traffic Light for Intersection Coordination |                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | vm-04-01 | Traffic light basics                                                     | [mapping.traffic_light.missing_regulatory_elements](./autoware_lanelet2_map_validator/docs/traffic_light/missing_regulatory_elements_for_traffic_lights.md), [mapping.traffic_light.regulatory_element_details](./autoware_lanelet2_map_validator/docs/traffic_light/regulatory_element_details_for_traffic_lights.md), [mapping.traffic_light.missing_referrers](./autoware_lanelet2_map_validator/docs/traffic_light/missing_referrers_for_traffic_lights.md) |
