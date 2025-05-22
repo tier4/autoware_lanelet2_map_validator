@@ -42,11 +42,20 @@ public:
 
 private:
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
+
+  /**
+   * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded to the lateral direction, and its variation length is about (average length of both edges of the lanelet) * (scale_factor-1)
+   */
   lanelet::BasicPolygon2d expanded_lanelet_polygon(
     const lanelet::ConstLanelet & lane, const double & scale_factor);
+
   lanelet::routing::RelationType get_relation(
     const lanelet::routing::RoutingGraphUPtr & routing_graph_ptr, const lanelet::ConstLanelet from,
     const lanelet::ConstLanelet to);
+
+  /**
+   * @brief return IoU
+   */
   double intersection_over_union(
     const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2);
 
