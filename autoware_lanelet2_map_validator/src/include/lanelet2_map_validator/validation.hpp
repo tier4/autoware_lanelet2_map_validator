@@ -99,7 +99,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
   const Validators & validators, const ValidatorName & target_validator_name);
 
 /**
- * @brief check if total requirement passed / number of error/warning, etc., the seet it to
+ * @brief check if total requirement passed / number of error/warning, etc., the see it to
  * json_data and print to stdout
  */
 void summarize_validator_results(json & json_data);
