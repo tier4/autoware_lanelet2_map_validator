@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_  // NOLINT
 
 #include <lanelet2_routing/LaneletPath.h>
 #include <lanelet2_validation/Validation.h>
@@ -32,9 +32,7 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
-private:
-  lanelet::validation::Issues check_virtual_traffic_light_line_order(
-    const lanelet::LaneletMap & map);
+protected:
   lanelet::Optional<lanelet::ConstLanelet> belonging_lanelet(
     const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map);
   lanelet::Optional<lanelet::ConstLineString3d> select_end_line(
@@ -44,6 +42,10 @@ private:
     const lanelet::ConstLineString3d & linestring, const lanelet::CompoundPolygon3d & polygon);
   double intersection_ratio(
     const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane);
+
+private:
+  lanelet::validation::Issues check_virtual_traffic_light_line_order(
+    const lanelet::LaneletMap & map);
   lanelet::ConstLineString3d get_aligned_linestring(
     const lanelet::ConstLineString3d & linestring, const lanelet::CompoundLineString3d & base_arc);
   lanelet::CompoundLineString3d get_concatenated_bound(
@@ -55,3 +57,4 @@ private:
 }  // namespace lanelet::autoware::validation
 
 #endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
+        // // NOLINT
