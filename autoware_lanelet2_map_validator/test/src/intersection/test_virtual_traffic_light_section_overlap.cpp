@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestVirtualTrafficLightSectionOverlapValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::VirtualTrafficLightSectionOverlapValidator::name());
 };
 
 TEST_F(TestVirtualTrafficLightSectionOverlapValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -36,6 +39,52 @@ TEST_F(TestVirtualTrafficLightSectionOverlapValidator, ValidatorAvailability)  /
   const uint32_t expected_validator_num = 1;
   EXPECT_EQ(expected_validator_num, validators.size());
   EXPECT_EQ(expected_validator_name, validators[0]);
+}
+
+TEST_F(
+  TestVirtualTrafficLightSectionOverlapValidator, OverlappingMultipleLanelets)  // NOLINT for gtest
+{
+  load_target_map("intersection/virtual_traffic_light_overlapping_with_multiple_lanelets.osm");
+
+  lanelet::autoware::validation::VirtualTrafficLightSectionOverlapValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> id_map;
+  id_map["reg_elem_id"] = "11074";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 11123, id_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestVirtualTrafficLightSectionOverlapValidator, OverlappingOneLanelet)  // NOLINT for gtest
+{
+  load_target_map("intersection/virtual_traffic_light_overlapping_with_one_lanelet.osm");
+
+  lanelet::autoware::validation::VirtualTrafficLightSectionOverlapValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> id_map;
+  id_map["reg_elem_id"] = "11074";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 11123, id_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(
+  TestVirtualTrafficLightSectionOverlapValidator, NotOverlappingButSharing)  // NOLINT for gtest
+{
+  load_target_map("intersection/virtual_traffic_light_not_overlapping_but_sharing_a_lanelet.osm");
+
+  lanelet::autoware::validation::VirtualTrafficLightSectionOverlapValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestVirtualTrafficLightSectionOverlapValidator, SampleMap)  // NOLINT for gtest
