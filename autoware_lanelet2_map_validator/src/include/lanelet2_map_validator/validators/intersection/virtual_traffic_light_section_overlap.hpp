@@ -49,25 +49,53 @@ public:
   }
 
 private:
+  /**
+   * @brief main validation code
+   *
+   * @param map
+   * @return lanelet::validation::Issues
+   */
   lanelet::validation::Issues check_virtual_traffic_light_section_overlap(
     const lanelet::LaneletMap & map);
+
+  /**
+   * @brief check whether the refers type of the virtual traffic light is
+   * the one given by the parameter
+   *
+   * @param reg_elem
+   * @return true
+   * @return false
+   */
   bool is_target_virtual_traffic_light(const lanelet::RegulatoryElementConstPtr & reg_elem);
 
+  /**
+   * @brief Get the all paths for each end_line of a virtual traffic light
+   *
+   * @param reg_elem
+   * @param map
+   * @return lanelet::routing::LaneletPaths
+   */
   lanelet::routing::LaneletPaths get_all_possible_paths(
     const lanelet::RegulatoryElementConstPtr & reg_elem, const lanelet::LaneletMap & map);
+
+  /**
+   * @brief Get the bounding box of the LaneletPath object
+   *
+   * @param path
+   * @return lanelet::BoundingBox2d
+   */
   lanelet::BoundingBox2d get_lanelet_path_bbox(const lanelet::routing::LaneletPath & path);
-  lanelet::Ids common_lanelet_ids(
-    const lanelet::routing::LaneletPath & path1, const lanelet::routing::LaneletPath & path2);
+
+  /**
+   * @brief Get a lanelet sequence that both lanelet paths have in common
+   *
+   * @param path1
+   * @param path2
+   * @return lanelet::ConstLanelets (a.k.a vector<ConstLanelet>)
+   */
   lanelet::ConstLanelets get_overlapped_lanelets(
     const lanelet::routing::LaneletPath & path1, const lanelet::routing::LaneletPath & path2);
-  /*
-  lanelet::Optional<lanelet::ConstLanelet> belonging_lanelet(
-    const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map);
-  double intersection_ratio(
-    const lanelet::ConstLineString3d & linestring, const lanelet::CompoundPolygon3d & polygon);
-  double intersection_ratio(
-    const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane);
-  */
+
   std::vector<std::string> target_refers_;
   lanelet::traffic_rules::TrafficRulesPtr traffic_rules_;
   lanelet::routing::RoutingGraphUPtr routing_graph_ptr_;
