@@ -347,7 +347,7 @@
     "severity": "info",
     "primitive": "regulatory element",
     "message": {
-      "en": "Regulatory element of crosswalk does not have stop line(ref_line).",
+      "en": "Regulatory element of crosswalk does not have a stop line(ref_line).",
       "ja": "ref_line (stop_line type の linestring) が設定されていません。"
     }
   },
