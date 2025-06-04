@@ -18,7 +18,7 @@ The validator will output the following issue with the corresponding primitive I
 
 ### Flow Chart
 
-The flow chart of this validation is present as below. Note that this validator can validate the overlap of lanelet paths only if the two lanelet paths can construct a line graph. Divering paths cannot be validated.
+The flow chart of this validation is present as below. Note that this validator can validate the overlap of lanelet paths only if the two lanelet paths can construct a line graph. Diverging paths cannot be validated.
 
 ![virtual_traffic_light_section_overlap_flow](../../media/virtual_traffic_light_section_overlap_flow.drawio.svg)
 
