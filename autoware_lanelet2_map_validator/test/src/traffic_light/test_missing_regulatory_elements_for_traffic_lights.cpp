@@ -22,7 +22,9 @@
 
 class TestMissingRegulatoryElementsForTrafficLights : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::MissingRegulatoryElementsForTrafficLightsValidator::name());
 };
 
 TEST_F(TestMissingRegulatoryElementsForTrafficLights, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +47,12 @@ TEST_F(TestMissingRegulatoryElementsForTrafficLights, MissingRegulatoryElement) 
   lanelet::autoware::validation::MissingRegulatoryElementsForTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 416);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 416);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::LineString);
-  EXPECT_EQ(
-    issues[0].message,
-    "[TrafficLight.MissingRegulatoryElements-001] No regulatory element refers to this traffic "
-    "light.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestMissingRegulatoryElementsForTrafficLights, RegulatoryElementExists)  // NOLINT for gtest

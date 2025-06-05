@@ -91,10 +91,7 @@ MissingRegulatoryElementsForStopLinesValidator::checkMissingRegulatoryElementsFo
   // Check if all line strings of stop line referred by regulatory elements
   for (const auto & sl_id : sl_ids) {
     if (sl_ids_reg_elem.find(sl_id) == sl_ids_reg_elem.end()) {
-      issues.emplace_back(
-        lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, sl_id,
-        append_issue_code_prefix(
-          this->name(), 1, "No regulatory element refers to this stop line."));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), sl_id));
     }
   }
 

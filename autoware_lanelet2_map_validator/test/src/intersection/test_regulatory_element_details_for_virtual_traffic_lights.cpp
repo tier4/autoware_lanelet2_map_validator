@@ -23,7 +23,10 @@
 
 class TestRegulatoryElementDetailsForVirtualTrafficLightsValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::
+                  RegulatoryElementDetailsForVirtualTrafficLightsValidator::name());
 };
 
 TEST_F(
@@ -126,13 +129,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11070,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001] The start_line of a "
-    "virtual_traffic_light regulatory element must be a \"virtual\" type.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 11070);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -143,13 +145,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-002] A virtual_traffic_light "
-    "regulatory element must only have a single ref_line.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 11074);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -161,13 +162,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-002] A virtual_traffic_light "
-    "regulatory element must only have a single ref_line.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 11074);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -179,13 +179,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 378,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-003] The ref_line of a "
-    "virtual_traffic_light regulatory element must be a \"stop_line\" type.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 378);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -227,13 +226,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11086,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-004] The end_line of a "
-    "virtual_traffic_light regulatory element must be a \"virtual\" type.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 4), 11086);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -244,13 +242,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::RegulatoryElement, 11074,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-005] A virtual_traffic_light "
-    "regulatory element must have a refers.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 5), 11074);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -262,13 +259,12 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::LineString, 11073,
-    "[Intersection.RegulatoryElementDetailsForVirtualTrafficLights-006] The refers of a "
-    "virtual_traffic_light regulatory element must be an \"intersection_coordination\" type.");
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 6), 11073);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForVirtualTrafficLightsValidator, SampleMap)  // NOLINT for gtest

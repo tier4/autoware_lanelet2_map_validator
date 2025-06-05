@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestBorderSharingValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::BorderSharingValidator::name());
 };
 
 TEST_F(TestBorderSharingValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -55,20 +58,17 @@ TEST_F(TestBorderSharingValidator, StraightLanesCompletelyDifferentBorders)  // 
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 108,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 10157 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "10157";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 108, id_map);
+  id_map["lanelet_id"] = "108";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 1), 10157, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 10157,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 108 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
@@ -79,20 +79,17 @@ TEST_F(
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 108,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 10157 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "10157";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 108, id_map);
+  id_map["lanelet_id"] = "108";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 1), 10157, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 10157,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 108 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, StraightLanesDifferentBorderID)  // NOLINT for gtest
@@ -102,20 +99,17 @@ TEST_F(TestBorderSharingValidator, StraightLanesDifferentBorderID)  // NOLINT fo
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 108,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 10157 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "10157";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 108, id_map);
+  id_map["lanelet_id"] = "108";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 1), 10157, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 10157,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 108 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentBorders)  // NOLINT for gtest
@@ -125,20 +119,16 @@ TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentBorders)  // NOL
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 96,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 7974 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "96";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 7974, id_map);
+  id_map["lanelet_id"] = "7974";
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 96, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 7974,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 96 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentJaggyBorders)  // NOLINT for gtest
@@ -148,20 +138,16 @@ TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentJaggyBorders)  /
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 96,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 7974 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "96";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 7974, id_map);
+  id_map["lanelet_id"] = "7974";
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 96, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 7974,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 96 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, CurveLanesDifferentBorderID)  // NOLINT for gtest
@@ -171,20 +157,16 @@ TEST_F(TestBorderSharingValidator, CurveLanesDifferentBorderID)  // NOLINT for g
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 96,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 7974 but doesn't share a border "
-    "linestring.");
+  std::map<std::string, std::string> id_map;
+  id_map["lanelet_id"] = "96";
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 7974, id_map);
+  id_map["lanelet_id"] = "7974";
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 96, id_map);
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 7974,
-    "[Lane.BorderSharing-001] Seems to be adjacent with Lanelet 96 but doesn't share a border "
-    "linestring.");
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, PseudoBidirectionalLanes)  // NOLINT for gtest
@@ -201,17 +183,17 @@ TEST_F(TestBorderSharingValidator, WrongLaneletDivision)  // NOLINT for gtest
 {
   load_target_map("lane/wrong_lanelet_division.osm");
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 108,
-    "[Lane.BorderSharing-002] Seems to be adjacent with Lanelets 107 7944 but doesn't share a "
-    "border "
-    "linestring.");
-
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> ids_map;
+  ids_map["lanelet_ids"] = "107 7944";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 108, ids_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, CorrectBorderSharingLaneSplit)  // NOLINT for gtest
@@ -228,16 +210,17 @@ TEST_F(TestBorderSharingValidator, WrongBorderSharingLaneSplit)  // NOLINT for g
 {
   load_target_map("lane/wrong_border_sharing_lane_split.osm");
 
-  const lanelet::validation::Issue expected_issue(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 108,
-    "[Lane.BorderSharing-002] Seems to be adjacent with Lanelets 107 but doesn't share a border "
-    "linestring.");
-
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> ids_map;
+  ids_map["lanelet_ids"] = "107";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 108, ids_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_TRUE(is_same_issue(issues[0], expected_issue));
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestBorderSharingValidator, SampleMap)  // NOLINT for gtest

@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestIntersectionTurnDirectionTagging : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::IntersectionTurnDirectionTaggingValidator::name());
 };
 
 TEST_F(TestIntersectionTurnDirectionTagging, ValidatorAvailability)  // NOLINT for gtest
@@ -45,13 +48,12 @@ TEST_F(TestIntersectionTurnDirectionTagging, MissingTurnDirectionTag)  // NOLINT
   lanelet::autoware::validation::IntersectionTurnDirectionTaggingValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 58);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 58);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.TurnDirectionTagging-001] This lanelet is missing a turn_direction tag.");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionTurnDirectionTagging, WrongTurnDirectionTag)  // NOLINT for gtest
@@ -61,14 +63,15 @@ TEST_F(TestIntersectionTurnDirectionTagging, WrongTurnDirectionTag)  // NOLINT f
   lanelet::autoware::validation::IntersectionTurnDirectionTaggingValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> invalid_tag_map;
+  invalid_tag_map["invalid_tag"] = "leftt";  // cspell:disable-line
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 2), 53, invalid_tag_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 53);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Lanelet);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.TurnDirectionTagging-002] "
-    "Invalid turn_direction tag \"leftt\" is found.");  // cspell:disable-line
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionTurnDirectionTagging, CorrectIntersection)  // NOLINT for gtest

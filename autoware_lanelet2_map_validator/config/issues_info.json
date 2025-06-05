@@ -67,8 +67,8 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Dangling reference to non-existing intersection area of ID ${area_id} is detected.",
-      "ja": "この lanelet が参照する intersection area (ID ${area_id}) が見つかりませんでした。"
+      "en": "Dangling reference to non-existing intersection area of ID {area_id} is detected.",
+      "ja": "この lanelet が参照する intersection area (ID {area_id}) が見つかりませんでした。"
     }
   },
   "Intersection.TurnDirectionTagging-001": {
@@ -83,24 +83,24 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Invalid turn_direction tag ${invalid_tag} is found.",
-      "ja": "不適切な turn_direction タグ ${invalid_tag} が設定されています。"
+      "en": "Invalid turn_direction tag {invalid_tag} is found.",
+      "ja": "不適切な turn_direction タグ {invalid_tag} が設定されています。"
     }
   },
   "Intersection.IntersectionAreaValidity-001": {
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: ${boost_geometry_message})",
-      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： ${boost_geometry_message}）"
+      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
+      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
     }
   },
   "Intersection.IntersectionAreaSegmentType-001": {
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: ${point_ids})",
-      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: ${point_ids}）"
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: {point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: {point_ids}）"
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
@@ -151,12 +151,68 @@
       "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
     }
   },
+  "Intersection.VirtualTrafficLightLineOrder-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line isn't placed on a lanelet.",
+      "ja": "start_line が lanelet 上に引かれていません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Cannot find the end_line for referrer lanelet {id}. The end_line should be on the referrer lanelet.",
+      "ja": "本 virtual traffic light を参照する lanelet {id} に対応する end_line が見つかりません。いずれかの end_line は参照元の lanelet 上に引かれなければいけません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The start_line must not intersect with the referrer lanelet of the virtual traffic light.",
+      "ja": "virtual traffic light を参照する lanelet の上に対応する start_line が引かれてはいけません。"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Cannot find a lanelet path from start_line to end_line. (end_line ID: {id})",
+      "ja": "start_line から end_line へつながる lanelet 経路が見つかりません。(end_line ID: {id})"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-005": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The stop_line is not placed on the path from start_line to end_line. (end_line ID: {id})",
+      "ja": "stop_line が start_line から end_line までの lanelet 経路上に引かれていません。(end_line ID: {id})"
+    }
+  },
+  "Intersection.VirtualTrafficLightLineOrder-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The order of start line, stop line, and end line is wrong (end_line ID: {id})",
+      "ja": "start_line, stop_line, end_line の順序が誤っています。(end_line ID: {id})"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {
       "en": "No regulatory element refers to this traffic_light.",
       "ja": "この traffic_light に対応する regulatory element がありません。"
+    }
+  },
+  "TrafficLight.MissingReferrers-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element of traffic light must be referred by at least one lanelet.",
+      "ja": "traffic light subtype の regulatory element は最低一つの lanelet に参照されている必要があります。"
     }
   },
   "TrafficLight.RegulatoryElementDetails-001": {
@@ -291,7 +347,7 @@
     "severity": "info",
     "primitive": "regulatory element",
     "message": {
-      "en": "Regulatory element of crosswalk must have only one lanelet of crosswalk(refers).",
+      "en": "Regulatory element of crosswalk does not have a stop line(ref_line).",
       "ja": "ref_line (stop_line type の linestring) が設定されていません。"
     }
   },

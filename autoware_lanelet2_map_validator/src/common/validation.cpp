@@ -191,15 +191,21 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
   ValidatorInfo current_validator_info = validators.at(target_validator_name);
 
   bool prerequisite_complete = true;
+  std::string prereq_str = "";
   for (const auto & [prereq, forgive_warnings] :
        current_validator_info.prereq_with_forgive_warnings) {
+    prereq_str += prereq;
+    prereq_str += ", ";
     if (
       validators.at(prereq).max_severity == ValidatorInfo::Severity::ERROR ||
       (validators.at(prereq).max_severity == ValidatorInfo::Severity::WARNING &&
        !forgive_warnings)) {
       prerequisite_complete = false;
-      break;
     }
+  }
+
+  if (prereq_str.size() > 0) {
+    prereq_str.resize(prereq_str.size() - 2);
   }
 
   if (!prerequisite_complete) {
@@ -207,7 +213,8 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
     issue.severity = lanelet::validation::Severity::Error;
     issue.primitive = lanelet::validation::Primitive::Primitive;
     issue.id = lanelet::InvalId;
-    issue.message = "[General.PrerequisitesFailure-001] Prerequisites didn't pass.";
+    issue.message = "[General.PrerequisitesFailure-001] Prerequisites (" + prereq_str +
+                    ") didn't pass for requirement " + target_validator_name + ".";
     issues.push_back(issue);
   }
 

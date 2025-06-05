@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestIntersectionAreaSegmentType : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::IntersectionAreaSegmentTypeValidator::name());
 };
 
 TEST_F(TestIntersectionAreaSegmentType, ValidatorAvailability)  // NOLINT for gtest
@@ -45,14 +48,15 @@ TEST_F(TestIntersectionAreaSegmentType, CheckIrrelativePoint)  // NOLINT for gte
   lanelet::autoware::validation::IntersectionAreaSegmentTypeValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> ids_map;
+  ids_map["point_ids"] = "10804";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 10803, ids_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 10803);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Polygon);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.IntersectionAreaSegmentType-001] This intersection area is not made by points "
-    "from road_border linestrings or lanelet edges. (Point ID: (10804))");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionAreaSegmentType, CheckWrongLinestringType)  // NOLINT for gtest
@@ -62,16 +66,18 @@ TEST_F(TestIntersectionAreaSegmentType, CheckWrongLinestringType)  // NOLINT for
   lanelet::autoware::validation::IntersectionAreaSegmentTypeValidator checker;
   const auto & issues = checker(*map_);
 
+  std::map<std::string, std::string> ids_map;
+  ids_map["point_ids"] =
+    "10756, 10757, 10758, 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, "
+    "10769, 10770, 10771, 10772, 10773, 10774, 10775, 10776";
+
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 10803, ids_map);
+
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 10803);
-  EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-  EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::Polygon);
-  EXPECT_EQ(
-    issues[0].message,
-    "[Intersection.IntersectionAreaSegmentType-001] This intersection area is not made by points "
-    "from road_border linestrings or lanelet edges. (Point ID: (10756, 10757, 10758, 10759, 10760, "
-    "10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771, 10772, 10773, "
-    "10774, 10775, 10776))");
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestIntersectionAreaSegmentType, ValidIntersectionArea)  // NOLINT for gtest

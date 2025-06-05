@@ -22,7 +22,9 @@
 
 class TestLongitudinalSubtypeConnectionValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::LongitudinalSubtypeConnectionValidator::name());
 };
 
 TEST_F(TestLongitudinalSubtypeConnectionValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -56,20 +58,12 @@ TEST_F(TestLongitudinalSubtypeConnectionValidator, SplitCrosswalkAndWalkway)  //
   lanelet::autoware::validation::LongitudinalSubtypeConnectionValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 11028,
-    "[Lane.LongitudinalSubtypeConnection-001] A crosswalk or walkway type lanelet cannot have a "
-    "successor lanelet.");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 11028);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 11057);
+  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 11057,
-    "[Lane.LongitudinalSubtypeConnection-001] A crosswalk or walkway type lanelet cannot have a "
-    "successor lanelet.");
-
-  const lanelet::validation::Issues expected_issues = {expected_issue1, expected_issue2};
-
-  EXPECT_EQ(issues.size(), 2);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLongitudinalSubtypeConnectionValidator, WrongLongitudinalConnection)  // NOLINT for gtest
@@ -79,26 +73,13 @@ TEST_F(TestLongitudinalSubtypeConnectionValidator, WrongLongitudinalConnection) 
   lanelet::autoware::validation::LongitudinalSubtypeConnectionValidator checker;
   const auto & issues = checker(*map_);
 
-  const lanelet::validation::Issue expected_issue1(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 10303,
-    "[Lane.LongitudinalSubtypeConnection-002] A lanelet and its successor must have the same "
-    "subtype.");
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 2), 10303);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 2), 11050);
+  const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 2), 9178);
+  const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3};
 
-  const lanelet::validation::Issue expected_issue2(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 11050,
-    "[Lane.LongitudinalSubtypeConnection-002] A lanelet and its successor must have the same "
-    "subtype.");
-
-  const lanelet::validation::Issue expected_issue3(
-    lanelet::validation::Severity::Error, lanelet::validation::Primitive::Lanelet, 9178,
-    "[Lane.LongitudinalSubtypeConnection-002] A lanelet and its successor must have the same "
-    "subtype.");
-
-  const lanelet::validation::Issues expected_issues = {
-    expected_issue1, expected_issue2, expected_issue3};
-
-  EXPECT_EQ(issues.size(), 3);
-  EXPECT_TRUE(are_same_issues(issues, expected_issues));
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestLongitudinalSubtypeConnectionValidator, SampleMap)  // NOLINT for gtest

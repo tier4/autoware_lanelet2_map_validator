@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.2",
   "requirements": [
     {
       "id": "vm-01-03_vm-01-04",
@@ -10,15 +10,7 @@
       ]
     },
     {
-      "id": "vm-01-21",
-      "validators": [
-        {
-          "name": "mapping.lane.longitudinal_subtype_connection"
-        }
-      ]
-    },
-    {
-      "id": "vm-02-02",
+      "id": "vm-02-04",
       "validators": [
         {
           "name": "mapping.stop_line.missing_regulatory_elements"
@@ -49,22 +41,6 @@
         },
         {
           "name": "mapping.intersection.intersection_area_segment_type"
-        }
-      ]
-    },
-    {
-      "id": "vm-03-16",
-      "validators": [
-        {
-          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-        },
-        {
-          "name": "mapping.intersection.virtual_traffic_light_line_order",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            }
-          ]
         }
       ]
     },

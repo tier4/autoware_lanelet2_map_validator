@@ -56,27 +56,16 @@ lanelet::validation::Issues LightBulbsTaggingValidator::check_light_bulb_tagging
 
       for (const lanelet::ConstPoint3d & bulb : light_bulbs) {
         if (!bulb.hasAttribute("color")) {
-          issues.emplace_back(
-            lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, bulb.id(),
-            append_issue_code_prefix(
-              this->name(), 1, "A point representing a light bulb should have a color tag."));
+          issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), bulb.id()));
         } else if (
           expected_colors_.find(bulb.attribute("color").value()) == expected_colors_.end()) {
-          issues.emplace_back(
-            lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, bulb.id(),
-            append_issue_code_prefix(
-              this->name(), 2,
-              "The color of a light bulb should be either red, yellow, or green."));
+          issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), bulb.id()));
         }
 
         if (
           bulb.hasAttribute("arrow") &&
           expected_arrows_.find(bulb.attribute("arrow").value()) == expected_arrows_.end()) {
-          issues.emplace_back(
-            lanelet::validation::Severity::Error, lanelet::validation::Primitive::Point, bulb.id(),
-            append_issue_code_prefix(
-              this->name(), 3,
-              "The arrow of a light bulb should be either up, right, left, up_right, or up_left."));
+          issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 3), bulb.id()));
         }
       }
     }
