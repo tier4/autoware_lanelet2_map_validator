@@ -37,6 +37,10 @@ auto appendIssues(std::vector<T> & to, Container && from) ->
   }
 }
 
+/**
+ * @brief from the in_vec, remove elements whose type do not match the input, and
+ * push them to issues
+ */
 template <typename T>
 void checkPrimitivesType(
   std::vector<T> & in_vec, const std::string & expected_type,
@@ -57,6 +61,10 @@ void checkPrimitivesType(
   }
 }
 
+/**
+ * @brief from the in_vec, remove elements whose type and/or subtype do not match the input, and
+ * push them to issues
+ */
 template <typename T>
 void checkPrimitivesType(
   std::vector<T> & in_vec, const std::string & expected_type, const std::string & expected_subtype,

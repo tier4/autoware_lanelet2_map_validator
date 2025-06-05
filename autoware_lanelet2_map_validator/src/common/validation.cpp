@@ -73,12 +73,13 @@ Validators parse_validators(const json & json_data)
   return validators;
 }
 
-std::tuple<std::queue<std::string>, Validators> create_validation_queue(
+std::tuple<std::queue<ValidatorName>, Validators> create_validation_queue(
   const Validators & validators)
 {
-  std::unordered_map<std::string, std::vector<std::string>> graph;  // Graph of dependencies
-  std::unordered_map<std::string, int> indegree;  // Indegree (number of prerequisites)
-  std::queue<std::string> validation_queue;
+  std::unordered_map<ValidatorName, std::vector<ValidatorName>>
+    graph;  // Adjacency list graph of dependencies, i.e. V is dependent on K
+  std::unordered_map<ValidatorName, int> indegree;  // Indegree (number of prerequisites)
+  std::queue<ValidatorName> validation_queue;
   Validators remaining_validators;  // Validators left unprocessed
 
   // Build the graph and initialize indegree
@@ -87,13 +88,18 @@ std::tuple<std::queue<std::string>, Validators> create_validation_queue(
     remaining_validators[name] = info;  // Throw all validators to remaining_validators first
 
     for (const auto & [prereq, forgive_warnings] : info.prereq_with_forgive_warnings) {
+      /** `name` Node is dependent on `prereq` Node
+        +--------+      +------+
+        | prereq | ---> | name |
+        +--------+      +------+
+       */
       graph[prereq].push_back(name);  // prereq -> validator (prereq points to validator)
       indegree[name]++;               // Increment the indegree of the validator
     }
   }
 
   // Use a queue to store validators with no prerequisites (indegree == 0)
-  std::queue<std::string> q;
+  std::queue<ValidatorName> q;
   for (const auto & [name, count] : indegree) {
     if (count == 0) {
       q.push(name);
@@ -110,11 +116,11 @@ std::tuple<std::queue<std::string>, Validators> create_validation_queue(
     validation_queue.push(current_validator_name);
 
     // For each dependent validator, reduce indegree and add to the queue if indegree becomes 0
-    for (const auto & neighbor : graph[current_validator_name]) {
-      indegree[neighbor]--;
-      if (indegree[neighbor] == 0) {
-        q.push(neighbor);
-        remaining_validators.erase(neighbor);
+    for (const auto & to_do_next : graph[current_validator_name]) {
+      indegree[to_do_next]--;
+      if (indegree[to_do_next] == 0) {
+        q.push(to_do_next);
+        remaining_validators.erase(to_do_next);
       }
     }
   }
@@ -127,7 +133,7 @@ std::tuple<std::queue<std::string>, Validators> create_validation_queue(
 }
 
 // Function to find a validator block by name
-json & find_validator_block(json & json_data, const std::string & validator_name)
+json & find_validator_block(json & json_data, const ValidatorName & validator_name)
 {
   for (auto & requirement : json_data["requirements"]) {
     for (auto & validator : requirement["validators"]) {
@@ -177,7 +183,7 @@ std::vector<lanelet::validation::DetectedIssues> describe_unused_validators_to_j
 }
 
 std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
-  const Validators & validators, const std::string target_validator_name)
+  const Validators & validators, const ValidatorName & target_validator_name)
 {
   lanelet::validation::Issues issues;
   std::vector<lanelet::validation::DetectedIssues> detected_issues;
@@ -284,7 +290,7 @@ void summarize_validator_results(json & json_data)
 }
 
 lanelet::validation::ValidationConfig replace_validator(
-  const lanelet::validation::ValidationConfig & input, const std::string & validator_name)
+  const lanelet::validation::ValidationConfig & input, const ValidatorName & validator_name)
 {
   auto temp = input;
   temp.checksFilter = validator_name;

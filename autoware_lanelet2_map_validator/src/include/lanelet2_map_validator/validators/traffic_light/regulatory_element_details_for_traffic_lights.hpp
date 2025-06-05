@@ -35,6 +35,11 @@ public:
 
 private:
   bool isPedestrianTrafficLight(const lanelet::ConstLineStrings3d & traffic_lights);
+
+  /**
+   * @brief return true if all of the traffic_lights are referred by light_bulbs through
+   * "traffic_light_id" attribute
+   */
   bool isOneByOne(
     const lanelet::ConstLineStrings3d & traffic_lights,
     const lanelet::ConstLineStrings3d & light_bulbs);
