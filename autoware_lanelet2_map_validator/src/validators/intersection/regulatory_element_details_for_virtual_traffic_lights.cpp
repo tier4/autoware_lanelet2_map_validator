@@ -20,6 +20,7 @@
 
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -98,10 +99,21 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
     }
     for (const lanelet::ConstLineString3d & coordination : coordinations) {
       if (
-        coordination.attributeOr(lanelet::AttributeName::Type, "") !=
-        std::string("intersection_coordination")) {
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 6), coordination.id()));
+        std::find(
+          available_refers_type_.begin(), available_refers_type_.end(),
+          coordination.attributeOr(lanelet::AttributeName::Type, "")) ==
+        available_refers_type_.end()) {
+        std::string available_type_str;
+        for (const auto & str : available_refers_type_) {
+          available_type_str += str;
+          if (str != available_refers_type_.back()) {
+            available_type_str += ", ";
+          }
+        }
+        std::map<std::string, std::string> available_refers_map;
+        available_refers_map["available_refers"] = available_type_str;
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 6), coordination.id(), available_refers_map));
       }
     }
   }

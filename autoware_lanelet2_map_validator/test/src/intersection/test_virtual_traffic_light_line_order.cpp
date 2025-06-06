@@ -255,6 +255,18 @@ TEST_F(TestVirtualTrafficLightLineOrderValidator, OrderedStartEndStop)  // NOLIN
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
+TEST_F(
+  TestVirtualTrafficLightLineOrderValidator,
+  VirtualTrafficLightButDifferentRefersType)  // NOLINT for gtest
+{
+  load_target_map("intersection/virtual_traffic_light_with_wrong_refers_type.osm");
+
+  lanelet::autoware::validation::VirtualTrafficLightLineOrderValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
 TEST_F(TestVirtualTrafficLightLineOrderValidator, CorrectVirtualTrafficLight)  // NOLINT for gtest
 {
   load_target_map("intersection/correct_virtual_traffic_light.osm");
