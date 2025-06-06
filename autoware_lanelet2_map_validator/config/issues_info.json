@@ -147,8 +147,8 @@
     "severity": "Error",
     "primitive": "linestring",
     "message": {
-      "en": "The refers of a virtual_traffic_light regulatory element must be an \"intersection_coordination\" type.",
-      "ja": "virtual_traffic_light subtype の regulatory element の refers は \"intersection_coordination\" の type を持つ必要があります。"
+      "en": "The refers of a virtual_traffic_light regulatory element must be any of [{available_refers}] type.",
+      "ja": "virtual_traffic_light subtype の regulatory element の refers は [{available_refers}] のどれかの type を持つ必要があります。"
     }
   },
   "Intersection.VirtualTrafficLightLineOrder-001": {
