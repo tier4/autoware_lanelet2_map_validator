@@ -199,6 +199,14 @@
       "ja": "start_line, stop_line, end_line の順序が誤っています。(end_line ID: {id})"
     }
   },
+  "Intersection.VirtualTrafficLightSectionOverlap-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The virtual traffic light path has overlaps with that of regulatory element (ID: {reg_elem_id}).",
+      "ja": "virtual traffic light の経路が別の virtual traffic light (ID: {reg_elem_id}) と重複しています。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",

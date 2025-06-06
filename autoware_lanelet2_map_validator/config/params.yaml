@@ -1,2 +1,4 @@
 mapping.lane.border_sharing:
   iou_threshold: 0.05
+mapping.intersection.virtual_traffic_light_section_overlap:
+  validation_target_refers: [intersection_coordination]
