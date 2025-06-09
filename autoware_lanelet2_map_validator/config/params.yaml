@@ -1,3 +1,7 @@
+mapping.lane.centerline_stick_out:
+  dimension_mode: 3D
+  planar_threshold: 1e-6
+  height_threshold: 1e-6
 mapping.lane.border_sharing:
   iou_threshold: 0.05
 mapping.intersection.regulatory_element_details_for_virtual_traffic_lights:

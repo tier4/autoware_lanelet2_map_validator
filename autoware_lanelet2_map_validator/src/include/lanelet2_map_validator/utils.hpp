@@ -88,6 +88,26 @@ void checkPrimitivesType(
   }
 }
 
+/**
+ * @brief Converts a vector of primitives to a string listing their IDs.
+ * Note that the input should be a vector of actual objects not pointers of them.
+ *
+ * @tparam T (Type of primitives)
+ * @param primitives
+ * @return std::string
+ */
+template <typename T, typename = std::enable_if_t<!std::is_pointer<T>::value>>
+std::string primitives_to_ids_string(std::vector<T> & primitives)
+{
+  std::string result;
+  for (const auto iter = primitives.begin(); iter != primitives.end(); ++iter) {
+    result += std::to_string(*iter.id());
+    if (iter != std::prev(array.end())) {
+      result += ", ";
+    }
+  }
+}
+
 }  // namespace lanelet::autoware::validation
 
 std::string snake_to_upper_camel(const std::string & snake_case);
