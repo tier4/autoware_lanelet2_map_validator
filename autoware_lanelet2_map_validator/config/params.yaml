@@ -1,6 +1,6 @@
 mapping.lane.border_sharing:
   iou_threshold: 0.05
 mapping.intersection.regulatory_element_details_for_virtual_traffic_lights:
-  available_refers_type: [intersection_coordination]
+  supported_refers_type: [intersection_coordination]
 mapping.intersection.virtual_traffic_light_line_order:
   validation_target_refers: [intersection_coordination]

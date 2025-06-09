@@ -158,7 +158,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
 bool VirtualTrafficLightLineOrderValidator::is_target_virtual_traffic_light(
   const lanelet::RegulatoryElementConstPtr & reg_elem)
 {
-  bool is_virtual_traffic_light =
+  const bool is_virtual_traffic_light =
     reg_elem->attributeOr(lanelet::AttributeName::Subtype, std::string("")) ==
     VirtualTrafficLight::RuleName;
 

@@ -40,14 +40,14 @@ public:
   RegulatoryElementDetailsForVirtualTrafficLightsValidator()
   {
     const auto parameters = ValidatorConfigStore::parameters()[name()];
-    available_refers_type_ = get_parameter_or<std::vector<std::string>>(
-      parameters, "available_refers_type", {"intersection_coordination"});
+    supported_refers_type_ = get_parameter_or<std::vector<std::string>>(
+      parameters, "supported_refers_type", {"intersection_coordination"});
   }
 
 private:
   lanelet::validation::Issues check_regulatory_element_details_for_virtual_traffic_lights(
     const lanelet::LaneletMap & map);
-  std::vector<std::string> available_refers_type_;
+  std::vector<std::string> supported_refers_type_;
 };
 }  // namespace lanelet::autoware::validation
 

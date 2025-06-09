@@ -260,10 +260,10 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> available_refers_map;
-  available_refers_map["available_refers"] = "intersection_coordination";
+  std::map<std::string, std::string> supported_refers_map;
+  supported_refers_map["supported_refers"] = "intersection_coordination";
   const auto expected_issue =
-    construct_issue_from_code(issue_code(test_target_, 6), 11073, available_refers_map);
+    construct_issue_from_code(issue_code(test_target_, 6), 11073, supported_refers_map);
 
   EXPECT_EQ(issues.size(), 1);
 

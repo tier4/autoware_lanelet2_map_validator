@@ -92,28 +92,28 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
       }
     }
 
-    const lanelet::ConstLineStrings3d coordinations =
+    const lanelet::ConstLineStrings3d refers_linestrings =
       reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
-    if (coordinations.size() == 0) {
+    if (refers_linestrings.size() == 0) {
       issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
     }
-    for (const lanelet::ConstLineString3d & coordination : coordinations) {
+    for (const lanelet::ConstLineString3d & refers_linestring : refers_linestrings) {
       if (
         std::find(
-          available_refers_type_.begin(), available_refers_type_.end(),
-          coordination.attributeOr(lanelet::AttributeName::Type, "")) ==
-        available_refers_type_.end()) {
-        std::string available_type_str;
-        for (const auto & str : available_refers_type_) {
-          available_type_str += str;
-          if (str != available_refers_type_.back()) {
-            available_type_str += ", ";
+          supported_refers_type_.begin(), supported_refers_type_.end(),
+          refers_linestring.attributeOr(lanelet::AttributeName::Type, "")) ==
+        supported_refers_type_.end()) {
+        std::string supported_type_str;
+        for (const auto & str : supported_refers_type_) {
+          supported_type_str += str;
+          if (str != supported_refers_type_.back()) {
+            supported_type_str += ", ";
           }
         }
-        std::map<std::string, std::string> available_refers_map;
-        available_refers_map["available_refers"] = available_type_str;
+        std::map<std::string, std::string> supported_refers_map;
+        supported_refers_map["supported_refers"] = supported_type_str;
         issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 6), coordination.id(), available_refers_map));
+          issue_code(this->name(), 6), refers_linestring.id(), supported_refers_map));
       }
     }
   }
