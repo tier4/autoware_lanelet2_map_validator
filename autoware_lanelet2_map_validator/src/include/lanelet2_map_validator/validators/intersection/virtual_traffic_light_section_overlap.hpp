@@ -59,16 +59,6 @@ private:
     const lanelet::LaneletMap & map);
 
   /**
-   * @brief check whether the refers type of the virtual traffic light is
-   * the one given by the parameter
-   *
-   * @param reg_elem
-   * @return true
-   * @return false
-   */
-  bool is_target_virtual_traffic_light(const lanelet::RegulatoryElementConstPtr & reg_elem);
-
-  /**
    * @brief Get the all paths for each end_line of a virtual traffic light
    *
    * @param reg_elem

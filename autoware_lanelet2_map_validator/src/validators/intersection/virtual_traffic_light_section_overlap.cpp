@@ -166,32 +166,6 @@ VirtualTrafficLightSectionOverlapValidator::check_virtual_traffic_light_section_
   return issues;
 }
 
-bool VirtualTrafficLightSectionOverlapValidator::is_target_virtual_traffic_light(
-  const lanelet::RegulatoryElementConstPtr & reg_elem)
-{
-  bool is_virtual_traffic_light =
-    reg_elem->attributeOr(lanelet::AttributeName::Subtype, std::string("")) ==
-    VirtualTrafficLight::RuleName;
-
-  if (!is_virtual_traffic_light) {
-    return false;
-  }
-
-  // if refers type is not specifed all virtual traffic lights are targets
-  if (target_refers_.empty()) {
-    return true;
-  }
-
-  const auto refers =
-    reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers).front();
-  bool is_target_refers =
-    std::find(
-      target_refers_.begin(), target_refers_.end(),
-      refers.attributeOr(lanelet::AttributeName::Type, std::string(""))) != target_refers_.end();
-
-  return is_target_refers;
-}
-
 lanelet::routing::LaneletPaths VirtualTrafficLightSectionOverlapValidator::get_all_possible_paths(
   const lanelet::RegulatoryElementConstPtr & reg_elem, const lanelet::LaneletMap & map)
 {
