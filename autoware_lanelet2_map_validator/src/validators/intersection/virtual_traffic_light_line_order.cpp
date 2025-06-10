@@ -62,9 +62,7 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
     lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
   for (const auto & reg_elem : map.regulatoryElementLayer) {
-    if (
-      reg_elem->attributeOr(lanelet::AttributeName::Subtype, std::string("")) !=
-      VirtualTrafficLight::RuleName) {
+    if (!is_target_virtual_traffic_light(reg_elem)) {
       continue;
     }
 
@@ -155,6 +153,32 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
   }
 
   return issues;
+}
+
+bool VirtualTrafficLightLineOrderValidator::is_target_virtual_traffic_light(
+  const lanelet::RegulatoryElementConstPtr & reg_elem)
+{
+  const bool is_virtual_traffic_light =
+    reg_elem->attributeOr(lanelet::AttributeName::Subtype, std::string("")) ==
+    VirtualTrafficLight::RuleName;
+
+  if (!is_virtual_traffic_light) {
+    return false;
+  }
+
+  // if refers type is not specifed all virtual traffic lights are targets
+  if (target_refers_.empty()) {
+    return true;
+  }
+
+  const auto refers =
+    reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers).front();
+  bool is_target_refers =
+    std::find(
+      target_refers_.begin(), target_refers_.end(),
+      refers.attributeOr(lanelet::AttributeName::Type, std::string(""))) != target_refers_.end();
+
+  return is_target_refers;
 }
 
 lanelet::Optional<lanelet::ConstLanelet> VirtualTrafficLightLineOrderValidator::belonging_lanelet(
