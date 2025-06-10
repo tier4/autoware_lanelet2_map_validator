@@ -15,8 +15,13 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__REGULATORY_ELEMENT_DETAILS_FOR_VIRTUAL_TRAFFIC_LIGHTS_HPP_  // NOLINT
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__REGULATORY_ELEMENT_DETAILS_FOR_VIRTUAL_TRAFFIC_LIGHTS_HPP_  // NOLINT
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
+
+#include <string>
+#include <vector>
 
 namespace lanelet::autoware::validation
 {
@@ -32,9 +37,17 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  RegulatoryElementDetailsForVirtualTrafficLightsValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    supported_refers_type_ = get_parameter_or<std::vector<std::string>>(
+      parameters, "supported_refers_type", {"intersection_coordination"});
+  }
+
 private:
   lanelet::validation::Issues check_regulatory_element_details_for_virtual_traffic_lights(
     const lanelet::LaneletMap & map);
+  std::vector<std::string> supported_refers_type_;
 };
 }  // namespace lanelet::autoware::validation
 

@@ -19,6 +19,7 @@
 #include <lanelet2_core/LaneletMap.h>
 
 #include <algorithm>
+#include <map>
 #include <string>
 
 class TestRegulatoryElementDetailsForVirtualTrafficLightsValidator : public MapValidationTester
@@ -259,7 +260,10 @@ TEST_F(
   lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 6), 11073);
+  std::map<std::string, std::string> supported_refers_map;
+  supported_refers_map["supported_refers"] = "intersection_coordination";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 6), 11073, supported_refers_map);
 
   EXPECT_EQ(issues.size(), 1);
 
