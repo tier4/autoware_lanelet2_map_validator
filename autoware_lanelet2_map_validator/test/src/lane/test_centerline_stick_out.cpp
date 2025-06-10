@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestCenterlineStickOutValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::CenterlineStickOutValidator::name());
 };
 
 TEST_F(TestCenterlineStickOutValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -36,6 +39,50 @@ TEST_F(TestCenterlineStickOutValidator, ValidatorAvailability)  // NOLINT for gt
   const uint32_t expected_validator_num = 1;
   EXPECT_EQ(expected_validator_num, validators.size());
   EXPECT_EQ(expected_validator_name, validators[0]);
+}
+
+TEST_F(TestCenterlineStickOutValidator, CenterlineOverpassing)  // NOLINT for gtest
+{
+  load_target_map("lane/centerline_overpassing_lanes.osm");
+
+  lanelet::autoware::validation::CenterlineStickOutValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> ids_map;
+  ids_map["point_ids"] = "89, 90, 91, 92, 93";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 100, ids_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestCenterlineStickOutValidator, CenterlineWithWrongHeight)  // NOLINT for gtest
+{
+  load_target_map("lane/centerline_with_strange_height_point.osm");
+
+  lanelet::autoware::validation::CenterlineStickOutValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> ids_map;
+  ids_map["point_ids"] = "120";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 129, ids_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestCenterlineStickOutValidator, CorrectCenterline)  // NOLINT for gtest
+{
+  load_target_map("lane/lanes_with_correct_centerlines.osm");
+
+  lanelet::autoware::validation::CenterlineStickOutValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestCenterlineStickOutValidator, SampleMap)  // NOLINT for gtest
