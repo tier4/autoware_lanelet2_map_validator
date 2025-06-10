@@ -15,8 +15,12 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_STICK_OUT_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_STICK_OUT_HPP_
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
+
+#include <string>
 
 namespace lanelet::autoware::validation
 {
@@ -28,8 +32,24 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  CenterlineStickOutValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    const auto dimension_mode_str =
+      get_parameter_or<std::string>(parameters, "dimension_mode", "3D");
+    dimension_mode_ = (dimension_mode_str == "3D") ? threeD : twoD;
+    planar_threshold_ = get_parameter_or<double>(parameters, "planar_threshold", 1e-6);
+    height_threshold_ = get_parameter_or<double>(parameters, "height_threshold", 1e-6);
+  }
+
 private:
   lanelet::validation::Issues check_centerline_stick_out(const lanelet::LaneletMap & map);
+
+  enum Mode { twoD, threeD };
+
+  Mode dimension_mode_;
+  double planar_threshold_;
+  double height_threshold_;
 };
 }  // namespace lanelet::autoware::validation
 

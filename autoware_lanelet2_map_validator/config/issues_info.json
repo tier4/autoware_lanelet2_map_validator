@@ -47,6 +47,14 @@
       "ja": "この centerline は lanelet の外にはみ出しています。(Point IDs: {point_ids})"
     }
   },
+  "Lane.CenterlineStickOut-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This centerline contains points that are distant from the lanelet plane. (Point IDs: {point_ids})",
+      "ja": "この centerline は lanelet 平面から離れた点を持っています。(Point IDs: {point_ids})"
+    }
+  },
   "Lane.LongitudinalSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",

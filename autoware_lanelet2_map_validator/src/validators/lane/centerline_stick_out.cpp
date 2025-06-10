@@ -16,13 +16,14 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <Eigen/Dense>
+
 #include <boost/geometry.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/Point.h>
 #include <lanelet2_core/geometry/Polygon.h>
 
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -53,25 +54,14 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
     }
 
     const lanelet::ConstLineString3d centerline3d = lane.centerline3d();
-    std::cout << "Lane " << lane.id() << " has custom centerline " << centerline3d.id()
-              << std::endl;
 
     const lanelet::BasicPolygon2d lane_polygon2d = lane.polygon2d().basicPolygon();
     const lanelet::BasicPolygon3d lane_polygon3d = lane.polygon3d().basicPolygon();
 
-    std::cout << "[";
-    for (const auto & point : lane_polygon2d) {
-      std::cout << point[0] << ", " << point[1] << ";" << std::endl;
-    }
-    std::cout << "]" << std::endl;
-
     lanelet::ConstPoints3d sticking_out_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
-      std::cout << "Point " << point.id() << std::endl;
-      std::cout << "[" << point.x() << ", " << point.y() << "]" << std::endl;
-      if (!boost::geometry::covered_by(point.basicPoint2d(), lane_polygon2d)) {
+      if (boost::geometry::distance(point.basicPoint2d(), lane_polygon2d) > planar_threshold_) {
         sticking_out_points.push_back(point);
-        std::cout << "    stick out" << std::endl;
       }
     }
     if (!sticking_out_points.empty()) {
@@ -79,6 +69,43 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
       point_ids_map["point_ids"] = primitives_to_ids_string(sticking_out_points);
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 1), centerline3d.id(), point_ids_map));
+    }
+
+    if (dimension_mode_ == twoD) {
+      continue;
+    }
+
+    Eigen::Vector3d centroid(0, 0, 0);
+    for (const auto & point : lane_polygon3d) {
+      centroid += point;
+    }
+    centroid /= lane_polygon3d.size();
+
+    Eigen::MatrixXd centered(lane_polygon3d.size(), 3);
+    for (size_t i = 0; i < lane_polygon3d.size(); ++i) {
+      centered.row(i) = lane_polygon3d[i] - centroid;
+    }
+
+    const Eigen::Matrix3d cov = centered.transpose() * centered;
+
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> solver(cov);
+    if (solver.info() != Eigen::Success) {
+      throw std::runtime_error("Eigen decomposition failed in centerline_tick_out");
+    }
+
+    Eigen::Vector3d normal = solver.eigenvectors().col(0).normalized();
+
+    lanelet::ConstPoints3d distant_points;
+    for (const lanelet::ConstPoint3d & point : centerline3d) {
+      if (std::abs((point.basicPoint() - centroid).dot(normal)) > height_threshold_) {
+        distant_points.push_back(point);
+      }
+    }
+    if (!distant_points.empty()) {
+      std::map<std::string, std::string> point_ids_map;
+      point_ids_map["point_ids"] = primitives_to_ids_string(distant_points);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 2), centerline3d.id(), point_ids_map));
     }
   }
 
