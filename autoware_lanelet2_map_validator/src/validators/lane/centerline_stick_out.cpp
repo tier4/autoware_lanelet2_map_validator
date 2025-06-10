@@ -71,10 +71,12 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
         construct_issue_from_code(issue_code(this->name(), 1), centerline3d.id(), point_ids_map));
     }
 
+    // quit validation if this is 2D mode
     if (dimension_mode_ == twoD) {
       continue;
     }
 
+    // estimate the lanelet plane
     Eigen::Vector3d centroid(0, 0, 0);
     for (const auto & point : lane_polygon3d) {
       centroid += point;
@@ -95,6 +97,7 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
 
     Eigen::Vector3d normal = solver.eigenvectors().col(0).normalized();
 
+    // validate the point height based from the estimatedlanelet plane
     lanelet::ConstPoints3d distant_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
       if (std::abs((point.basicPoint() - centroid).dot(normal)) > height_threshold_) {
