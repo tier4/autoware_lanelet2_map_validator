@@ -97,7 +97,7 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
 
     Eigen::Vector3d normal = solver.eigenvectors().col(0).normalized();
 
-    // validate the point height based from the estimatedlanelet plane
+    // validate the point height based from the estimated lanelet plane
     lanelet::ConstPoints3d distant_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
       if (std::abs((point.basicPoint() - centroid).dot(normal)) > height_threshold_) {
