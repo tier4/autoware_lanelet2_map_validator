@@ -35,8 +35,6 @@ int main(int argc, char * argv[])
     lanelet::autoware::validation::parseCommandLine(
       argc, const_cast<const char **>(argv));  // NOLINT
 
-  (void)meta_config;
-
   // Print help (Already done in parseCommandLine)
   if (meta_config.command_line_config.help) {
     return 0;
