@@ -19,6 +19,12 @@
 #include <boost/geometry.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/Point.h>
+#include <lanelet2_core/geometry/Polygon.h>
+
+#include <iostream>
+#include <map>
+#include <string>
 
 namespace lanelet::autoware::validation
 {
@@ -41,21 +47,38 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
 {
   lanelet::validation::Issues issues;
 
-  for (const auto lane : map.laneletLayer) {
+  for (const auto & lane : map.laneletLayer) {
     if (!lane.hasCustomCenterline()) {
       continue;
     }
 
     const lanelet::ConstLineString3d centerline3d = lane.centerline3d();
+    std::cout << "Lane " << lane.id() << " has custom centerline " << centerline3d.id()
+              << std::endl;
 
     const lanelet::BasicPolygon2d lane_polygon2d = lane.polygon2d().basicPolygon();
     const lanelet::BasicPolygon3d lane_polygon3d = lane.polygon3d().basicPolygon();
 
+    std::cout << "[";
+    for (const auto & point : lane_polygon2d) {
+      std::cout << point[0] << ", " << point[1] << ";" << std::endl;
+    }
+    std::cout << "]" << std::endl;
+
     lanelet::ConstPoints3d sticking_out_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
+      std::cout << "Point " << point.id() << std::endl;
+      std::cout << "[" << point.x() << ", " << point.y() << "]" << std::endl;
       if (!boost::geometry::covered_by(point.basicPoint2d(), lane_polygon2d)) {
         sticking_out_points.push_back(point);
+        std::cout << "    stick out" << std::endl;
       }
+    }
+    if (!sticking_out_points.empty()) {
+      std::map<std::string, std::string> point_ids_map;
+      point_ids_map["point_ids"] = primitives_to_ids_string(sticking_out_points);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 1), centerline3d.id(), point_ids_map));
     }
   }
 
