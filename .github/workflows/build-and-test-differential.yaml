@@ -18,19 +18,7 @@ jobs:
       - prevent-no-label-execution
     if: ${{ needs.prevent-no-label-execution.outputs.run == 'true' }}
     runs-on: ubuntu-22.04
-    container: ${{ matrix.container }}${{ matrix.container-suffix }}
-    strategy:
-      fail-fast: false
-      matrix:
-        rosdistro:
-          - humble
-        container-suffix:
-          - ""
-          - -cuda
-        include:
-          - rosdistro: humble
-            container: ghcr.io/autowarefoundation/autoware:core-devel
-            build-depends-repos: build_depends.repos
+    container: ghcr.io/autowarefoundation/autoware:core-devel
 
     steps:
       - name: Set PR fetch depth
@@ -56,18 +44,18 @@ jobs:
         if: ${{ steps.get-modified-packages.outputs.modified-packages != '' }}
         uses: autowarefoundation/autoware-github-actions/colcon-build@v1
         with:
-          rosdistro: ${{ matrix.rosdistro }}
+          rosdistro: humble
           target-packages: ${{ steps.get-modified-packages.outputs.modified-packages }}
-          build-depends-repos: ${{ matrix.build-depends-repos }}
+          build-depends-repos: build_depends.repos
 
       - name: Test
         id: test
         if: ${{ steps.get-modified-packages.outputs.modified-packages != '' }}
         uses: autowarefoundation/autoware-github-actions/colcon-test@v1
         with:
-          rosdistro: ${{ matrix.rosdistro }}
+          rosdistro: humble
           target-packages: ${{ steps.get-modified-packages.outputs.modified-packages }}
-          build-depends-repos: ${{ matrix.build-depends-repos }}
+          build-depends-repos: build_depends.repos
 
       - name: Upload coverage to CodeCov
         if: ${{ steps.test.outputs.coverage-report-files != '' }}
