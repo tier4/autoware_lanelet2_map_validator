@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lanelet2_map_validator/validators/lane/centerline_stick_out.hpp"
+#include "lanelet2_map_validator/validators/lane/centerline_geometry.hpp"
 
 #include "lanelet2_map_validator/utils.hpp"
 
@@ -31,19 +31,19 @@ namespace lanelet::autoware::validation
 {
 namespace
 {
-lanelet::validation::RegisterMapValidator<CenterlineStickOutValidator> reg;
+lanelet::validation::RegisterMapValidator<CenterlineGeometryValidator> reg;
 }
 
-lanelet::validation::Issues CenterlineStickOutValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues CenterlineGeometryValidator::operator()(const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
-  lanelet::autoware::validation::appendIssues(issues, check_centerline_stick_out(map));
+  lanelet::autoware::validation::appendIssues(issues, check_centerline_geometry(map));
 
   return issues;
 }
 
-lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_out(
+lanelet::validation::Issues CenterlineGeometryValidator::check_centerline_geometry(
   const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
@@ -60,6 +60,10 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
 
     lanelet::ConstPoints3d sticking_out_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
+      // skip edge points
+      if (point == centerline3d.front() || point == centerline3d.back()) {
+        continue;
+      }
       if (boost::geometry::distance(point.basicPoint2d(), lane_polygon2d) > planar_threshold_) {
         sticking_out_points.push_back(point);
       }
@@ -92,7 +96,7 @@ lanelet::validation::Issues CenterlineStickOutValidator::check_centerline_stick_
 
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> solver(cov);
     if (solver.info() != Eigen::Success) {
-      throw std::runtime_error("Eigen decomposition failed in centerline_tick_out");
+      throw std::runtime_error("Eigen decomposition failed in centerline_geometry");
     }
 
     Eigen::Vector3d normal = solver.eigenvectors().col(0).normalized();

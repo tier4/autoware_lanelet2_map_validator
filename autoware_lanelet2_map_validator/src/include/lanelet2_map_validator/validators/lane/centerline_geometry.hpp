@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_STICK_OUT_HPP_
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_STICK_OUT_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_GEOMETRY_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_GEOMETRY_HPP_
 
 #include "lanelet2_map_validator/config_store.hpp"
 
@@ -24,26 +24,26 @@
 
 namespace lanelet::autoware::validation
 {
-class CenterlineStickOutValidator : public lanelet::validation::MapValidator
+class CenterlineGeometryValidator : public lanelet::validation::MapValidator
 {
 public:
   // Write the validator's name here
-  constexpr static const char * name() { return "mapping.lane.centerline_stick_out"; }
+  constexpr static const char * name() { return "mapping.lane.centerline_geometry"; }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
-  CenterlineStickOutValidator()
+  CenterlineGeometryValidator()
   {
     const auto parameters = ValidatorConfigStore::parameters()[name()];
     const auto dimension_mode_str =
-      get_parameter_or<std::string>(parameters, "dimension_mode", "3D");
+      get_parameter_or<std::string>(parameters, "dimension_mode", "2D");
     dimension_mode_ = (dimension_mode_str == "3D") ? threeD : twoD;
     planar_threshold_ = get_parameter_or<double>(parameters, "planar_threshold", 1e-6);
     height_threshold_ = get_parameter_or<double>(parameters, "height_threshold", 1e-6);
   }
 
 private:
-  lanelet::validation::Issues check_centerline_stick_out(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_centerline_geometry(const lanelet::LaneletMap & map);
 
   enum Mode { twoD, threeD };
 
@@ -53,4 +53,4 @@ private:
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_STICK_OUT_HPP_
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__CENTERLINE_GEOMETRY_HPP_

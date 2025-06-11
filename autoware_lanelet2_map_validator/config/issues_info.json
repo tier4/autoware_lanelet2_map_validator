@@ -39,7 +39,7 @@
       "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
     }
   },
-  "Lane.CenterlineStickOut-001": {
+  "Lane.CenterlineGeometry-001": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {
@@ -47,7 +47,7 @@
       "ja": "この centerline は lanelet の外にはみ出しています。(Point IDs: {point_ids})"
     }
   },
-  "Lane.CenterlineStickOut-002": {
+  "Lane.CenterlineGeometry-002": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {

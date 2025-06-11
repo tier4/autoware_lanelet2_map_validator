@@ -1,4 +1,4 @@
-mapping.lane.centerline_stick_out:
+mapping.lane.centerline_geometry:
   dimension_mode: 3D
   planar_threshold: 0.01
   height_threshold: 0.1
