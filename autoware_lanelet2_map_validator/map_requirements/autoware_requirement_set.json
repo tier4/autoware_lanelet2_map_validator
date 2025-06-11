@@ -10,6 +10,14 @@
       ]
     },
     {
+      "id": "vm-01-10",
+      "validators": [
+        {
+          "name": "mapping.lane.centerline_geometry"
+        }
+      ]
+    },
+    {
       "id": "vm-01-21",
       "validators": [
         {

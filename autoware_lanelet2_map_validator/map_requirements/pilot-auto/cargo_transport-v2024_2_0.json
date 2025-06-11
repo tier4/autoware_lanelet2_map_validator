@@ -2,6 +2,14 @@
   "version": "1.0.3",
   "requirements": [
     {
+      "id": "vm-01-10",
+      "validators": [
+        {
+          "name": "mapping.lane.centerline_geometry"
+        }
+      ]
+    },
+    {
       "id": "vm-02-04",
       "validators": [
         {
