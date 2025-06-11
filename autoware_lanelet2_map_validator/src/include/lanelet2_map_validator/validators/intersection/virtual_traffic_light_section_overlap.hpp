@@ -65,7 +65,7 @@ private:
    * @param map
    * @return lanelet::routing::LaneletPaths
    */
-  lanelet::routing::LaneletPaths get_all_possible_paths(
+  lanelet::routing::LaneletPaths get_interval_paths_from_virtual_traffic_light(
     const lanelet::RegulatoryElementConstPtr & reg_elem, const lanelet::LaneletMap & map);
 
   /**

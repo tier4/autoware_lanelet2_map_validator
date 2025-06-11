@@ -67,7 +67,7 @@ VirtualTrafficLightSectionOverlapValidator::check_virtual_traffic_light_section_
       continue;
     }
     const auto reg_elem = reg_elems.front();
-    const auto all_paths = get_all_possible_paths(reg_elem, map);
+    const auto all_paths = get_interval_paths_from_virtual_traffic_light(reg_elem, map);
     auto it = std::find_if(
       all_paths.begin(), all_paths.end(), [lane](const lanelet::routing::LaneletPath & v) {
         return !v.empty() && v.back().id() == lane.id();
@@ -83,28 +83,30 @@ VirtualTrafficLightSectionOverlapValidator::check_virtual_traffic_light_section_
     // Collect nearby virtual traffic lights
     std::vector<VirtualTrafficLight::ConstPtr> nearby_reg_elems;
     for (const auto & nearby_lane : nearby_lanelets) {
-      const auto temp_reg_elems = nearby_lane.regulatoryElementsAs<VirtualTrafficLight>();
-      if (temp_reg_elems.empty()) {
+      const auto other_reg_elems = nearby_lane.regulatoryElementsAs<VirtualTrafficLight>();
+      if (other_reg_elems.empty()) {
         continue;
       }
-      const auto temp_reg_elem = temp_reg_elems.front();
+      const auto other_reg_elem = other_reg_elems.front();
       if (
-        temp_reg_elem->id() == reg_elem->id() || !is_target_virtual_traffic_light(temp_reg_elem)) {
+        other_reg_elem->id() == reg_elem->id() ||
+        !is_target_virtual_traffic_light(other_reg_elem)) {
         continue;
       }
       bool is_already_counted = std::any_of(
         nearby_reg_elems.begin(), nearby_reg_elems.end(),
-        [temp_reg_elem](const VirtualTrafficLight::ConstPtr & vtl) {
-          return vtl->id() == temp_reg_elem->id();
+        [other_reg_elem](const VirtualTrafficLight::ConstPtr & vtl) {
+          return vtl->id() == other_reg_elem->id();
         });
       if (!is_already_counted) {
-        nearby_reg_elems.push_back(temp_reg_elem);
+        nearby_reg_elems.push_back(other_reg_elem);
       }
     }
 
     // Check whether nearby virtual traffic lights have overlapping paths
     for (const auto & nearby_reg_elem : nearby_reg_elems) {
-      const auto all_nearby_paths = get_all_possible_paths(nearby_reg_elem, map);
+      const auto all_nearby_paths =
+        get_interval_paths_from_virtual_traffic_light(nearby_reg_elem, map);
       for (const auto & nearby_path : all_nearby_paths) {
         const auto overlaps = get_overlapped_lanelets(target_path, nearby_path);
         if (overlaps.empty()) {
@@ -166,7 +168,8 @@ VirtualTrafficLightSectionOverlapValidator::check_virtual_traffic_light_section_
   return issues;
 }
 
-lanelet::routing::LaneletPaths VirtualTrafficLightSectionOverlapValidator::get_all_possible_paths(
+lanelet::routing::LaneletPaths
+VirtualTrafficLightSectionOverlapValidator::get_interval_paths_from_virtual_traffic_light(
   const lanelet::RegulatoryElementConstPtr & reg_elem, const lanelet::LaneletMap & map)
 {
   lanelet::routing::LaneletPaths all_paths;
