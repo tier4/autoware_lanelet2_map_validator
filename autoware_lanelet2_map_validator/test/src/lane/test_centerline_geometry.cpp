@@ -41,6 +41,23 @@ TEST_F(TestCenterlineGeometryValidator, ValidatorAvailability)  // NOLINT for gt
   EXPECT_EQ(expected_validator_name, validators[0]);
 }
 
+TEST_F(TestCenterlineGeometryValidator, CenterlineEndingTooEarly)  // NOLINT for gtest
+{
+  load_target_map("lane/centerline_ending_too_early.osm");
+
+  lanelet::autoware::validation::CenterlineGeometryValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> id_map;
+  id_map["point_id"] = "125";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 129, id_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
 TEST_F(TestCenterlineGeometryValidator, CenterlineOverpassing)  // NOLINT for gtest
 {
   load_target_map("lane/centerline_overpassing_lanes.osm");
@@ -50,7 +67,7 @@ TEST_F(TestCenterlineGeometryValidator, CenterlineOverpassing)  // NOLINT for gt
 
   std::map<std::string, std::string> ids_map;
   ids_map["point_ids"] = "89, 90, 91, 92, 93";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 100, ids_map);
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 100, ids_map);
 
   EXPECT_EQ(issues.size(), 1);
 
@@ -67,7 +84,7 @@ TEST_F(TestCenterlineGeometryValidator, CenterlineWithWrongHeight)  // NOLINT fo
 
   std::map<std::string, std::string> ids_map;
   ids_map["point_ids"] = "120";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 129, ids_map);
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 129, ids_map);
 
   EXPECT_EQ(issues.size(), 1);
 

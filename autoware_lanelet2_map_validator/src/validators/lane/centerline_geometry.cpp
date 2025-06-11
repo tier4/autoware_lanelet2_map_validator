@@ -55,16 +55,38 @@ lanelet::validation::Issues CenterlineGeometryValidator::check_centerline_geomet
 
     const lanelet::ConstLineString3d centerline3d = lane.centerline3d();
 
+    const lanelet::BasicLineString2d starting_edge = {
+      lane.leftBound2d().front().basicPoint2d(), lane.rightBound2d().front().basicPoint2d()};
+    const lanelet::BasicLineString2d ending_edge = {
+      lane.leftBound2d().back().basicPoint2d(), lane.rightBound2d().back().basicPoint2d()};
+
     const lanelet::BasicPolygon2d lane_polygon2d = lane.polygon2d().basicPolygon();
     const lanelet::BasicPolygon3d lane_polygon3d = lane.polygon3d().basicPolygon();
 
     lanelet::ConstPoints3d sticking_out_points;
     for (const lanelet::ConstPoint3d & point : centerline3d) {
-      // skip edge points
-      if (point == centerline3d.front() || point == centerline3d.back()) {
+      // if starting point of the centerline
+      if (point == centerline3d.front()) {
+        if (boost::geometry::distance(starting_edge, point.basicPoint2d()) > planar_threshold_) {
+          std::map<std::string, std::string> point_id_map;
+          point_id_map["point_id"] = std::to_string(point.id());
+          issues.emplace_back(construct_issue_from_code(
+            issue_code(this->name(), 1), centerline3d.id(), point_id_map));
+        }
         continue;
       }
-      if (boost::geometry::distance(point.basicPoint2d(), lane_polygon2d) > planar_threshold_) {
+      // if ending point of the centerline
+      if (point == centerline3d.back()) {
+        if (boost::geometry::distance(ending_edge, point.basicPoint2d()) > planar_threshold_) {
+          std::map<std::string, std::string> point_id_map;
+          point_id_map["point_id"] = std::to_string(point.id());
+          issues.emplace_back(construct_issue_from_code(
+            issue_code(this->name(), 1), centerline3d.id(), point_id_map));
+        }
+        continue;
+      }
+      // else points of the centerline
+      if (!boost::geometry::covered_by(point.basicPoint2d(), lane_polygon2d)) {
         sticking_out_points.push_back(point);
       }
     }
@@ -72,7 +94,7 @@ lanelet::validation::Issues CenterlineGeometryValidator::check_centerline_geomet
       std::map<std::string, std::string> point_ids_map;
       point_ids_map["point_ids"] = primitives_to_ids_string(sticking_out_points);
       issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 1), centerline3d.id(), point_ids_map));
+        construct_issue_from_code(issue_code(this->name(), 2), centerline3d.id(), point_ids_map));
     }
 
     // quit validation if this is 2D mode
@@ -112,7 +134,7 @@ lanelet::validation::Issues CenterlineGeometryValidator::check_centerline_geomet
       std::map<std::string, std::string> point_ids_map;
       point_ids_map["point_ids"] = primitives_to_ids_string(distant_points);
       issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 2), centerline3d.id(), point_ids_map));
+        construct_issue_from_code(issue_code(this->name(), 3), centerline3d.id(), point_ids_map));
     }
   }
 
