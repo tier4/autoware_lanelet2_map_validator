@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_  // NOLINT
+
+#include "lanelet2_map_validator/config_store.hpp"
 
 #include "lanelet2_map_validator/config_store.hpp"
 
@@ -44,12 +46,12 @@ public:
       parameters, "validation_target_refers", {"intersection_coordination"});
   }
 
-private:
-  lanelet::validation::Issues check_virtual_traffic_light_line_order(
-    const lanelet::LaneletMap & map);
+protected:
   bool is_target_virtual_traffic_light(const lanelet::RegulatoryElementConstPtr & reg_elem);
   lanelet::Optional<lanelet::ConstLanelet> belonging_lanelet(
     const lanelet::ConstLineString3d & linestring, const lanelet::LaneletMap & map);
+  lanelet::ConstLineString3d get_aligned_linestring(
+    const lanelet::ConstLineString3d & linestring, const lanelet::CompoundLineString3d & base_arc);
   lanelet::Optional<lanelet::ConstLineString3d> select_end_line(
     const lanelet::ConstLineStrings3d & candidate_lines,
     const lanelet::ConstLanelet & base_lanelet);
@@ -57,8 +59,10 @@ private:
     const lanelet::ConstLineString3d & linestring, const lanelet::CompoundPolygon3d & polygon);
   double intersection_ratio(
     const lanelet::ConstLineString3d & linestring, const lanelet::ConstLanelet & lane);
-  lanelet::ConstLineString3d get_aligned_linestring(
-    const lanelet::ConstLineString3d & linestring, const lanelet::CompoundLineString3d & base_arc);
+
+private:
+  lanelet::validation::Issues check_virtual_traffic_light_line_order(
+    const lanelet::LaneletMap & map);
   lanelet::CompoundLineString3d get_concatenated_bound(
     const lanelet::routing::LaneletPath & path, const bool get_left = true);
   bool is_ordered_in_length_manner(
@@ -70,3 +74,4 @@ private:
 }  // namespace lanelet::autoware::validation
 
 #endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__VIRTUAL_TRAFFIC_LIGHT_LINE_ORDER_HPP_
+        // // NOLINT

@@ -4,3 +4,5 @@ mapping.intersection.regulatory_element_details_for_virtual_traffic_lights:
   supported_refers_type: [intersection_coordination]
 mapping.intersection.virtual_traffic_light_line_order:
   validation_target_refers: [intersection_coordination]
+mapping.intersection.virtual_traffic_light_section_overlap:
+  validation_target_refers: [intersection_coordination]

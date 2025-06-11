@@ -24,6 +24,22 @@
           ]
         }
       ]
+    },
+    {
+      "id": "vm-03-18",
+      "validators": [
+        {
+          "name": "mapping.intersection.virtual_traffic_light_section_overlap",
+          "prerequisites": [
+            {
+              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
+            },
+            {
+              "name": "mapping.intersection.virtual_traffic_light_line_order"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
