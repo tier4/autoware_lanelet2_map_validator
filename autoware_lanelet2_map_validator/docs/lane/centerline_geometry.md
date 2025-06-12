@@ -8,8 +8,9 @@ mapping.lane.centerline_geometry
 
 This validator checks whether custom centerline of lanelets have valid geometry such as...
 
+- The edge points are set on the lanelet edge
 - All points of the centerline is inside the belonging lanelet
-- All points are not apart from the lanelet plane.
+- All points are not apart from the lanelet plane
 
 The validator will output the following issues with the corresponding primitive ID.
 
