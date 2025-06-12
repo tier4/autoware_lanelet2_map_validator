@@ -39,6 +39,30 @@
       "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
     }
   },
+  "Lane.CenterlineGeometry-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The edge point of the centerline is too far from the lanelet edge. (Point ID: {point_id})",
+      "ja": "この centerline の端点が lanelet の端から離れすぎています。(Point ID: {point_id})"
+    }
+  },
+  "Lane.CenterlineGeometry-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This centerline contains points outside of the lanelet. (Point IDs: {point_ids})",
+      "ja": "この centerline は lanelet の外にはみ出しています。(Point IDs: {point_ids})"
+    }
+  },
+  "Lane.CenterlineGeometry-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This centerline contains points that are distant from the lanelet plane. (Point IDs: {point_ids})",
+      "ja": "この centerline は lanelet 平面から離れた点を持っています。(Point IDs: {point_ids})"
+    }
+  },
   "Lane.LongitudinalSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",
