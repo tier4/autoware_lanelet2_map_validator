@@ -30,7 +30,7 @@ jobs:
       - name: Install Utilities
         run: |
           apt-get update
-          apt-get install -y zip gpg
+          apt-get install -y zip gnupg
 
       - name: Remove exec_depend
         uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
@@ -40,6 +40,8 @@ jobs:
         with:
           rosdistro: humble
           target-packages: autoware_lanelet2_map_validator
+          cmake-args: |
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Get Release Version
         id: get_version
