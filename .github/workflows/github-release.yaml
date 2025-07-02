@@ -1,3 +1,20 @@
+# This file is automatically synced from:
+# https://github.com/autowarefoundation/sync-file-templates
+# To make changes, update the source repository and follow the guidelines in its README.
+
+name: github-release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        description: The name of the tag to release
+        type: string
+        required: true
+
 jobs:
   # Build and package the binaries
   build-and-package:
@@ -43,3 +60,19 @@ jobs:
         with:
           name: autoware_lanelet2_map_validator-artifact
           path: autoware_lanelet2_map_validator-*.zip
+
+  github-release:
+    runs-on: ubuntu-22.04
+    needs: build-and-package
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autoware_lanelet2_map_validator-artifact
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: autoware_lanelet2_map_validator-*.zip
+          draft: true
+          generate_release_notes: true
