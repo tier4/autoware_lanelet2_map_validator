@@ -16,36 +16,33 @@ on:
         required: true
 
 jobs:
-  # Build and package the binaries
   build-and-package:
     runs-on: ubuntu-22.04
     container: ghcr.io/autowarefoundation/autoware:core-devel
+    
+    outputs:
+      release_version: ${{ steps.get_version.outputs.version }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Install zip utility
+      - name: Install Utilities
         run: |
           apt-get update
-          apt-get install -y zip
+          apt-get install -y zip gpg
 
       - name: Remove exec_depend
         uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
 
-      - name: Get self packages
-        id: get-self-packages
-        uses: autowarefoundation/autoware-github-actions/get-self-packages@v1
-
       - name: Build
-        if: ${{ steps.get-self-packages.outputs.self-packages != '' }}
         uses: autowarefoundation/autoware-github-actions/colcon-build@v1
         with:
           rosdistro: humble
-          target-packages: ${{ steps.get-self-packages.outputs.self-packages }}
+          target-packages: autoware_lanelet2_map_validator
 
-      - name: Package artifacts
+      - name: Get Release Version
+        id: get_version
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             REF_NAME="${{ github.event.inputs.tag-name }}"
@@ -53,27 +50,47 @@ jobs:
             REF_NAME="${{ github.ref_name }}"
           fi
           VERSION=${REF_NAME#v}
-          zip -r autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip install
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package artifacts
+        id: package
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
+          zip -r $ZIP_NAME install
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+      - name: Sign the package with GPG
+        id: gpg-sign
+        run: |
+          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: autoware_lanelet2_map_validator-artifact
-          path: autoware_lanelet2_map_validator-*.zip
+          name: release-artifact
+          path: |
+            autoware_lanelet2_map_validator-*.zip
+            autoware_lanelet2_map_validator-*.zip.asc
 
-  github-release:
+  release:
     runs-on: ubuntu-22.04
     needs: build-and-package
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: autoware_lanelet2_map_validator-artifact
+          name: release-artifact
 
-      - name: Upload release assets
+      - name: Create Release with artifacts
         uses: softprops/action-gh-release@v2
         with:
-          body_path: ""
-          files: autoware_lanelet2_map_validator-*.zip
+          tag_name: "${{ needs.build-and-package.outputs.release_version }}"
+
+          files: autoware_lanelet2_map_validator-*
+          
           draft: true
+          
           generate_release_notes: true
