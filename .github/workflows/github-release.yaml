@@ -16,52 +16,56 @@ on:
         required: true
 
 jobs:
-  github-release:
+  # Build and package the binaries
+  # This job builds the package and creates a zip file containing the built artifacts.
+  build-and-package:
     runs-on: ubuntu-22.04
+    container: ghcr.io/autowarefoundation/autoware:core-devel
     steps:
-      - name: Set tag name
-        id: set-tag-name
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            REF_NAME="${{ github.event.inputs.tag-name }}"
-          else
-            REF_NAME="${{ github.ref_name }}"
-          fi
-
-          echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
-
+      # ref: build-and-test.yaml
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ steps.set-tag-name.outputs.tag-name }}
+          fetch-depth: 1
 
-      - name: Run generate-changelog
-        id: generate-changelog
-        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
+      - name: Remove exec_depend
+        uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
+
+      - name: Get self packages
+        id: get-self-packages
+        uses: autowarefoundation/autoware-github-actions/get-self-packages@v1
+
+      - name: Build
+        if: ${{ steps.get-self-packages.outputs.self-packages != '' }}
+        uses: autowarefoundation/autoware-github-actions/colcon-build@v1
         with:
-          git-cliff-args: --tag-pattern "^(\d+)\.(\d+)\.(\d+)$" --latest
+          rosdistro: humble
+          target-packages: ${{ steps.get-self-packages.outputs.self-packages }}
+          build-depends-repos: build_depends.repos
 
-      - name: Select verb
-        id: select-verb
+      - name: Package artifacts
         run: |
-          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ steps.set-tag-name.outputs.tag-name }}") || true
+          VERSION=${{ github.ref_name }}
+          zip -r autoware_lanelet2_map_validator-${VERSION#v}-ubuntu-22.04.zip install
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: autoware_lanelet2_map_validator-artifact
+          path: autoware_lanelet2_map_validator-*.zip
 
-          verb=create
-          if [ "$has_previous_draft" = "true" ]; then
-            verb=edit
-          fi
+  github-release:
+    runs-on: ubuntu-22.04
+    needs: build-and-package
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autoware_lanelet2_map_validator-artifact
 
-          echo "verb=$verb" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Release to GitHub
-        run: |
-          gh release ${{ steps.select-verb.outputs.verb }} "${{ steps.set-tag-name.outputs.tag-name }}" \
-            --draft \
-            --title "Release ${{ steps.set-tag-name.outputs.tag-name }}" \
-            --notes "$NOTES"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NOTES: ${{ steps.generate-changelog.outputs.changelog }}
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: autoware_lanelet2_map_validator-*.zip
+        draft: true
+        generate_release_notes: true
