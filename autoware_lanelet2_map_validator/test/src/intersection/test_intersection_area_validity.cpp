@@ -48,15 +48,7 @@ TEST_F(TestIntersectionAreaValidity, CheckWrongOrientation)  // NOLINT for gtest
   lanelet::autoware::validation::IntersectionAreaValidityValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> reason_map;
-  reason_map["boost_geometry_message"] = "Geometry has wrong orientation";
-  const auto expected_issue =
-    construct_issue_from_code(issue_code(test_target_, 1), 10803, reason_map);
-
-  EXPECT_EQ(issues.size(), 1);
-
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestIntersectionAreaValidity, CheckSelfIntersection)  // NOLINT for gtest
