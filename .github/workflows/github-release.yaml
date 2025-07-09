@@ -39,7 +39,6 @@ jobs:
 
       - name: Build the package in Release mode
         run: |
-          source /opt/ros/humble/setup.bash
           colcon build \
             --packages-select autoware_lanelet2_map_validator \
             --symlink-install \
