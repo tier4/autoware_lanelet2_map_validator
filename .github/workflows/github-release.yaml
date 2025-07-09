@@ -37,22 +37,27 @@ jobs:
       - name: Remove exec_depend
         uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
 
-      - name: Set up build environment
+      - name: Initialize and update rosdep
         shell: bash
         run: |
           rosdep init || echo "rosdep has already been initialized."
           rosdep update
+      
+      - name: Install package dependencies with rosdep
+        shell: bash
+        run: |
           DEBIAN_FRONTEND=noninteractive rosdep install -yqq --from-paths . --ignore-src --rosdistro humble -r
 
       - name: Build the package for Release
         shell: bash
         run: |
-          source /autoware/install/setup.bash
+          source /opt/ros/humble/setup.bash
+          
           colcon build \
             --packages-select autoware_lanelet2_map_validator \
             --symlink-install \
-            --cmake-args "-DCMAKE_BUILD_TYPE=Release" "-DBUILD_TESTING=OFF" \
-            --event-handlers console_cohesion+
+            --event-handlers console_cohesion+ \
+            --cmake-args "-DCMAKE_BUILD_TYPE=Release" "-DBUILD_TESTING=OFF"
 
       - name: Get Release Version
         id: get_version
