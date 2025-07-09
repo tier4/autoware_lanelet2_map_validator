@@ -7,7 +7,7 @@ name: github-release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+*"
+      - "[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
     inputs:
       tag-name:
@@ -58,7 +58,9 @@ jobs:
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
-          zip -r $ZIP_NAME install
+          zip -r $ZIP_NAME build/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator \
+            install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config \
+            install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
       - name: Sign the package with GPG
