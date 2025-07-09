@@ -37,12 +37,13 @@ jobs:
       - name: Remove exec_depend
         uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
 
-      - name: Build
-        uses: autowarefoundation/autoware-github-actions/colcon-build@v1
-        with:
-          rosdistro: humble
-          target-packages: autoware_lanelet2_map_validator
-          cmake-build-type: Release
+      - name: Build the package in Release mode
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build \
+            --packages-select autoware_lanelet2_map_validator \
+            --symlink-install \
+            --cmake-args "-DCMAKE_BUILD_TYPE=Release"
 
       - name: Get Release Version
         id: get_version
