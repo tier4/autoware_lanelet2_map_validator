@@ -15,8 +15,8 @@
 #include "lanelet2_map_validator/io.hpp"
 
 #include "lanelet2_map_validator/cli.hpp"
+#include "lanelet2_map_validator/embedded_defaults.hpp"
 
-#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <nlohmann/json.hpp>
 #include <pugixml.hpp>
 
@@ -28,26 +28,7 @@ namespace lanelet::autoware::validation
 {
 std::string get_validator_version()
 {
-  std::string package_share_directory =
-    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
-  std::filesystem::path package_xml =
-    std::filesystem::path(package_share_directory) / "package.xml";
-
-  if (!std::filesystem::exists(package_xml)) {
-    throw std::runtime_error("package.xml not found in " + package_share_directory);
-  }
-
-  pugi::xml_document doc;
-  if (!doc.load_file(package_xml.c_str())) {
-    throw std::runtime_error("Failed to parse package.xml!");
-  }
-
-  pugi::xml_node version_node = doc.child("package").child("version");
-  if (!version_node) {
-    throw std::runtime_error("No <version> tag found in package.xml!");
-  }
-
-  return version_node.text().as_string();
+  return package_version_str_;
 }
 
 void insert_validator_info_to_map(

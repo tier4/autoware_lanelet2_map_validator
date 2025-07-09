@@ -15,6 +15,7 @@
 #ifndef LANELET2_MAP_VALIDATOR__CONFIG_STORE_HPP_
 #define LANELET2_MAP_VALIDATOR__CONFIG_STORE_HPP_
 
+#include "lanelet2_map_validator/embedded_defaults.hpp"
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <nlohmann/json.hpp>
@@ -39,16 +40,25 @@ public:
     const std::string & params_yaml_file, const std::string & issues_info_json_file,
     const std::string & language)
   {
-    yaml_ = YAML::LoadFile(params_yaml_file);
-
-    std::ifstream json_ifs(issues_info_json_file);
-    if (!json_ifs.is_open()) {
-      throw std::runtime_error("Failed to open JSON file: " + issues_info_json_file);
+    if (params_yaml_file.empty()) {
+      yaml_ = YAML::Load(default_yaml_str_);
+    } else {
+      yaml_ = YAML::LoadFile(params_yaml_file);
     }
-    json_ifs >> json_;
+
+    if (issues_info_json_file.empty()) {
+      json_ = nlohmann::json::parse(default_json_str_);
+    } else {
+      std::ifstream json_ifs(issues_info_json_file);
+      if (!json_ifs.is_open()) {
+        throw std::runtime_error("Failed to open JSON file: " + issues_info_json_file);
+      }
+      json_ifs >> json_;
+    }
 
     language_ = language;
   }
+
   static const YAML::Node & parameters() { return yaml_; }
   static const nlohmann::json & issues_info() { return json_; }
   static const std::string & language() { return language_; }

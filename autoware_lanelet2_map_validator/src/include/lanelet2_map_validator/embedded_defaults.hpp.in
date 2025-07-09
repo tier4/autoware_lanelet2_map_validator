@@ -1,0 +1,12 @@
+#pragma once
+
+#ifndef LANELET2_MAP_VALIDATOR__EMBEDDED_DEFAULTS_HPP_
+#define LANELET2_MAP_VALIDATOR__EMBEDDED_DEFAULTS_HPP_
+
+namespace lanelet::autoware::validation {
+  inline constexpr char default_yaml_str_[] = R"YAML_DELIM(@DEFAULT_YAML@)YAML_DELIM";
+  inline constexpr char default_json_str_[] = R"JSON_DELIM(@DEFAULT_JSON@)JSON_DELIM";
+  inline constexpr char package_version_str_[] = "@PACKAGE_VERSION_STR@";
+}
+
+#endif  // LANELET2_MAP_VALIDATOR__EMBEDDED_DEFAULTS_HPP_
