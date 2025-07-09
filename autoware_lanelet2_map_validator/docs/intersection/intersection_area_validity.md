@@ -8,6 +8,8 @@ mapping.intersection.intersection_area_validity
 
 This validator check whether each `intersection_area` type polygon satisfies [`boost::geometry::is_valid`](https://www.boost.io/doc/libs/1_86_0/libs/geometry/doc/html/geometry/reference/algorithms/is_valid/is_valid_2_with_message.html).
 
+However, currently Autoware doesn't care about the polygon orientation so "wrong orientation" errors are ignored.
+
 The validator outputs the following issue with the corresponding ID of the primitive.
 
 | Issue Code                                | Message                                                                                 | Severity | Primitive | Description                                                                 | Approach                                                                                                                                                                                                                                                                       |
