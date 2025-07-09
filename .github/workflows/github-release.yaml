@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: 'feat/embedded_building'
 
       - name: Install Utilities
         run: |
@@ -58,16 +60,9 @@ jobs:
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
-          
-          mkdir release_package
-          
-          cp build/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator release_package/
-          
-          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config release_package/
-          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements release_package/
-          
-          zip -r $ZIP_NAME release_package
-      
+          zip -r $ZIP_NAME build/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator \
+            install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config \
+            install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements 
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
       - name: Sign the package with GPG
