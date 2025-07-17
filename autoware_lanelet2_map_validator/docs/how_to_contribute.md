@@ -210,16 +210,6 @@ The document must explain the following.
 
 In addition, add a link of the document to the table [Relationship between requirements and validators](https://github.com/tier4/autoware_lanelet2_map_validator/tree/main/map/autoware_lanelet2_map_validator#relationship-between-requirements-and-validators) in the main `README.md` to let the users know which map requirement your validator relates with.
 
-### 5. Increase version
-
-Contributors must increase the version of `autoware_lanelet2_map_validator`.
-See [Version Control](#version-control) for further information about how versioning is managed.
-Note that contributors should increase the version in `package.xml` and do **NOT** edit the one in `autoware_requirement_set.json` unless the map requirements in Autoware documentation got its version changed.
-Besides, contributors should update the `CHANGELOG.rst`. The following information should be included.
-
-- What kind of updates happened.
-- The according pull request which is the one you will soon create. Therefore you will need to update the `CHANGELOG.rst` after opening the pull request.
-
-### 6. Submit a pull request
+### 5. Submit a pull request
 
 Submit a pull request to the [tier4/autoware_lanelet2_map_validator](https://github.com/tier4/autoware_lanelet2_map_validator) repository.
