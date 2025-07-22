@@ -18,6 +18,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-22.04
+    container: ghcr.io/autowarefoundation/autoware:core-devel
 
     steps:
       - name: Get Release Version
@@ -40,7 +41,7 @@ jobs:
       - name: Install Utilities
         run: |
           apt-get update
-          apt-get install -y zip gnupg
+          apt-get install -y zip gnupg curl
 
       - name: Remove exec_depend
         uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
@@ -85,43 +86,19 @@ jobs:
           gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
-      - name: Fix git ownership
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Run generate-changelog
-        id: generate-changelog
-        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
-        with:
-          git-cliff-args: --tag ${{ needs.build.outputs.version }} --latest
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Select verb
-        id: select-verb
+      - name: Install GitHub CLI
         run: |
-          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ needs.build.outputs.version }}") || true
-          verb=create
-          if [ "$has_previous_draft" = "true" ]; then
-            verb=edit
-          fi
-          echo "verb=$verb" >> $GITHUB_OUTPUT
+          apt-get update
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-key.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          apt-get update && apt-get install -y gh
+
+      - name: Create Release with artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Release to GitHub
         run: |
-          gh release ${{ steps.select-verb.outputs.verb }} "${{ steps.set-tag-name.outputs.tag-name }}" \
+          gh release create ${{ steps.get_version.outputs.version }} \
             --draft \
-            --title "Release ${{ steps.set-tag-name.outputs.tag-name }}" \
-            --notes "$NOTES"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NOTES: ${{ steps.generate-changelog.outputs.changelog }}
-
-      - name: Upload release assets
-        run: |
-          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
-            "${{ steps.package.outputs.zip_name }}" \
-            "${{ steps.gpg-sign.outputs.signature_name }}" \
-            --clobber
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            --generate-notes \
+            autoware_lanelet2_map_validator-*.zip \
+            autoware_lanelet2_map_validator-*.zip.asc
