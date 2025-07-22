@@ -99,12 +99,41 @@ jobs:
       - name: Fix git ownership
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Create Release with artifacts
+      - name: Run generate-changelog
+        id: generate-changelog
+        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
+        with:
+          git-cliff-args: --tag-pattern "^(\d+)\.(\d+)\.(\d+)$" --latest
+
+      - name: Select verb
+        id: select-verb
+        run: |
+          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ steps.set-tag-name.outputs.tag-name }}") || true
+
+          verb=create
+          if [ "$has_previous_draft" = "true" ]; then
+            verb=edit
+          fi
+
+          echo "verb=$verb" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release to GitHub
         run: |
-          gh release create ${{ steps.get_version.outputs.version }} \
+          gh release ${{ steps.select-verb.outputs.verb }} "${{ steps.set-tag-name.outputs.tag-name }}" \
             --draft \
-            --generate-notes \
-            autoware_lanelet2_map_validator-*.zip \
-            autoware_lanelet2_map_validator-*.zip.asc
+            --title "Release ${{ steps.set-tag-name.outputs.tag-name }}" \
+            --notes "$NOTES"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTES: ${{ steps.generate-changelog.outputs.changelog }}
+
+      - name: Upload artifacts to GitHub Release
+        run: |
+          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+            "${{ steps.package.outputs.zip_name }}" \
+            "${{ steps.gpg-sign.outputs.signature_name }}" \
+            --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
