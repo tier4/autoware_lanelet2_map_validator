@@ -86,6 +86,9 @@ jobs:
           gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
+      - name: Fix git ownership
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Run generate-changelog
         id: generate-changelog
         uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
