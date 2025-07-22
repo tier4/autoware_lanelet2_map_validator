@@ -18,7 +18,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-22.04
-    container: ghcr.io/autowarefoundation/autoware:core-devel
 
     steps:
       - name: Get Release Version
