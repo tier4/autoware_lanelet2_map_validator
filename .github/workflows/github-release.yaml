@@ -115,6 +115,7 @@ jobs:
         uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
         with:
           git-cliff-args: --tag ${{ steps.get_version.outputs.version }} --latest
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Select verb
         id: select-verb
