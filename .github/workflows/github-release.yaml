@@ -49,29 +49,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.get_version.outputs.version }}
 
-      - name: Fix git ownership
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Run generate-changelog
-        id: generate-changelog
-        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
-        with:
-          git-cliff-args: --tag-pattern "^(\d+)\.(\d+)\.(\d+)$" --latest
-
-      - name: Select verb
-        id: select-verb
-        run: |
-          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ steps.set-tag-name.outputs.tag-name }}") || true
-
-          verb=create
-          if [ "$has_previous_draft" = "true" ]; then
-            verb=edit
-          fi
-
-          echo "verb=$verb" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Install Utilities
         run: |
           apt-get update
@@ -129,6 +106,29 @@ jobs:
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
           apt-get update
           apt-get install gh -y
+
+      - name: Fix git ownership
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Run generate-changelog
+        id: generate-changelog
+        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
+        with:
+          git-cliff-args: --tag ${{ steps.get_version.outputs.version }} --latest
+
+      - name: Select verb
+        id: select-verb
+        run: |
+          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ steps.set-tag-name.outputs.tag-name }}") || true
+
+          verb=create
+          if [ "$has_previous_draft" = "true" ]; then
+            verb=edit
+          fi
+
+          echo "verb=$verb" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release to GitHub
         run: |
