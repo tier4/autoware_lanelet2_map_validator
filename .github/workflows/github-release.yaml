@@ -61,7 +61,6 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
-          
           colcon build \
             --packages-select autoware_lanelet2_map_validator \
             --event-handlers console_cohesion+ \
@@ -87,12 +86,40 @@ jobs:
           gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
-      - name: Create Release with artifacts
+      - name: Run generate-changelog
+        id: generate-changelog
+        uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
+        with:
+          git-cliff-args: --tag ${{ needs.build.outputs.version }} --latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Select verb
+        id: select-verb
+        run: |
+          has_previous_draft=$(gh release view --json isDraft -q ".isDraft" "${{ needs.build.outputs.version }}") || true
+          verb=create
+          if [ "$has_previous_draft" = "true" ]; then
+            verb=edit
+          fi
+          echo "verb=$verb" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release to GitHub
         run: |
-          gh release create ${{ steps.get_version.outputs.version }} \
+          gh release ${{ steps.select-verb.outputs.verb }} "${{ steps.set-tag-name.outputs.tag-name }}" \
             --draft \
-            --generate-notes \
-            autoware_lanelet2_map_validator-*.zip \
-            autoware_lanelet2_map_validator-*.zip.asc
+            --title "Release ${{ steps.set-tag-name.outputs.tag-name }}" \
+            --notes "$NOTES"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTES: ${{ steps.generate-changelog.outputs.changelog }}
+
+      - name: Upload release assets
+        run: |
+          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+            "${{ steps.package.outputs.zip_name }}" \
+            "${{ steps.gpg-sign.outputs.signature_name }}" \
+            --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
