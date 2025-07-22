@@ -49,6 +49,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.get_version.outputs.version }}
 
+      - name: Fix git ownership
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Run generate-changelog
         id: generate-changelog
         uses: autowarefoundation/autoware-github-actions/generate-changelog@v1
@@ -126,9 +129,6 @@ jobs:
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
           apt-get update
           apt-get install gh -y
-
-      - name: Fix git ownership
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Release to GitHub
         run: |
