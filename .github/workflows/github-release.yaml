@@ -16,18 +16,27 @@ on:
         required: true
 
 jobs:
-  build-and-package:
+  release:
     runs-on: ubuntu-22.04
     container: ghcr.io/autowarefoundation/autoware:core-devel
-    
-    outputs:
-      release_version: ${{ steps.get_version.outputs.version }}
 
     steps:
+      - name: Get Release Version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REF_NAME="${{ github.event.inputs.tag-name }}"
+          else
+            REF_NAME="${{ github.ref_name }}"
+          fi
+          VERSION=${REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: 'feat/embedded_building'
+          fetch-depth: 0
+          ref: ${{ steps.get_version.outputs.version }}
 
       - name: Install Utilities
         run: |
@@ -42,7 +51,7 @@ jobs:
         run: |
           rosdep init || echo "rosdep has already been initialized."
           rosdep update
-      
+
       - name: Install package dependencies with rosdep
         shell: bash
         run: |
@@ -57,17 +66,6 @@ jobs:
             --packages-select autoware_lanelet2_map_validator \
             --event-handlers console_cohesion+ \
             --cmake-args "-DCMAKE_BUILD_TYPE=Release"
-
-      - name: Get Release Version
-        id: get_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            REF_NAME="${{ github.event.inputs.tag-name }}"
-          else
-            REF_NAME="${{ github.ref_name }}"
-          fi
-          VERSION=${REF_NAME#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Package artifacts
         id: package
@@ -88,31 +86,13 @@ jobs:
           echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
           gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
-      
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifact
-          path: |
-            autoware_lanelet2_map_validator-*.zip
-            autoware_lanelet2_map_validator-*.zip.asc
-
-  release:
-    runs-on: ubuntu-22.04
-    needs: build-and-package
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: release-artifact
 
       - name: Create Release with artifacts
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "${{ needs.build-and-package.outputs.release_version }}"
-
-          files: autoware_lanelet2_map_validator-*
-          
-          draft: true
-          
-          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.get_version.outputs.version }} \
+            --draft \
+            --generate-notes \
+            autoware_lanelet2_map_validator-*.zip \
+            autoware_lanelet2_map_validator-*.zip.asc
