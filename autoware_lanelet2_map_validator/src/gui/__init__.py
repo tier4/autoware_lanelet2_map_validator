@@ -20,10 +20,12 @@ validating Lanelet2 maps with integrated visualization capabilities.
 """
 
 try:
-    from .gui_helper import run_lanelet2_validator, DropLineEdit, create_appropriate_projector
+    from .gui import ValidatorUI
+    from .gui_helper import DropLineEdit
+    from .gui_helper import create_appropriate_projector
+    from .gui_helper import run_lanelet2_validator
     from .map_visualizer import MapVisualizerWidget
     from .matplotlib_widget import MatplotlibWidget
-    from .gui import ValidatorUI
 except ImportError:
     pass
 
@@ -31,9 +33,9 @@ __version__ = "1.0.0"
 __author__ = "Autoware Foundation"
 __all__ = [
     "ValidatorUI",
-    "MapVisualizerWidget", 
+    "MapVisualizerWidget",
     "MatplotlibWidget",
     "run_lanelet2_validator",
     "DropLineEdit",
-    "create_appropriate_projector"
+    "create_appropriate_projector",
 ]

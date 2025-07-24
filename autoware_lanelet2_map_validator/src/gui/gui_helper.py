@@ -1,4 +1,4 @@
-# Import lanelet2 components
+#!/usr/bin/env python3
 
 # Copyright 2025 Autoware Foundation
 #
@@ -14,69 +14,94 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Tuple, List
-import xml.etree.ElementTree as ET
-from autoware_lanelet2_extension_python.projection import MGRSProjector
-from lanelet2.projection import UtmProjector
-from lanelet2.io import Origin
-import subprocess
+"""GUI helper functions and classes for the Lanelet2 map validator."""
+
 from pathlib import Path
-from PySide6.QtWidgets import QLineEdit
+import subprocess
+from typing import List
+from typing import Tuple
+import xml.etree.ElementTree as ET
+
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QLineEdit
+from autoware_lanelet2_extension_python.projection import MGRSProjector
+from lanelet2.io import Origin
+from lanelet2.projection import UtmProjector
+
+
+class DropLineEdit(QLineEdit):
+    """A QLineEdit that accepts file drops."""
+
+    fileDropped = Signal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        """Handle drag enter events."""
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        """Handle drop events."""
+        urls = event.mimeData().urls()
+        if urls:
+            path = urls[0].toLocalFile()
+            self.setText(path)
+            self.fileDropped.emit(path)
+
 
 def get_utm_zone_from_longitude(longitude: float) -> int:
-    """Calculate UTM zone from longitude"""
+    """Calculate UTM zone from longitude."""
     return int((longitude + 180) / 6) + 1
 
+
 def get_map_bounds_from_osm(osm_file: str) -> Tuple[float, float, float, float]:
-    """Extract bounding box from OSM file to determine appropriate UTM zone"""
+    """Extract bounding box from OSM file to determine appropriate UTM zone."""
     try:
         tree = ET.parse(osm_file)
         root = tree.getroot()
-        
+
         lons = []
         lats = []
-        
+
         # Extract coordinates from nodes
-        for node in root.findall('.//node'):
-            lat = float(node.get('lat'))
-            lon = float(node.get('lon'))
+        for node in root.findall(".//node"):
+            lat = float(node.get("lat"))
+            lon = float(node.get("lon"))
             lats.append(lat)
             lons.append(lon)
-        
+
         if lons and lats:
             return min(lons), min(lats), max(lons), max(lats)
         else:
             return None, None, None, None
-            
+
     except Exception as e:
         print(f"Error parsing OSM file for bounds: {e}")
         return None, None, None, None
 
+
 def create_appropriate_projector(osm_file: str, projector_type: str = "utm"):
-    """Create an appropriate projector based on the map's location and selected projector type"""
+    """Create an appropriate projector based on the map's location and selected projector type."""
     min_lon, min_lat, max_lon, max_lat = get_map_bounds_from_osm(osm_file)
-    
+
     if min_lon is not None and max_lon is not None and min_lat is not None and max_lat is not None:
         # Use the center of the bounding box
         center_lon = (min_lon + max_lon) / 2
         center_lat = (min_lat + max_lat) / 2
-        
-        
+
         if projector_type == "mgrs":
-            # Use Autoware extension's MGRSProjector first
             try:
                 return MGRSProjector(Origin(center_lat, center_lon))
-            except:
-                # Fall back to standard MgrsProjector if MGRSProjector fails
+            except Exception:
                 utm_zone = get_utm_zone_from_longitude(center_lon)
                 return UtmProjector(Origin(center_lat, center_lon), utm_zone, center_lat >= 0)
         elif projector_type == "utm":
-            # Calculate appropriate UTM zone
             utm_zone = get_utm_zone_from_longitude(center_lon)
             return UtmProjector(Origin(center_lat, center_lon), utm_zone, center_lat >= 0)
         elif projector_type == "transverse_mercator":
-            # For transverse_mercator, we'll use UTM as a fallback since it's similar
             utm_zone = get_utm_zone_from_longitude(center_lon)
             return UtmProjector(Origin(center_lat, center_lon), utm_zone, center_lat >= 0)
         else:
@@ -87,6 +112,7 @@ def create_appropriate_projector(osm_file: str, projector_type: str = "utm"):
     else:
         return UtmProjector(Origin(0, 0))
 
+
 def run_lanelet2_validator(
     projector: str,
     map_file: Path,
@@ -95,14 +121,22 @@ def run_lanelet2_validator(
     parameters_path: Path = None,
     output_dir: Path = None,
     language: str = "en",
-    validator_filter: str = ""
+    validator_filter: str = "",
 ) -> Tuple[int, List[str], List[str]]:
+    """Run the Lanelet2 validator with the specified parameters."""
     cmd = [
-        "ros2", "run", "autoware_lanelet2_map_validator", "autoware_lanelet2_map_validator",
-        "-p", projector,
-        "-m", str(map_file),
-        "-l", language
+        "ros2",
+        "run",
+        "autoware_lanelet2_map_validator",
+        "autoware_lanelet2_map_validator",
+        "-p",
+        projector,
+        "-m",
+        str(map_file),
+        "-l",
+        language,
     ]
+
     if exclusion_file:
         cmd += ["-x", str(exclusion_file)]
     if output_dir:
@@ -110,32 +144,14 @@ def run_lanelet2_validator(
     if input_requirements:
         cmd += ["-i", str(input_requirements)]
     if parameters_path:
-        cmd += ["--parameters", parameters_path]
+        cmd += ["--parameters", str(parameters_path)]
     if validator_filter:
         cmd += ["-v", validator_filter]
 
     result = subprocess.run(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=False
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False
     )
+
     out_lines = result.stdout.splitlines()
     err_lines = result.stderr.splitlines()
     return result.returncode, out_lines, err_lines
-
-class DropLineEdit(QLineEdit):
-    fileDropped = Signal(str)
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setAcceptDrops(True)
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-    def dropEvent(self, event):
-        urls = event.mimeData().urls()
-        if urls:
-            path = urls[0].toLocalFile()
-            self.setText(path)
-            self.fileDropped.emit(path)

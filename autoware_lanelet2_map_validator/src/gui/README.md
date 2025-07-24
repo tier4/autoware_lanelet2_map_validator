@@ -15,12 +15,14 @@ A graphical user interface for validating Lanelet2 maps with integrated map visu
 ## Prerequisites
 
 ### System Requirements
+
 - Python 3.10 or higher
 - ROS2 Humble (for the underlying validation tools)
 - Pyside6
 - Matplotlib
 
 ### ROS2 Dependencies
+
 Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 
 ## Running the GUI
@@ -28,40 +30,47 @@ Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 ### Method 1: Direct Python Execution (Recommended for Development)
 
 1. **Install all dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 2. **Run the GUI**:
+
    ```bash
    ros2 run autoware_lanelet2_map_validator gui.py
    ```
-   
+
 ### Method 2: PyInstaller Executable (Standalone Distribution)
 
 #### Building the Executable
 
 1. **Install all dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 2. **Install PyInstaller**:
+
    ```bash
    pip install pyinstaller
    ```
 
 3. **Navigate to the GUI directory**:
+
    ```bash
-   cd ~/autoware_3/autoware/src/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator/src/gui
+   cd ~/{autoware_workspace}/src/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator/src/gui
    ```
 
 4. **Build the executable**:
+
    ```bash
    pyinstaller map_validator_gui.spec
    ```
 
 5. **Run the executable**:
+
    ```bash
    ./dist/map_validator_gui
    ```
@@ -69,6 +78,7 @@ Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 #### Distributing the Executable
 
 The built executable in `./dist/map_validator_gui` can be distributed to other systems with similar architecture. The executable includes all Python dependencies but still requires:
+
 - ROS2 Humble environment
 - The `autoware_lanelet2_map_validator` package for the subprocess CLI
 
@@ -76,20 +86,24 @@ The built executable in `./dist/map_validator_gui` can be distributed to other s
 
 ### Basic Workflow
 
-1. **Load a Map**: 
+1. **Load a Map**:
+
    - Click "Browse" next to "OSM File" or drag & drop an `.osm` file
    - The map will automatically load in the visualization tab
 
 2. **Select Validators**:
+
    - Choose from the list of available validators on the left panel
    - Or use "Manual regex input" for custom validator filtering
 
 3. **Configure Options** (Optional):
+
    - Set projector type (MGRS, UTM, Transverse Mercator)
    - Choose language (English or Japanese)
    - Add requirement files, exclusion lists, or parameter files
 
 4. **Run Validation**:
+
    - Click "Run Validator" button
    - Results will appear in the Errors/Warnings tabs
 
@@ -112,7 +126,8 @@ The built executable in `./dist/map_validator_gui` can be distributed to other s
 ## Development
 
 ### File Structure
-```
+
+```bash
 gui/
 ├── gui.py                 # Main application file
 ├── gui_helper.py          # Helper functions for validation
