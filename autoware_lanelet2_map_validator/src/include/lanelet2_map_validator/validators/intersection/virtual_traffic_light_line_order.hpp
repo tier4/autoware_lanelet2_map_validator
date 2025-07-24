@@ -17,8 +17,6 @@
 
 #include "lanelet2_map_validator/config_store.hpp"
 
-#include "lanelet2_map_validator/config_store.hpp"
-
 #include <lanelet2_routing/LaneletPath.h>
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>

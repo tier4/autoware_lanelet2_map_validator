@@ -44,7 +44,9 @@ private:
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
 
   /**
-   * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded to the lateral direction, and its variation length is about (average length of both edges of the lanelet) * (scale_factor-1)
+   * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded
+   * to the lateral direction, and its variation length is about (average length of both edges of
+   * the lanelet) * (scale_factor-1)
    */
   lanelet::BasicPolygon2d expanded_lanelet_polygon(
     const lanelet::ConstLanelet & lane, const double & scale_factor);
