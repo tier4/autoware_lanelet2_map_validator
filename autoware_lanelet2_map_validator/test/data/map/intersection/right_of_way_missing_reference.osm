@@ -2943,7 +2943,7 @@
     <nd ref="2195"/>
     <tag k="type" v="stop_line"/>
   </way>
-  
+
   <!-- Traffic Light Regulatory Elements -->
   <relation id="10010">
     <member type="way" role="refers" ref="10011"/>

@@ -2716,7 +2716,7 @@
     <nd ref="2195"/>
     <tag k="type" v="stop_line"/>
   </way>
-  
+
   <!-- Traffic Light Regulatory Elements -->
   <relation id="10010">
     <member type="way" role="refers" ref="10011"/>
@@ -2763,10 +2763,10 @@
     <nd ref="10004"/>
     <tag k="type" v="traffic_light"/>
   </way>
-  
+
   <!-- Right of Way Regulatory Elements with WRONG assignments for testing -->
   <!-- The point is that lanelets reference these elements, but they don't assign the lanelet as right_of_way -->
-  
+
   <!-- For lanelet 50 (right turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20050">
     <member type="relation" role="right_of_way" ref="51"/><!-- WRONG: should be ref="50" -->
@@ -2776,7 +2776,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 51 (left turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20051">
     <member type="relation" role="right_of_way" ref="50"/><!-- WRONG: should be ref="51" -->
@@ -2786,7 +2786,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 53 (left turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20053">
     <member type="relation" role="right_of_way" ref="54"/><!-- WRONG: should be ref="53" -->
@@ -2796,7 +2796,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 54 (right turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20054">
     <member type="relation" role="right_of_way" ref="53"/><!-- WRONG: should be ref="54" -->
@@ -2806,7 +2806,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 56 (right turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20056">
     <member type="relation" role="right_of_way" ref="57"/><!-- WRONG: should be ref="56" -->
@@ -2816,7 +2816,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 57 (left turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20057">
     <member type="relation" role="right_of_way" ref="56"/><!-- WRONG: should be ref="57" -->
@@ -2826,7 +2826,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 59 (left turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20059">
     <member type="relation" role="right_of_way" ref="60"/><!-- WRONG: should be ref="59" -->
@@ -2836,7 +2836,7 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  
+
   <!-- For lanelet 60 (right turn) - but this element assigns WRONG lanelet as right_of_way -->
   <relation id="20060">
     <member type="relation" role="right_of_way" ref="59"/><!-- WRONG: should be ref="60" -->

@@ -2951,7 +2951,7 @@
     <nd ref="2195"/>
     <tag k="type" v="stop_line"/>
   </way>
-  
+
   <relation id="10010">
     <member type="way" role="refers" ref="10011"/>
     <member type="way" role="ref_line" ref="10050"/>

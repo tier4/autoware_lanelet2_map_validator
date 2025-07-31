@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lanelet2_map_validator/validators/intersection/right_of_way_with_traffic_lights.hpp"
 #include "lanelet2_map_validator/utils.hpp"
+#include "lanelet2_map_validator/validators/intersection/right_of_way_with_traffic_lights.hpp"
 #include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
@@ -53,8 +53,9 @@ TEST_F(TestRightOfWayWithTrafficLights, MissingRightOfWayReference)  // NOLINT f
     std::map<std::string, std::string> reason_map;
     auto lanelet = map_->laneletLayer.get(issue.id);
     reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
-    
-    const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), issue.id, reason_map);
+
+    const auto expected_issue =
+      construct_issue_from_code(issue_code(test_target_, 1), issue.id, reason_map);
     const auto difference = compare_an_issue(expected_issue, issue);
     EXPECT_TRUE(difference.empty()) << difference;
   }
@@ -67,20 +68,23 @@ TEST_F(TestRightOfWayWithTrafficLights, WrongRightOfWay)  // NOLINT for gtest
   lanelet::autoware::validation::RightOfWayWithTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0) << "Should find issues for wrong right_of_way assignments";  
+  EXPECT_GT(issues.size(), 0) << "Should find issues for wrong right_of_way assignments";
   for (const auto & issue : issues) {
     std::map<std::string, std::string> reason_map;
     auto lanelet = map_->laneletLayer.get(issue.id);
     reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
-    
+
     for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (reg_elem->hasAttribute("subtype") && reg_elem->attribute("subtype").value() == "right_of_way") {
+      if (
+        reg_elem->hasAttribute("subtype") &&
+        reg_elem->attribute("subtype").value() == "right_of_way") {
         reason_map["right_of_way_id"] = std::to_string(reg_elem->id());
         break;
       }
     }
-    
-    const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), issue.id, reason_map);
+
+    const auto expected_issue =
+      construct_issue_from_code(issue_code(test_target_, 2), issue.id, reason_map);
     const auto difference = compare_an_issue(expected_issue, issue);
     EXPECT_TRUE(difference.empty()) << difference;
   }

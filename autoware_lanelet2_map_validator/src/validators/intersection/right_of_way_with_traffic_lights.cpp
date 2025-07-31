@@ -42,7 +42,8 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::operator()(
   return issues;
 }
 
-lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
+lanelet::validation::Issues
+RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
   const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
@@ -51,7 +52,7 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of
     if (!lanelet.hasAttribute("turn_direction")) {
       continue;
     }
-    
+
     auto turn_direction = lanelet.attribute("turn_direction").value();
     if (turn_direction != "left" && turn_direction != "right") {
       continue;
@@ -59,7 +60,9 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of
 
     bool has_traffic_light_ref = false;
     for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (reg_elem->hasAttribute("subtype") && reg_elem->attribute("subtype").value() == "traffic_light") {
+      if (
+        reg_elem->hasAttribute("subtype") &&
+        reg_elem->attribute("subtype").value() == "traffic_light") {
         has_traffic_light_ref = true;
         break;
       }
@@ -73,7 +76,9 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of
     lanelet::RegulatoryElementConstPtr right_of_way_elem = nullptr;
 
     for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (reg_elem->hasAttribute("subtype") && reg_elem->attribute("subtype").value() == "right_of_way") {
+      if (
+        reg_elem->hasAttribute("subtype") &&
+        reg_elem->attribute("subtype").value() == "right_of_way") {
         has_right_of_way_ref = true;
         right_of_way_elem = reg_elem;
         break;
@@ -81,7 +86,8 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of
     }
 
     if (!has_right_of_way_ref) {
-      // Issue-001: Lanelet with turn_direction and traffic_light reference missing right_of_way reference
+      // Issue-001: Lanelet with turn_direction and traffic_light reference missing right_of_way
+      // reference
       std::map<std::string, std::string> reason_map;
       reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
       issues.emplace_back(
@@ -90,7 +96,8 @@ lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::check_right_of
     }
 
     bool is_set_as_right_of_way = false;
-    auto right_of_way_lanelets = right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
+    auto right_of_way_lanelets =
+      right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
     for (const auto & param : right_of_way_lanelets) {
       if (param.id() == lanelet.id()) {
         is_set_as_right_of_way = true;
