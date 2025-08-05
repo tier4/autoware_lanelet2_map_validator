@@ -1,10 +1,6 @@
 name: build-and-upload-binaries
 
 on:
-  workflow_run:
-    workflows: ["github-release"]
-    types:
-      - completed
   workflow_dispatch:
     inputs:
       tag-name:
@@ -16,28 +12,19 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-22.04
     container: ghcr.io/autowarefoundation/autoware:core-devel
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
-
+    
     steps:
       - name: Get Release Version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            REF_NAME="${{ github.event.inputs.tag-name }}"
-          else
-            REF_NAME="${{ github.ref_name }}"
-          fi
+          REF_NAME="${{ github.event.inputs.tag-name }}"
           VERSION=${REF_NAME#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set tag name
         id: set-tag-name
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            REF_NAME="${{ github.event.inputs.tag-name }}"
-          else
-            REF_NAME="${{ github.ref_name }}"
-          fi
+          REF_NAME="${{ github.event.inputs.tag-name }}"
           echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
 
       - name: Check out repository
@@ -90,8 +77,8 @@ jobs:
       - name: Sign the package with GPG
         id: gpg-sign
         run: |
-          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
       - name: Install GitHub CLI
