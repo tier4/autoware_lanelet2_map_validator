@@ -1,9 +1,10 @@
 name: build-and-upload-binaries
 
 on:
-  push:
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_run:
+    workflows: ["github-release"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       tag-name:
@@ -15,6 +16,7 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-22.04
     container: ghcr.io/autowarefoundation/autoware:core-devel
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Get Release Version
