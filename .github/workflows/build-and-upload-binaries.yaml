@@ -1,0 +1,117 @@
+name: build-and-upload-binaries
+
+on:
+  workflow_run:
+    workflows: ["github-release"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        description: The name of the tag to build and upload binaries for
+        type: string
+        required: true
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-22.04
+    container: ghcr.io/autowarefoundation/autoware:core-devel
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Get Release Version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REF_NAME="${{ github.event.inputs.tag-name }}"
+          else
+            REF_NAME="${{ github.ref_name }}"
+          fi
+          VERSION=${REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set tag name
+        id: set-tag-name
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REF_NAME="${{ github.event.inputs.tag-name }}"
+          else
+            REF_NAME="${{ github.ref_name }}"
+          fi
+          echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.get_version.outputs.version }}
+
+      - name: Install Utilities
+        run: |
+          apt-get update
+          apt-get install -y zip gnupg curl
+
+      - name: Remove exec_depend
+        uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
+
+      - name: Initialize and update rosdep
+        shell: bash
+        run: |
+          rosdep init || echo "rosdep has already been initialized."
+          rosdep update
+
+      - name: Install package dependencies with rosdep
+        shell: bash
+        run: |
+          DEBIAN_FRONTEND=noninteractive rosdep install -yqq --from-paths . --ignore-src --rosdistro humble -r
+
+      - name: Build the package for Release
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build \
+            --packages-select autoware_lanelet2_map_validator \
+            --event-handlers console_cohesion+ \
+            --cmake-args "-DCMAKE_BUILD_TYPE=Release"
+
+      - name: Package artifacts
+        id: package
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
+          mkdir release_package
+          cp build/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator release_package/
+          cp build/autoware_lanelet2_map_validator/libautoware_lanelet2_map_validator_lib.so release_package/
+          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config release_package/
+          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements release_package/
+          zip -r $ZIP_NAME release_package 
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+      - name: Sign the package with GPG
+        id: gpg-sign
+        run: |
+          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
+
+      - name: Install GitHub CLI
+        run: |
+          (type -p wget >/dev/null || (apt-get update && apt-get install wget -y))
+          mkdir -p -m 755 /etc/apt/keyrings
+          wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          apt-get update
+          apt-get install gh -y
+
+      - name: Fix git ownership
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Upload artifacts to GitHub Release
+        run: |
+          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+            "${{ steps.package.outputs.zip_name }}" \
+            "${{ steps.gpg-sign.outputs.signature_name }}" \
+            --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
