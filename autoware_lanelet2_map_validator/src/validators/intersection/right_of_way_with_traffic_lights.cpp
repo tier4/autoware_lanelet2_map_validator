@@ -17,6 +17,7 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/primitives/BasicRegulatoryElements.h>
 #include <lanelet2_core/primitives/RegulatoryElement.h>
 
 #include <algorithm>
@@ -58,34 +59,13 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       continue;
     }
 
-    bool has_traffic_light_ref = false;
-    for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (
-        reg_elem->hasAttribute("subtype") &&
-        reg_elem->attribute("subtype").value() == "traffic_light") {
-        has_traffic_light_ref = true;
-        break;
-      }
-    }
-
-    if (!has_traffic_light_ref) {
+    if (lanelet.regulatoryElementsAs<lanelet::TrafficLight>().empty()) {
       continue;
     }
 
-    bool has_right_of_way_ref = false;
-    lanelet::RegulatoryElementConstPtr right_of_way_elem = nullptr;
+    const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
 
-    for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (
-        reg_elem->hasAttribute("subtype") &&
-        reg_elem->attribute("subtype").value() == "right_of_way") {
-        has_right_of_way_ref = true;
-        right_of_way_elem = reg_elem;
-        break;
-      }
-    }
-
-    if (!has_right_of_way_ref) {
+    if (right_of_way_elems.empty()) {
       // Issue-001: Lanelet with turn_direction and traffic_light reference missing right_of_way
       // reference
       std::map<std::string, std::string> reason_map;
@@ -93,8 +73,13 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), reason_map));
       continue;
+    } else if (right_of_way_elems.size() > 1) {
+      // issue-002: Multiple right_of_way regulatory element in the same lanelet
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), lanelet.id()));
+      continue;
     }
 
+    lanelet::RegulatoryElementConstPtr right_of_way_elem = right_of_way_elems.front();
     bool is_set_as_right_of_way = false;
     auto right_of_way_lanelets =
       right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
@@ -106,12 +91,9 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
     }
 
     if (!is_set_as_right_of_way) {
-      // issue-002: right_of_way regulatory element doesn't set this lanelet as right_of_way role
-      std::map<std::string, std::string> reason_map;
-      reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
-      reason_map["right_of_way_id"] = std::to_string(right_of_way_elem->id());
+      // issue-003: right_of_way regulatory element doesn't set this lanelet as right_of_way role
       issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 2), lanelet.id(), reason_map));
+        construct_issue_from_code(issue_code(this->name(), 3), right_of_way_elem->id()));
     }
   }
 

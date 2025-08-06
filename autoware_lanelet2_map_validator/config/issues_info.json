@@ -243,8 +243,16 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "The right_of_way element (ID: {right_of_way_id}) does not reference the correct lanelet in its right_of_way role.",
-      "ja": "right_of_way 要素（ID: {right_of_way_id}）は、right_of_way の役割において正しい lanelet を参照していません。"
+      "en": "More than one right_of_way regulatory element exist in the same lanelet.",
+      "ja": "同一のレーンレットに複数の right_of_way 規制要素が存在します。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way element does not reference the correct lanelet in its right_of_way role.",
+      "ja": "right_of_way 要素は、right_of_way の役割において正しい lanelet を参照していません。"
     }
   },
   "TrafficLight.MissingRegulatoryElements-001": {

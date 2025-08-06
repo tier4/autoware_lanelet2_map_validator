@@ -48,16 +48,20 @@ TEST_F(TestRightOfWayWithTrafficLights, MissingRightOfWayReference)  // NOLINT f
 
   lanelet::autoware::validation::RightOfWayWithTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
-  EXPECT_GT(issues.size(), 0) << "Should find issues for missing right_of_way references";
-  for (const auto & issue : issues) {
+
+  EXPECT_EQ(issues.size(), 1);
+
+  if (issues.size() == 1) {
+    const lanelet::Id expected_lanelet_id = 53;
+
     std::map<std::string, std::string> reason_map;
-    auto lanelet = map_->laneletLayer.get(issue.id);
-    reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
+    reason_map["turn_direction"] = "left";
 
     const auto expected_issue =
-      construct_issue_from_code(issue_code(test_target_, 1), issue.id, reason_map);
-    const auto difference = compare_an_issue(expected_issue, issue);
+      construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id, reason_map);
+    const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
+    EXPECT_EQ(issues[0].id, expected_lanelet_id) << "Issue should be for lanelet ID 53";
   }
 }
 
@@ -68,34 +72,44 @@ TEST_F(TestRightOfWayWithTrafficLights, WrongRightOfWay)  // NOLINT for gtest
   lanelet::autoware::validation::RightOfWayWithTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0) << "Should find issues for wrong right_of_way assignments";
-  for (const auto & issue : issues) {
-    std::map<std::string, std::string> reason_map;
-    auto lanelet = map_->laneletLayer.get(issue.id);
-    reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
+  EXPECT_EQ(issues.size(), 1);
 
-    for (const auto & reg_elem : lanelet.regulatoryElements()) {
-      if (
-        reg_elem->hasAttribute("subtype") &&
-        reg_elem->attribute("subtype").value() == "right_of_way") {
-        reason_map["right_of_way_id"] = std::to_string(reg_elem->id());
-        break;
-      }
-    }
-
+  if (issues.size() == 1) {
+    const lanelet::Id expected_regulatory_element_id = 11143;
     const auto expected_issue =
-      construct_issue_from_code(issue_code(test_target_, 2), issue.id, reason_map);
-    const auto difference = compare_an_issue(expected_issue, issue);
+      construct_issue_from_code(issue_code(test_target_, 3), expected_regulatory_element_id);
+    const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
+    EXPECT_EQ(issues[0].id, expected_regulatory_element_id)
+      << "Issue should be for regulatory element ID 11143";
+  }
+}
+
+TEST_F(TestRightOfWayWithTrafficLights, MultipleRightOfWayElements)  // NOLINT for gtest
+{
+  load_target_map("intersection/right_of_way_multiple_elements.osm");
+
+  lanelet::autoware::validation::RightOfWayWithTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  if (issues.size() == 1) {
+    const lanelet::Id expected_lanelet_id = 53;
+    const auto expected_issue =
+      construct_issue_from_code(issue_code(test_target_, 2), expected_lanelet_id);
+    const auto difference = compare_an_issue(expected_issue, issues[0]);
+    EXPECT_TRUE(difference.empty()) << difference;
+    EXPECT_EQ(issues[0].id, expected_lanelet_id) << "Issue should be for lanelet ID 53";
   }
 }
 
 TEST_F(TestRightOfWayWithTrafficLights, ValidConfiguration)  // NOLINT for gtest
 {
-  load_target_map("intersection/right_of_way.osm");
+  load_target_map("sample_map.osm");
 
   lanelet::autoware::validation::RightOfWayWithTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 0) << "right_of_way.osm should pass vm-03-10 validation";
+  EXPECT_EQ(issues.size(), 0) << "sample_map.osm should pass vm-03-10 validation";
 }
