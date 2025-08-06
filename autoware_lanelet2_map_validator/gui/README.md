@@ -17,11 +17,11 @@ A graphical user interface for validating Lanelet2 maps with integrated map visu
 ### System Requirements
 
 - Python 3.10 or higher
-- ROS2 Humble (for the underlying validation tools)
+- ROS 2 Humble (for the underlying validation tools)
 - Pyside6
 - Matplotlib
 
-### ROS2 Dependencies
+### ROS 2 Dependencies
 
 Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 
@@ -60,16 +60,22 @@ Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 3. **Navigate to the GUI directory**:
 
    ```bash
-   cd ~/{autoware_workspace}/src/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator/src/gui
+   cd ~/$AUTOWARE_WORKSPACE/src/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator/gui
    ```
 
-4. **Build the executable**:
+4. **Source the Autoware workspace**:
+
+   ```bash
+   source $AUTOWARE_WORKSPACE/install/setup.bash
+   ```
+   
+5. **Build the executable**:
 
    ```bash
    pyinstaller map_validator_gui.spec
    ```
 
-5. **Run the executable**:
+6. **Run the executable**:
 
    ```bash
    ./dist/map_validator_gui
@@ -79,7 +85,7 @@ Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
 
 The built executable in `./dist/map_validator_gui` can be distributed to other systems with similar architecture. The executable includes all Python dependencies but still requires:
 
-- ROS2 Humble environment
+- ROS 2 Humble environment
 - The `autoware_lanelet2_map_validator` package for the subprocess CLI
 
 ## Usage Guide
