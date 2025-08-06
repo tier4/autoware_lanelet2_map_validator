@@ -68,7 +68,7 @@ Make sure the `autoware_lanelet2_map_validator` package is built and sourced:
    ```bash
    source $AUTOWARE_WORKSPACE/install/setup.bash
    ```
-   
+
 5. **Build the executable**:
 
    ```bash
@@ -93,23 +93,19 @@ The built executable in `./dist/map_validator_gui` can be distributed to other s
 ### Basic Workflow
 
 1. **Load a Map**:
-
    - Click "Browse" next to "OSM File" or drag & drop an `.osm` file
    - The map will automatically load in the visualization tab
 
 2. **Select Validators**:
-
    - Choose from the list of available validators on the left panel
    - Or use "Manual regex input" for custom validator filtering
 
 3. **Configure Options** (Optional):
-
    - Set projector type (MGRS, UTM, Transverse Mercator)
    - Choose language (English or Japanese)
    - Add requirement files, exclusion lists, or parameter files
 
 4. **Run Validation**:
-
    - Click "Run Validator" button
    - Results will appear in the Errors/Warnings tabs
 
