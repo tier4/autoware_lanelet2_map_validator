@@ -12,7 +12,7 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-22.04
     container: ghcr.io/autowarefoundation/autoware:core-devel
-    
+
     steps:
       - name: Get Release Version
         id: get_version
@@ -71,7 +71,7 @@ jobs:
           cp build/autoware_lanelet2_map_validator/libautoware_lanelet2_map_validator_lib.so release_package/
           cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config release_package/
           cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements release_package/
-          zip -r $ZIP_NAME release_package 
+          zip -r $ZIP_NAME release_package
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
       - name: Sign the package with GPG
