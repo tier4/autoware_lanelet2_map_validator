@@ -56,7 +56,9 @@ lanelet::validation::Issues TurnSignalDistanceOverlapValidator::check_turn_signa
     lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
   for (const auto & lane : map.laneletLayer) {
-    if (!lane.hasAttribute(turn_direction_tag_)) {
+    if (
+      !lane.hasAttribute(turn_direction_tag_) ||
+      lane.attribute(turn_direction_tag_).value() == "straight") {
       continue;
     }
 
@@ -78,14 +80,14 @@ lanelet::validation::Issues TurnSignalDistanceOverlapValidator::check_turn_signa
 }
 
 std::unordered_set<lanelet::Id> TurnSignalDistanceOverlapValidator::find_overlapping_lanelets(
-  const ConstLanelet & lane, const lanelet::routing::RoutingGraphPtr & routing_graph_ptr,
-  double distance_threshold)
+  const ConstLanelet & intersection_lane,
+  const lanelet::routing::RoutingGraphPtr & routing_graph_ptr, double distance_threshold)
 {
   std::unordered_set<lanelet::Id> result;
   std::unordered_set<lanelet::Id> visited;
   std::deque<std::pair<lanelet::ConstLanelet, double>> queue;
 
-  for (const auto & prev : routing_graph_ptr->previous(lane)) {
+  for (const auto & prev : routing_graph_ptr->previous(intersection_lane)) {
     queue.emplace_back(prev, lanelet::utils::getLaneletLength3d(prev));
   }
 
@@ -105,9 +107,9 @@ std::unordered_set<lanelet::Id> TurnSignalDistanceOverlapValidator::find_overlap
 
     if (current.hasAttribute(turn_direction_tag_)) {
       if (
-        (lane.attribute(turn_direction_tag_).value() == "left" &&
+        (intersection_lane.attribute(turn_direction_tag_).value() == "left" &&
          current.attribute(turn_direction_tag_).value() == "right") ||
-        (lane.attribute(turn_direction_tag_).value() == "right" &&
+        (intersection_lane.attribute(turn_direction_tag_).value() == "right" &&
          current.attribute(turn_direction_tag_).value() == "left")) {
         result.insert(current.id());
       }

@@ -6,7 +6,7 @@ mapping.intersection.turn_signal_distance_overlap
 
 ## Feature
 
-This validator checks whether the value of the `turn_singal_distance` in a lanelet is correct or not.
+This validator checks whether the value of the `turn_signal_distance` in a lanelet is correct or not.
 All lanelets that have a `turn_direction` have a `turn_signal_distance` to determine when to start the vehicle's turn signal.
 One may have explicitly defined as a tag in the lanelet map and one may have not defined explicitly and use the default value defined in the Autoware system.
 However, there is a problem that if there is a lanelet with a `turn_direction = left` previous to another lanelet that has a `turn_direction = right` and they are within `turn_signal_distance` meters, Autoware will not use the turn signals correctly.

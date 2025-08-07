@@ -47,8 +47,8 @@ public:
 private:
   lanelet::validation::Issues check_turn_signal_distance_overlap(const lanelet::LaneletMap & map);
   std::unordered_set<lanelet::Id> find_overlapping_lanelets(
-    const ConstLanelet & lane, const lanelet::routing::RoutingGraphPtr & routing_graph_ptr,
-    double distance_threshold);
+    const ConstLanelet & intersection_lane,
+    const lanelet::routing::RoutingGraphPtr & routing_graph_ptr, double distance_threshold);
   std::string set_to_string(std::unordered_set<lanelet::Id> & id_set);
 
   inline constexpr static const char turn_direction_tag_[] = "turn_direction";
