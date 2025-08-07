@@ -255,6 +255,14 @@
       "ja": "right_of_way 要素は、right_of_way の役割において正しい lanelet を参照していません。"
     }
   },
+  "Intersection.TurnSignalDistanceOverlap-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "A different lanelet with a \"turn_direction\" tag is found before turn_signal_distance meters. (previous lanelets with a turn direction: {prev_ids})",
+      "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
