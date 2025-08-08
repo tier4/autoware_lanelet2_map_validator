@@ -106,6 +106,15 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(
+  PROGRAMS
+    gui/gui.py
+    gui/gui_helper.py
+    gui/map_visualizer.py
+    gui/matplotlib_widget.py
+  DESTINATION lib/${PROJECT_NAME}/gui
+)
+
 ament_auto_package(
   INSTALL_TO_SHARE
   test/data
