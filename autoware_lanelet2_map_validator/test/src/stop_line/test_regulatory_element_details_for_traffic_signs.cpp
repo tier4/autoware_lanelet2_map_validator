@@ -46,9 +46,6 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, ValidatorAvailabili
 
 //   EXPECT_EQ(issues.size(), 1);
 //   EXPECT_EQ(issues[0].id, 2166);
-//   EXPECT_EQ(issues[0].severity, lanelet::validation::Severity::Error);
-//   EXPECT_EQ(issues[0].primitive, lanelet::validation::Primitive::RegulatoryElement);
-//   EXPECT_EQ(issues[0].message, "This traffic_sign regulatory element is missing refers.");
 // }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefersType)  // NOLINT for gtest
