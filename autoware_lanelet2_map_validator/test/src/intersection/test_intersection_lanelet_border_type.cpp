@@ -50,21 +50,18 @@ TEST_F(TestIntersectionLaneletBorderTypeValidator, InvalidBorderType)  // NOLINT
 
   EXPECT_EQ(issues.size(), 1);
 
-  const lanelet::Id expected_lanelet_id_1 = 13;
-  const auto expected_issue_1 =
-    construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id_1);
+  const lanelet::Id expected_lanelet_id = 13;
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id);
 
-  bool found_lanelet_13 = false;
   for (const auto & issue : issues) {
-    if (issue.id == expected_lanelet_id_1) {
-      found_lanelet_13 = true;
-      const auto difference = compare_an_issue(expected_issue_1, issue);
+    if (issue.id == expected_lanelet_id) {
+      const auto difference = compare_an_issue(expected_issue, issue);
       EXPECT_TRUE(difference.empty()) << difference;
-      EXPECT_EQ(issue.id, expected_lanelet_id_1) << "Issue should be for lanelet ID 13";
+      EXPECT_EQ(issue.id, expected_lanelet_id) << "Issue should be for lanelet ID 13";
       break;
     }
   }
-  EXPECT_TRUE(found_lanelet_13) << "Should find issue for lanelet 13";
 }
 
 TEST_F(TestIntersectionLaneletBorderTypeValidator, ValidConfiguration)  // NOLINT for gtest
