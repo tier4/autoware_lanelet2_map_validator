@@ -18,6 +18,8 @@
 
 #include <lanelet2_core/LaneletMap.h>
 
+#include <string>
+
 namespace lanelet::autoware::validation
 {
 namespace
@@ -25,7 +27,8 @@ namespace
 lanelet::validation::RegisterMapValidator<IntersectionLaneletBorderTypeValidator> reg;
 }
 
-lanelet::validation::Issues IntersectionLaneletBorderTypeValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues IntersectionLaneletBorderTypeValidator::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -34,28 +37,26 @@ lanelet::validation::Issues IntersectionLaneletBorderTypeValidator::operator()(c
   return issues;
 }
 
-lanelet::validation::Issues IntersectionLaneletBorderTypeValidator::check_intersection_lanelet_border_type(const lanelet::LaneletMap & map)
+lanelet::validation::Issues
+IntersectionLaneletBorderTypeValidator::check_intersection_lanelet_border_type(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
+
   for (const auto & lanelet : map.laneletLayer) {
     if (lanelet.hasAttribute("intersection_area")) {
-      const auto left_bound = lanelet.leftBound();
-      if (left_bound.hasAttribute(lanelet::AttributeName::Type)) {
-        const std::string left_type = left_bound.attribute(lanelet::AttributeName::Type).value();
-        if (left_type != "virtual" && left_type != "road_border") {
-          issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
-          continue; // skip right bound check if left bound is already invalid
-        }
-      } 
-      const auto right_bound = lanelet.rightBound();
-      if (right_bound.hasAttribute(lanelet::AttributeName::Type)) {
-        const std::string right_type = right_bound.attribute(lanelet::AttributeName::Type).value();
-        if (right_type != "virtual" && right_type != "road_border") {
-          issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
-        }
-      } 
+      const std::string left_type =
+        lanelet.leftBound().attributeOr(lanelet::AttributeName::Type, "");
+      if (left_type != "virtual" && left_type != "road_border") {
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
+        continue;  // skip right bound check if left bound is already invalid
+      }
+
+      const std::string right_type =
+        lanelet.rightBound().attributeOr(lanelet::AttributeName::Type, "");
+      if (right_type != "virtual" && right_type != "road_border") {
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
+      }
     }
   }
 

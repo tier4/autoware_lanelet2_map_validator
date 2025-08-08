@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
-#define AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__INTERSECTION_LANELET_BORDER_TYPE_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__INTERSECTION_LANELET_BORDER_TYPE_HPP_
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -23,16 +23,14 @@ namespace lanelet::autoware::validation
 class IntersectionLaneletBorderTypeValidator : public lanelet::validation::MapValidator
 {
 public:
-  constexpr static const char * name()
-  {
-    return "mapping.intersection.lanelet_border_type";
-  }
+  constexpr static const char * name() { return "mapping.intersection.lanelet_border_type"; }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  lanelet::validation::Issues check_intersection_lanelet_border_type(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_intersection_lanelet_border_type(
+    const lanelet::LaneletMap & map);
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__INTERSECTION_LANELET_BORDER_TYPE_HPP_

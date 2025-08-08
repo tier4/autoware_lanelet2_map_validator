@@ -53,7 +53,7 @@ TEST_F(TestIntersectionLaneletBorderTypeValidator, InvalidBorderType)  // NOLINT
   const lanelet::Id expected_lanelet_id_1 = 13;
   const auto expected_issue_1 =
     construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id_1);
-  
+
   bool found_lanelet_13 = false;
   for (const auto & issue : issues) {
     if (issue.id == expected_lanelet_id_1) {
@@ -74,5 +74,6 @@ TEST_F(TestIntersectionLaneletBorderTypeValidator, ValidConfiguration)  // NOLIN
   lanelet::autoware::validation::IntersectionLaneletBorderTypeValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 0) << "sample_map.osm should pass intersection lanelet border type validation";
+  EXPECT_EQ(issues.size(), 0)
+    << "sample_map.osm should pass intersection lanelet border type validation";
 }
