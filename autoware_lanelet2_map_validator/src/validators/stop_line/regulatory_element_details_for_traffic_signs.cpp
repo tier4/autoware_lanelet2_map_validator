@@ -30,27 +30,31 @@ namespace
 lanelet::validation::RegisterMapValidator<RegulatoryElementDetailsForTrafficSignsValidator> reg;
 }
 
-lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
-  lanelet::autoware::validation::appendIssues(issues, check_regulatory_element_details_for_traffic_signs(map));
+  lanelet::autoware::validation::appendIssues(
+    issues, check_regulatory_element_details_for_traffic_signs(map));
 
   return issues;
 }
 
-lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::check_regulatory_element_details_for_traffic_signs(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
+  check_regulatory_element_details_for_traffic_signs(const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
   auto traffic_sign_elements = map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
-    const auto & attrs = elem->attributes();
-    const auto & it = attrs.find(lanelet::AttributeName::Subtype);
-    return it != attrs.end() && it->second == "traffic_sign";
-  });
+                                 const auto & attrs = elem->attributes();
+                                 const auto & it = attrs.find(lanelet::AttributeName::Subtype);
+                                 return it != attrs.end() && it->second == "traffic_sign";
+                               });
 
   for (const auto & regulatory_element : traffic_sign_elements) {
-    auto refers = regulatory_element->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
+    auto refers =
+      regulatory_element->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
     if (refers.empty()) {
       // Issue-001: missing refers in traffic_sign regulatory element
       issues.emplace_back(
@@ -62,16 +66,17 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::ch
       const auto & attrs = refer.attributes();
       const auto & type_it = attrs.find(lanelet::AttributeName::Type);
       const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);
-      if ((type_it == attrs.end() || type_it->second != "traffic_sign") || 
-          (subtype_it == attrs.end() || subtype_it->second != "stop_sign")) {
+      if (
+        (type_it == attrs.end() || type_it->second != "traffic_sign") ||
+        (subtype_it == attrs.end() || subtype_it->second != "stop_sign")) {
         // Issue-002: Refers linestring either does not have traffic_sign type or stop_sign subtype
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 2), refer.id()));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), refer.id()));
         continue;
       }
     }
 
-    auto ref_lines = regulatory_element->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine);
+    auto ref_lines =
+      regulatory_element->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine);
     if (ref_lines.empty()) {
       // Issue-003: Missing ref_line in traffic_sign regulatory element
       issues.emplace_back(
@@ -81,11 +86,10 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::ch
 
     for (const auto & ref_line : ref_lines) {
       const auto & attrs = ref_line.attributes();
-      const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);      
+      const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);
       if (subtype_it == attrs.end() || subtype_it->second != "stop_line") {
         // Issue-004: RefLine linestring does not have stop_line subtype
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 4), ref_line.id()));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), ref_line.id()));
       }
     }
   }

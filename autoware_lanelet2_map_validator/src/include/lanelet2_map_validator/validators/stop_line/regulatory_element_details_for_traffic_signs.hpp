@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_
-#define AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_  // NOLINT
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_  // NOLINT
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -24,13 +24,19 @@ class RegulatoryElementDetailsForTrafficSignsValidator : public lanelet::validat
 {
 public:
   // Write the validator's name here
-  constexpr static const char * name() { return "mapping.stop_line.regulatory_element_details_for_traffic_signs"; }
+  constexpr static const char * name()
+  {
+    return "mapping.stop_line.regulatory_element_details_for_traffic_signs";
+  }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  lanelet::validation::Issues check_regulatory_element_details_for_traffic_signs(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_regulatory_element_details_for_traffic_signs(
+    const lanelet::LaneletMap & map);
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_
+// clang-format off
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_  // NOLINT
+// clang-format on

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_validation_tester.hpp"
 #include "lanelet2_map_validator/validators/stop_line/regulatory_element_details_for_traffic_signs.hpp"
+#include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
@@ -25,9 +25,11 @@ class TestRegulatoryElementDetailsForTrafficSignsValidator : public MapValidatio
 private:
 };
 
-TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, ValidatorAvailability)  // NOLINT for gtest
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficSignsValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line
@@ -56,7 +58,7 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefersType) 
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 2);
-  
+
   // first issue: refers linestring without traffic_sign type (has line_thin type)
   EXPECT_EQ(issues[0].id, 2164);
   // second issue: refers linestring without stop_sign subtype (has speed_limit subtype)
@@ -71,10 +73,11 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, MissingRefLine)  //
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2166); 
+  EXPECT_EQ(issues[0].id, 2166);
 }
 
-TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefLineSubtype)  // NOLINT for gtest
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefLineSubtype)  // NOLINT for gtest
 {
   load_target_map("stop_line/traffic_signs_with_invalid_ref_line_subtype.osm");
 
@@ -82,10 +85,12 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefLineSubty
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2156); 
+  EXPECT_EQ(issues[0].id, 2156);
 }
 
-TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, TrafficSignRegulatoryElement)  // NOLINT for gtest
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficSignsValidator,
+  TrafficSignRegulatoryElement)  // NOLINT for gtest
 {
   load_target_map("stop_line/stop_line_with_traffic_sign.osm");
 
