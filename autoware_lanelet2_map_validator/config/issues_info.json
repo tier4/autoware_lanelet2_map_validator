@@ -239,6 +239,30 @@
       "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
     }
   },
+  "Intersection.RightOfWayWithTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with turn_direction '{turn_direction}' and traffic lights must be referenced by a right_of_way regulatory element.",
+      "ja": "turn_direction '{turn_direction}' を持ち信号機のある lanelet は right_of_way regulatory element に参照されている必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "More than one right_of_way regulatory element exist in the same lanelet.",
+      "ja": "同一のレーンレットに複数の right_of_way 規制要素が存在します。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way element does not reference the correct lanelet in its right_of_way role.",
+      "ja": "right_of_way 要素は、right_of_way の役割において正しい lanelet を参照していません。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",

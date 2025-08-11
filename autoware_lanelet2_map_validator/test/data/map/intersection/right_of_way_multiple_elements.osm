@@ -7154,6 +7154,7 @@
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
     <member type="relation" role="regulatory_element" ref="11143"/>
+    <member type="relation" role="regulatory_element" ref="11151"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7823,6 +7824,13 @@
     <member type="relation" role="right_of_way" ref="56"/>
     <member type="relation" role="yield" ref="49"/>
     <member type="relation" role="yield" ref="52"/>
+    <member type="relation" role="yield" ref="50"/>
+    <member type="relation" role="yield" ref="54"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="right_of_way"/>
+  </relation>
+  <relation id="11151">
+    <member type="relation" role="right_of_way" ref="53"/>
     <member type="relation" role="yield" ref="50"/>
     <member type="relation" role="yield" ref="54"/>
     <tag k="type" v="regulatory_element"/>
