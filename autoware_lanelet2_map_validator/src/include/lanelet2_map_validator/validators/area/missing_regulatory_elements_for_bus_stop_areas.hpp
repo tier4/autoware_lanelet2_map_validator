@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_  // NOLINT
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_  // NOLINT
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -37,4 +37,6 @@ private:
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_
+// clang-format off
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__AREA__MISSING_REGULATORY_ELEMENTS_FOR_BUS_STOP_AREAS_HPP_  // NOLINT
+// clang-format on

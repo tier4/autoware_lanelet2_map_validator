@@ -143,6 +143,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
   - 特に指定の要求仕様リストがなければ Autoware の地図仕様に即した `autoware_lanelet2_map_validator` を使ってください。
 - `lanelet2_validation_results.json` が既に存在する場合は上書きされてしまいます。
 - 下記のようなタブが Lanelet2 地図 (`osm` ファイル) に追記されます。このタブは Autoware の挙動に影響はしません。
+
   - 本タブの情報は自動的に付与されるもので、何か手入力する必要はありません。`validation_version` は `package.xml` から、`requirements_version` は要求仕様リストから取得されます。
 
   ```xml
