@@ -11,9 +11,9 @@ Required information for a bus stop area is written in the [Vector Map Requireme
 
 The output issue marks "polygon" as the **primitive**, and the polygon ID is written together as **ID**.
 
-| Issue Code                                           | Message                                              | Severity | Primitive | Description                                                                                                | Approach                                                     |
-| ---------------------------------------------------- | ---------------------------------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Area.MissingRegulatoryElementsForBusStopAreas-001   | "No regulatory element refers to this bus stop area." | Error    | Polygon   | There is a `bus_stop_area` type polygon that hasn't been referred to by any `bus_stop_area` subtype regulatory element. | Create a regulatory element with subtype `bus_stop_area` that refers to this polygon. |
+| Issue Code                                        | Message                                               | Severity | Primitive | Description                                                                                                             | Approach                                                                              |
+| ------------------------------------------------- | ----------------------------------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Area.MissingRegulatoryElementsForBusStopAreas-001 | "No regulatory element refers to this bus stop area." | Error    | Polygon   | There is a `bus_stop_area` type polygon that hasn't been referred to by any `bus_stop_area` subtype regulatory element. | Create a regulatory element with subtype `bus_stop_area` that refers to this polygon. |
 
 ## Parameters
 

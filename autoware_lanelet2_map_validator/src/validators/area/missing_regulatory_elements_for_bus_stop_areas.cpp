@@ -17,6 +17,7 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <range/v3/view/filter.hpp>
+
 #include <lanelet2_core/LaneletMap.h>
 
 #include <set>
@@ -28,16 +29,20 @@ namespace
 lanelet::validation::RegisterMapValidator<MissingRegulatoryElementsForBusStopAreas> reg;
 }
 
-lanelet::validation::Issues MissingRegulatoryElementsForBusStopAreas::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues MissingRegulatoryElementsForBusStopAreas::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
-  lanelet::autoware::validation::appendIssues(issues, check_missing_regulatory_elements_for_bus_stop_areas(map));
+  lanelet::autoware::validation::appendIssues(
+    issues, check_missing_regulatory_elements_for_bus_stop_areas(map));
 
   return issues;
 }
 
-lanelet::validation::Issues MissingRegulatoryElementsForBusStopAreas::check_missing_regulatory_elements_for_bus_stop_areas(const lanelet::LaneletMap & map)
+lanelet::validation::Issues
+MissingRegulatoryElementsForBusStopAreas::check_missing_regulatory_elements_for_bus_stop_areas(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -51,16 +56,15 @@ lanelet::validation::Issues MissingRegulatoryElementsForBusStopAreas::check_miss
     }
   }
 
-  auto reg_elem_bus_stop = 
-    map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
-      const auto & attrs = elem->attributes();
-      const auto & it = attrs.find(lanelet::AttributeName::Subtype);
-      return it != attrs.end() && it->second == "bus_stop_area";
-    }) |
-    ranges::views::filter([](auto && elem) {
-      const auto & param = elem->getParameters();
-      return param.find(lanelet::RoleNameString::Refers) != param.end();
-    });
+  auto reg_elem_bus_stop = map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
+                             const auto & attrs = elem->attributes();
+                             const auto & it = attrs.find(lanelet::AttributeName::Subtype);
+                             return it != attrs.end() && it->second == "bus_stop_area";
+                           }) |
+                           ranges::views::filter([](auto && elem) {
+                             const auto & param = elem->getParameters();
+                             return param.find(lanelet::RoleNameString::Refers) != param.end();
+                           });
 
   std::set<lanelet::Id> bus_stop_area_ids_reg_elem;
   for (const auto & elem : reg_elem_bus_stop) {

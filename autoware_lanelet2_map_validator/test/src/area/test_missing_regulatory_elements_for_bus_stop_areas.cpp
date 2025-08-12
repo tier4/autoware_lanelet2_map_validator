@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_validation_tester.hpp"
 #include "lanelet2_map_validator/validators/area/missing_regulatory_elements_for_bus_stop_areas.hpp"
+#include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
@@ -27,7 +27,8 @@ private:
 
 TEST_F(TestMissingRegulatoryElementsForBusStopAreas, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::MissingRegulatoryElementsForBusStopAreas::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::MissingRegulatoryElementsForBusStopAreas::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line
@@ -55,7 +56,7 @@ TEST_F(TestMissingRegulatoryElementsForBusStopAreas, InvalidRefers)  // NOLINT f
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2101); 
+  EXPECT_EQ(issues[0].id, 2101);
 }
 
 TEST_F(TestMissingRegulatoryElementsForBusStopAreas, SampleMap)  // NOLINT for gtest
