@@ -454,5 +454,13 @@
       "en": "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\".",
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
+  },
+  "Area.MissingRegulatoryElementsForBusStopAreas-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This bus_stop_area is not referred by any regulatory element.",
+      "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
+    }
   }
 }
