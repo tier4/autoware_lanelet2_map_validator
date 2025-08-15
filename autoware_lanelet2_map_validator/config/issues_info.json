@@ -454,5 +454,13 @@
       "en": "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\".",
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
+  },
+  "Lane.LateralSubtypeConnection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet {adjacent_lanelet_id} has incompatible subtype for linestring sharing.",
+      "ja": "隣接する lanelet {adjacent_lanelet_id} は linestring 共有に互換性のない subtype。"
+    }
   }
 }
