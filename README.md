@@ -143,6 +143,7 @@ Then you will see `lanelet2_validation_results.json` in your current working dir
   - `autoware_requirement_set.json` is the most general file for Autoware if you don't have any specifications.
 - `lanelet2_validation_results.json` will be overwritten if it already exists!!
 - The following tab will be appended to the lanelet2 map (`.osm` file). This tab shouldn't harm the Autoware behaviour.
+
   - All information will be generated automatically. The `validator_version` is obtained from the `package.xml` and the `requirements_version` is obtained from the requirement set JSON file.
 
   ```xml

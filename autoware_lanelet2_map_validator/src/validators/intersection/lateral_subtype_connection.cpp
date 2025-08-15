@@ -24,6 +24,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <utility>
 
 namespace lanelet::autoware::validation
 {
@@ -32,11 +33,9 @@ namespace
 lanelet::validation::RegisterMapValidator<LateralSubtypeConnectionValidator> reg;
 
 void check_adjacent_subtype_compatibility(
-  const lanelet::ConstLanelet & current_lane,
-  const lanelet::ConstLanelet & adjacent_lane,
+  const lanelet::ConstLanelet & current_lane, const lanelet::ConstLanelet & adjacent_lane,
   std::set<std::pair<lanelet::Id, lanelet::Id>> & processed_pairs,
-  lanelet::validation::Issues & issues,
-  const std::string & validator_name)
+  lanelet::validation::Issues & issues, const std::string & validator_name)
 {
   // Avoid duplicate processing of the same pair
   std::pair<lanelet::Id, lanelet::Id> current_pair = {current_lane.id(), adjacent_lane.id()};
@@ -47,25 +46,28 @@ void check_adjacent_subtype_compatibility(
   processed_pairs.insert(current_pair);
 
   const std::string current_subtype = current_lane.attributeOr(lanelet::AttributeName::Subtype, "");
-  const std::string adjacent_subtype = adjacent_lane.attributeOr(lanelet::AttributeName::Subtype, "");
-  
-  std::string norm_current = current_subtype.empty() ? "road" : current_subtype;
-  std::string norm_adjacent = adjacent_subtype.empty() ? "road" : adjacent_subtype;
-  
+  const std::string adjacent_subtype =
+    adjacent_lane.attributeOr(lanelet::AttributeName::Subtype, "");
+
+  std::string norm_current = current_subtype;
+  std::string norm_adjacent = adjacent_subtype;
+
   std::set<std::string> vehicle_suitable = {"road", "road_shoulder", "pedestrian_lane"};
-  
+
   bool current_vehicle = vehicle_suitable.count(norm_current) > 0;
   bool adjacent_vehicle = vehicle_suitable.count(norm_adjacent) > 0;
-  
+
   if (!current_vehicle || !adjacent_vehicle) {
     std::map<std::string, std::string> substitution_map;
     substitution_map["adjacent_lanelet_id"] = std::to_string(adjacent_lane.id());
-    issues.emplace_back(construct_issue_from_code(issue_code(validator_name, 1), current_lane.id(), substitution_map));
+    issues.emplace_back(construct_issue_from_code(
+      issue_code(validator_name, 1), current_lane.id(), substitution_map));
   }
 }
-}
+}  // namespace
 
-lanelet::validation::Issues LateralSubtypeConnectionValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues LateralSubtypeConnectionValidator::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -74,7 +76,8 @@ lanelet::validation::Issues LateralSubtypeConnectionValidator::operator()(const 
   return issues;
 }
 
-lanelet::validation::Issues LateralSubtypeConnectionValidator::check_lateral_subtype_connection(const lanelet::LaneletMap & map)
+lanelet::validation::Issues LateralSubtypeConnectionValidator::check_lateral_subtype_connection(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -90,13 +93,15 @@ lanelet::validation::Issues LateralSubtypeConnectionValidator::check_lateral_sub
     // Check left adjacent lanelet
     const auto left_adjacent = routing_graph_ptr->adjacentLeft(lane);
     if (left_adjacent) {
-      check_adjacent_subtype_compatibility(lane, left_adjacent.get(), processed_pairs, issues, this->name());
+      check_adjacent_subtype_compatibility(
+        lane, left_adjacent.get(), processed_pairs, issues, this->name());
     }
-    
+
     // Check right adjacent lanelet
     const auto right_adjacent = routing_graph_ptr->adjacentRight(lane);
     if (right_adjacent) {
-      check_adjacent_subtype_compatibility(lane, right_adjacent.get(), processed_pairs, issues, this->name());
+      check_adjacent_subtype_compatibility(
+        lane, right_adjacent.get(), processed_pairs, issues, this->name());
     }
   }
 

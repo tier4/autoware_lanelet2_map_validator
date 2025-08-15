@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_validation_tester.hpp"
 #include "lanelet2_map_validator/validators/intersection/lateral_subtype_connection.hpp"
+#include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
@@ -27,7 +27,8 @@ private:
 
 TEST_F(TestLateralSubtypeConnectionValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::LateralSubtypeConnectionValidator::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::LateralSubtypeConnectionValidator::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line
@@ -64,6 +65,6 @@ TEST_F(TestLateralSubtypeConnectionValidator, InvalidSubtypeAdjacency)  // NOLIN
   lanelet::autoware::validation::LateralSubtypeConnectionValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0);  
+  EXPECT_GT(issues.size(), 0);
   EXPECT_EQ(issues[0].id, 97) << "Issue should be for lanelet 96";
 }
