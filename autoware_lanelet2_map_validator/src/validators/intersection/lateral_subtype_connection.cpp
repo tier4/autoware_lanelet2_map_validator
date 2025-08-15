@@ -37,7 +37,6 @@ void check_adjacent_subtype_compatibility(
   std::set<std::pair<lanelet::Id, lanelet::Id>> & processed_pairs,
   lanelet::validation::Issues & issues, const std::string & validator_name)
 {
-  // Avoid duplicate processing of the same pair
   std::pair<lanelet::Id, lanelet::Id> current_pair = {current_lane.id(), adjacent_lane.id()};
   std::pair<lanelet::Id, lanelet::Id> reverse_pair = {adjacent_lane.id(), current_lane.id()};
   if (processed_pairs.count(current_pair) || processed_pairs.count(reverse_pair)) {
@@ -90,14 +89,12 @@ lanelet::validation::Issues LateralSubtypeConnectionValidator::check_lateral_sub
   std::set<std::pair<lanelet::Id, lanelet::Id>> processed_pairs;
 
   for (const lanelet::ConstLanelet & lane : map.laneletLayer) {
-    // Check left adjacent lanelet
     const auto left_adjacent = routing_graph_ptr->adjacentLeft(lane);
     if (left_adjacent) {
       check_adjacent_subtype_compatibility(
         lane, left_adjacent.get(), processed_pairs, issues, this->name());
     }
 
-    // Check right adjacent lanelet
     const auto right_adjacent = routing_graph_ptr->adjacentRight(lane);
     if (right_adjacent) {
       check_adjacent_subtype_compatibility(
