@@ -22,7 +22,9 @@
 
 class TestRegulatoryElementDetailsForTrafficSignsValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator::name());
 };
 
 TEST_F(
@@ -57,14 +59,13 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefersType) 
   lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 3);
+  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 2), 2164);
+  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 2), 2165);
+  const auto expected_issue3 = construct_issue_from_code(issue_code(test_target_, 4), 2156);
+  const auto expected_issues = {expected_issue1, expected_issue2, expected_issue3};
 
-  // first issue: refers linestring without traffic_sign type (has line_thin type)
-  EXPECT_EQ(issues[0].id, 2164);
-  // second issue: refers linestring without stop_sign subtype (has speed_limit subtype)
-  EXPECT_EQ(issues[1].id, 2165);
-  // Third issue: ref_line without stop_line subtype (has speed_limit subtype)
-  EXPECT_EQ(issues[2].id, 2156);
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, MissingRefLine)  // NOLINT for gtest
