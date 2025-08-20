@@ -21,7 +21,9 @@
 
 #include <lanelet2_core/LaneletMap.h>
 
+#include <algorithm>
 #include <set>
+#include <vector>
 
 namespace lanelet::autoware::validation
 {
@@ -76,13 +78,14 @@ MissingRegulatoryElementsForBusStopAreas::check_missing_regulatory_elements_for_
     }
   }
 
-  // Check if all bus_stop_area polygons are referred by regulatory elements
-  for (const auto & bus_stop_area_id : bus_stop_area_polygon_ids) {
-    if (
-      bus_stop_area_polygon_ids_reg_elem.find(bus_stop_area_id) ==
-      bus_stop_area_polygon_ids_reg_elem.end()) {
-      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), bus_stop_area_id));
-    }
+  std::set<lanelet::Id> unreferenced_bus_stop_areas;
+  std::set_difference(
+    bus_stop_area_polygon_ids.begin(), bus_stop_area_polygon_ids.end(),
+    bus_stop_area_polygon_ids_reg_elem.begin(), bus_stop_area_polygon_ids_reg_elem.end(),
+    std::inserter(unreferenced_bus_stop_areas, unreferenced_bus_stop_areas.begin()));
+
+  for (const auto & bus_stop_area_id : unreferenced_bus_stop_areas) {
+    issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), bus_stop_area_id));
   }
 
   return issues;
