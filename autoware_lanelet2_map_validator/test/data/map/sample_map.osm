@@ -5323,7 +5323,7 @@
 		<nd ref="1795" />
 		<nd ref="1787" />
 		<nd ref="1788" />
-		<tag k="type" v="line_thin" />
+		<tag k="type" v="virtual" />
 		<tag k="subtype" v="solid" />
 		<tag k="width" v="0.200" />
 	</way>
@@ -5334,7 +5334,7 @@
 		<nd ref="1571" />
 		<nd ref="2049" />
 		<nd ref="2048" />
-		<tag k="type" v="line_thin" />
+		<tag k="type" v="virtual" />
 		<tag k="subtype" v="solid" />
 		<tag k="width" v="0.200" />
 	</way>
