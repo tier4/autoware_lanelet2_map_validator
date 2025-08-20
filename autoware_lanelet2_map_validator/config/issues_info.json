@@ -468,7 +468,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Adjacent lanelet {adjacent_lanelet_id} of subtype `{adjacent_subtype}` and the designated lanelet of subtype `{self_adjacent_subtype}` cannot share linestring.",
-      "ja": "linestring を共有している Lanelet {adjacent_lanelet_id} (subtype `{adjacent_subtype}`) と、指定された Lanelet (subtype `{self_adjacent_subtype}`) は、物理的に並行に隣り合っていてはいけません。"
+      "ja": "linestring を共有している Lanelet {adjacent_lanelet_id} (subtype `{adjacent_subtype}`) と、指定された Lanelet (subtype `{self_adjacent_subtype}`) は、横に隣り合っていてはいけません。"
     }
   }
 }

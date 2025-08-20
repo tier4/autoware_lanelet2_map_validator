@@ -18,11 +18,14 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestLateralSubtypeConnectionValidator : public MapValidationTester
 {
-private:
+protected:
+  const std::string test_target_ =
+    std::string(lanelet::autoware::validation::LateralSubtypeConnectionValidator::name());
 };
 
 TEST_F(TestLateralSubtypeConnectionValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -61,10 +64,15 @@ TEST_F(TestLateralSubtypeConnectionValidator, ValidBorderSharing)  // NOLINT for
 TEST_F(TestLateralSubtypeConnectionValidator, InvalidSubtypeAdjacency)  // NOLINT for gtest
 {
   load_target_map("lane/border_sharing_with_wrong_subtype.osm");
-
   lanelet::autoware::validation::LateralSubtypeConnectionValidator checker;
   const auto & issues = checker(*map_);
-
-  EXPECT_GT(issues.size(), 0);
-  EXPECT_EQ(issues[0].id, 97) << "Issue should be for lanelet 96";
+  std::map<std::string, std::string> substitution_map;
+  substitution_map["adjacent_lanelet_id"] = "96";
+  substitution_map["adjacent_subtype"] = "road";
+  substitution_map["self_adjacent_subtype"] = "walkway";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 97, substitution_map);
+  EXPECT_EQ(issues.size(), 1);
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
