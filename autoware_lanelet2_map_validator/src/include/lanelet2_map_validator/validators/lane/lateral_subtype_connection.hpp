@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__LATERAL_SUBTYPE_CONNECTION_HPP_
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__LATERAL_SUBTYPE_CONNECTION_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__LATERAL_SUBTYPE_CONNECTION_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__LATERAL_SUBTYPE_CONNECTION_HPP_
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -33,4 +33,4 @@ private:
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__LATERAL_SUBTYPE_CONNECTION_HPP_
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__LATERAL_SUBTYPE_CONNECTION_HPP_
