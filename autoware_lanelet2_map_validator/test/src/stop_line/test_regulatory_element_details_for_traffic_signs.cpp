@@ -23,8 +23,8 @@
 class TestRegulatoryElementDetailsForTrafficSignsValidator : public MapValidationTester
 {
 protected:
-  const std::string test_target_ =
-    std::string(lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator::name());
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator::name());
 };
 
 TEST_F(
