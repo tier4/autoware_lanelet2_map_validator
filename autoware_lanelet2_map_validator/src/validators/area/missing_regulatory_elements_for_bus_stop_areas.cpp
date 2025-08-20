@@ -16,6 +16,7 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <autoware_lanelet2_extension/regulatory_elements/bus_stop_area.hpp>
 #include <range/v3/view/filter.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
@@ -46,37 +47,40 @@ MissingRegulatoryElementsForBusStopAreas::check_missing_regulatory_elements_for_
 {
   lanelet::validation::Issues issues;
 
-  std::set<lanelet::Id> bus_stop_area_ids;
+  std::set<lanelet::Id> bus_stop_area_polygon_ids;
 
   for (const auto & polygon : map.polygonLayer) {
-    const auto & attrs = polygon.attributes();
-    const auto & it = attrs.find(lanelet::AttributeName::Type);
-    if (it != attrs.end() && it->second == "bus_stop_area") {
-      bus_stop_area_ids.insert(polygon.id());
+    if (
+      polygon.hasAttribute(lanelet::AttributeName::Type) &&
+      polygon.attribute(lanelet::AttributeName::Type) == lanelet::autoware::BusStopArea::RuleName) {
+      bus_stop_area_polygon_ids.insert(polygon.id());
     }
   }
 
-  auto reg_elem_bus_stop = map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
-                             const auto & attrs = elem->attributes();
-                             const auto & it = attrs.find(lanelet::AttributeName::Subtype);
-                             return it != attrs.end() && it->second == "bus_stop_area";
-                           }) |
-                           ranges::views::filter([](auto && elem) {
-                             const auto & param = elem->getParameters();
-                             return param.find(lanelet::RoleNameString::Refers) != param.end();
-                           });
+  auto reg_elem_with_bus_stop_polygon =
+    map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
+      const auto & attrs = elem->attributes();
+      const auto & it = attrs.find(lanelet::AttributeName::Subtype);
+      return it != attrs.end() && it->second == lanelet::autoware::BusStopArea::RuleName;
+    }) |
+    ranges::views::filter([](auto && elem) {
+      const auto & param = elem->getParameters();
+      return param.find(lanelet::RoleNameString::Refers) != param.end();
+    });
 
-  std::set<lanelet::Id> bus_stop_area_ids_reg_elem;
-  for (const auto & elem : reg_elem_bus_stop) {
+  std::set<lanelet::Id> bus_stop_area_polygon_ids_reg_elem;
+  for (const auto & elem : reg_elem_with_bus_stop_polygon) {
     const auto & refers = elem->getParameters<lanelet::ConstPolygon3d>(lanelet::RoleName::Refers);
     for (const lanelet::ConstPolygon3d & refer : refers) {
-      bus_stop_area_ids_reg_elem.insert(refer.id());
+      bus_stop_area_polygon_ids_reg_elem.insert(refer.id());
     }
   }
 
   // Check if all bus_stop_area polygons are referred by regulatory elements
-  for (const auto & bus_stop_area_id : bus_stop_area_ids) {
-    if (bus_stop_area_ids_reg_elem.find(bus_stop_area_id) == bus_stop_area_ids_reg_elem.end()) {
+  for (const auto & bus_stop_area_id : bus_stop_area_polygon_ids) {
+    if (
+      bus_stop_area_polygon_ids_reg_elem.find(bus_stop_area_id) ==
+      bus_stop_area_polygon_ids_reg_elem.end()) {
       issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), bus_stop_area_id));
     }
   }

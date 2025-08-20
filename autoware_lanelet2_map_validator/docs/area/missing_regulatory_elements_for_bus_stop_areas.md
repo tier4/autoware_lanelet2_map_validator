@@ -7,7 +7,7 @@ mapping.area.missing_regulatory_elements_for_bus_stop_areas
 ## Feature
 
 This validator checks whether each `bus_stop_area` type polygon has a relevant regulatory element that refers to it.
-Required information for a bus stop area is written in the [Vector Map Requirements vm-06-06](https://docs.pilot.auto/en/reference-dfsign/common/map-requirements/vector-map-requirements/category_area#vm-06-06-bus-stop-area).
+Required information for a bus stop area is written in the [Vector Map Requirements vm-06-06](https://docs.pilot.auto/en/reference-design/common/map-requirements/vector-map-requirements/category_area/#vm-06-06-bus-stop-area).
 
 The output issue marks "polygon" as the **primitive**, and the polygon ID is written together as **ID**.
 
