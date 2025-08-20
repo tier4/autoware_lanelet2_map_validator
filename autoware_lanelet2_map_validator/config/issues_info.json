@@ -247,6 +247,46 @@
       "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
     }
   },
+  "Intersection.RightOfWayForVirtualTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with virtual_traffic_light regulatory element must also reference a right_of_way regulatory element.",
+      "ja": "virtual_traffic_light 規制要素を持つ lanelet は right_of_way 規制要素も参照している必要があります。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Multiple right_of_way regulatory elements exist in the same lanelet with virtual traffic light.",
+      "ja": "バーチャル信号機を持つ同一のレーンレットに複数の right_of_way 規制要素が存在します。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
+      "ja": "right_of_way 規制要素は正確に1つの right_of_way 役割を持つ必要があります。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element does not set this lanelet as the right_of_way role.",
+      "ja": "right_of_way 規制要素がこの lanelet を right_of_way 役割として設定していません。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role in the right_of_way regulatory element.",
+      "ja": "競合する lanelet {conflicting_lanelet_id} が right_of_way 規制要素の yield 役割として設定されていません。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
