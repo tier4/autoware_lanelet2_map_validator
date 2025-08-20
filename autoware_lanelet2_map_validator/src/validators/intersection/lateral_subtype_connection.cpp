@@ -59,6 +59,8 @@ void check_adjacent_subtype_compatibility(
   if (!current_vehicle || !adjacent_vehicle) {
     std::map<std::string, std::string> substitution_map;
     substitution_map["adjacent_lanelet_id"] = std::to_string(adjacent_lane.id());
+    substitution_map["adjacent_subtype"] = adjacent_subtype;
+    substitution_map["self_adjacent_subtype"] = current_subtype;
     issues.emplace_back(construct_issue_from_code(
       issue_code(validator_name, 1), current_lane.id(), substitution_map));
   }
