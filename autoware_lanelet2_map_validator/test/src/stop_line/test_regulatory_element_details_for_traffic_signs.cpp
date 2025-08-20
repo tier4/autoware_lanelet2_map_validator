@@ -57,12 +57,14 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefersType) 
   lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 2);
+  EXPECT_EQ(issues.size(), 3);
 
   // first issue: refers linestring without traffic_sign type (has line_thin type)
   EXPECT_EQ(issues[0].id, 2164);
   // second issue: refers linestring without stop_sign subtype (has speed_limit subtype)
   EXPECT_EQ(issues[1].id, 2165);
+  // Third issue: ref_line without stop_line subtype (has speed_limit subtype)
+  EXPECT_EQ(issues[2].id, 2156);
 }
 
 TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, MissingRefLine)  // NOLINT for gtest
@@ -74,18 +76,6 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, MissingRefLine)  //
 
   EXPECT_EQ(issues.size(), 1);
   EXPECT_EQ(issues[0].id, 2166);
-}
-
-TEST_F(
-  TestRegulatoryElementDetailsForTrafficSignsValidator, InvalidRefLineSubtype)  // NOLINT for gtest
-{
-  load_target_map("stop_line/traffic_signs_with_invalid_ref_line_subtype.osm");
-
-  lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator checker;
-  const auto & issues = checker(*map_);
-
-  EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2156);
 }
 
 TEST_F(

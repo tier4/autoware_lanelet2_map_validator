@@ -47,9 +47,8 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
   lanelet::validation::Issues issues;
 
   auto traffic_sign_elements = map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
-                                 const auto & attrs = elem->attributes();
-                                 const auto & it = attrs.find(lanelet::AttributeName::Subtype);
-                                 return it != attrs.end() && it->second == "traffic_sign";
+                                 return elem->hasAttribute(lanelet::AttributeName::Subtype) &&
+                                        elem->attribute(lanelet::AttributeName::Subtype).value() == "traffic_sign";
                                });
 
   for (const auto & regulatory_element : traffic_sign_elements) {

@@ -47,7 +47,7 @@
     <nd ref="2147"/>
     <nd ref="2150"/>
     <tag k="type" v="stop_line"/>
-    <tag k="subtype" v="stop_line"/>
+    <tag k="subtype" v="solid"/>
   </way>
   <way id="2164">
     <nd ref="2162"/>
