@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_validation_tester.hpp"
 #include "lanelet2_map_validator/validators/intersection/right_of_way_for_virtual_traffic_lights.hpp"
+#include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
@@ -27,7 +27,8 @@ private:
 
 TEST_F(TestRightOfWayForVirtualTrafficLightsValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::RightOfWayForVirtualTrafficLightsValidator::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::RightOfWayForVirtualTrafficLightsValidator::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line

@@ -36,16 +36,20 @@ namespace
 lanelet::validation::RegisterMapValidator<RightOfWayForVirtualTrafficLightsValidator> reg;
 }
 
-lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
-  lanelet::autoware::validation::appendIssues(issues, check_right_of_way_for_virtual_traffic_lights(map));
+  lanelet::autoware::validation::appendIssues(
+    issues, check_right_of_way_for_virtual_traffic_lights(map));
 
   return issues;
 }
 
-lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traffic_lights(const lanelet::LaneletMap & map)
+lanelet::validation::Issues
+RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traffic_lights(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -54,34 +58,33 @@ lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::check_ri
   auto routing_graph = lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
   for (const auto & lanelet : map.laneletLayer) {
-    const auto virtual_traffic_light_elems = lanelet.regulatoryElementsAs<lanelet::autoware::VirtualTrafficLight>();
-    
+    const auto virtual_traffic_light_elems =
+      lanelet.regulatoryElementsAs<lanelet::autoware::VirtualTrafficLight>();
+
     if (virtual_traffic_light_elems.empty()) {
-      continue; 
+      continue;
     }
 
     const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
-    
+
     if (right_of_way_elems.empty()) {
       // Issue-001: Lanelet with virtual_traffic_light missing right_of_way reference
-      issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
       continue;
     }
 
     if (right_of_way_elems.size() > 1) {
       // Issue-002: Multiple right_of_way regulatory elements in the same lanelet
-      issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 2), lanelet.id()));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), lanelet.id()));
       continue;
     }
 
     const auto right_of_way_elem = right_of_way_elems.front();
 
     bool is_set_as_right_of_way = false;
-    const auto right_of_way_lanelets = 
+    const auto right_of_way_lanelets =
       right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
-    
+
     if (right_of_way_lanelets.size() != 1) {
       // Issue-003: right_of_way regulatory element should have exactly one right_of_way role
       issues.emplace_back(
@@ -103,7 +106,7 @@ lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::check_ri
       continue;
     }
 
-    const auto yield_lanelets = 
+    const auto yield_lanelets =
       right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::Yield);
 
     std::vector<lanelet::ConstLanelet> conflicting_lanelets;
@@ -111,7 +114,7 @@ lanelet::validation::Issues RightOfWayForVirtualTrafficLightsValidator::check_ri
       if (other_lanelet.id() == lanelet.id()) {
         continue;
       }
-      
+
       const auto relation = routing_graph->routingRelation(lanelet, other_lanelet);
       if (relation == lanelet::routing::RelationType::Conflicting) {
         conflicting_lanelets.push_back(other_lanelet);
