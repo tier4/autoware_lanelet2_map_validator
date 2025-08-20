@@ -46,10 +46,11 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
 {
   lanelet::validation::Issues issues;
 
-  auto traffic_sign_elements = map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
-                                 return elem->hasAttribute(lanelet::AttributeName::Subtype) &&
-                                        elem->attribute(lanelet::AttributeName::Subtype).value() == "traffic_sign";
-                               });
+  auto traffic_sign_elements =
+    map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
+      return elem->hasAttribute(lanelet::AttributeName::Subtype) &&
+             elem->attribute(lanelet::AttributeName::Subtype).value() == "traffic_sign";
+    });
 
   for (const auto & regulatory_element : traffic_sign_elements) {
     auto refers =
