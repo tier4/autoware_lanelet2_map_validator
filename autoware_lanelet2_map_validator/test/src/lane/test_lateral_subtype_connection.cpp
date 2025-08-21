@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lanelet2_map_validator/validators/intersection/lateral_subtype_connection.hpp"
+#include "lanelet2_map_validator/validators/lane/lateral_subtype_connection.hpp"
 #include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
