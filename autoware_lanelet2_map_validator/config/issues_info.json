@@ -263,6 +263,14 @@
       "ja": "right_of_way 要素は、right_of_way の役割において正しい lanelet を参照していません。"
     }
   },
+  "Intersection.LaneletBorderType-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "The LeftBound and RightBound of lanelet with intersection_area tag must be either virtual or road_border type.",
+      "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
