@@ -271,6 +271,14 @@
       "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
     }
   },
+  "Intersection.LaneletBorderType-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "The LeftBound and RightBound of lanelet with intersection_area tag must be either virtual or road_border type.",
+      "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -485,6 +493,14 @@
     "message": {
       "en": "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\".",
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
+    }
+  },
+  "Area.MissingRegulatoryElementsForBusStopAreas-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This bus_stop_area is not referred by any regulatory element.",
+      "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
     }
   }
 }
