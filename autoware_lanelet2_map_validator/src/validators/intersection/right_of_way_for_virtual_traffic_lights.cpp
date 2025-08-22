@@ -138,8 +138,29 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
           issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
       }
     }
-  }
 
+    std::vector<lanelet::Id> actual_yield_ids;
+    for (const auto & yield_lanelet : yield_lanelets) {
+      actual_yield_ids.push_back(yield_lanelet.id());
+    }
+
+    std::vector<lanelet::Id> expected_yield_ids;
+    for (const auto & conflicting_lanelet : conflicting_lanelets) {
+      expected_yield_ids.push_back(conflicting_lanelet.id());
+    }
+
+    for (const auto & actual_id : actual_yield_ids) {
+      if (
+        std::find(expected_yield_ids.begin(), expected_yield_ids.end(), actual_id) ==
+        expected_yield_ids.end()) {
+        // Issue-006: Unnecessary yield relationship
+        std::map<std::string, std::string> reason_map;
+        reason_map["unnecessary_yield_to"] = std::to_string(actual_id);
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
+      }
+    }
+  }
   return issues;
 }
 }  // namespace lanelet::autoware::validation

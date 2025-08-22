@@ -287,6 +287,14 @@
       "ja": "競合する lanelet {conflicting_lanelet_id} が right_of_way 規制要素の yield 役割として設定されていません。"
     }
   },
+  "Intersection.RightOfWayForVirtualTrafficLights-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} in right_of_way regulatory element.",
+      "ja": "right_of_way 規制要素において lanelet {unnecessary_yield_to} への不要な譲歩関係があります。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",

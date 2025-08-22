@@ -7046,7 +7046,6 @@
     <member type="relation" role="regulatory_element" ref="1012"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
-    <member type="relation" role="regulatory_element" ref="11149"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7061,7 +7060,6 @@
     <member type="relation" role="regulatory_element" ref="1012"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
     <member type="relation" role="regulatory_element" ref="10360"/>
-    <member type="relation" role="regulatory_element" ref="11145"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>

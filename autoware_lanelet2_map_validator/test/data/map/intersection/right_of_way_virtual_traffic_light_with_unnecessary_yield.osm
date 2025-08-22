@@ -7767,6 +7767,7 @@
     <member type="relation" role="yield" ref="52"/>
     <member type="relation" role="yield" ref="50"/>
     <member type="relation" role="yield" ref="54"/>
+    <member type="relation" role="yield" ref="58"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>

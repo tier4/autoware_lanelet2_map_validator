@@ -7749,7 +7749,7 @@
     <tag k="subtype" v="right_of_way"/>
   </relation>
   <relation id="11149">
-    <member type="relation" role="right_of_way" ref="50"/>
+    <member type="relation" role="right_of_way" ref="56"/>
     <member type="relation" role="yield" ref="55"/>
     <member type="relation" role="yield" ref="58"/>
     <member type="relation" role="yield" ref="60"/>
