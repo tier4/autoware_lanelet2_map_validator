@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -121,44 +122,40 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
       }
     }
 
+    std::set<lanelet::Id> conflicting_ids;
     for (const auto & conflicting_lanelet : conflicting_lanelets) {
-      bool is_set_as_yield = false;
-      for (const auto & yield_lanelet : yield_lanelets) {
-        if (yield_lanelet.id() == conflicting_lanelet.id()) {
-          is_set_as_yield = true;
-          break;
-        }
-      }
-
-      if (!is_set_as_yield) {
-        // Issue-005: Conflicting lanelet not set as yield role in right_of_way regulatory element
-        std::map<std::string, std::string> reason_map;
-        reason_map["conflicting_lanelet_id"] = std::to_string(conflicting_lanelet.id());
-        issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
-      }
+      conflicting_ids.insert(conflicting_lanelet.id());
     }
-
-    std::vector<lanelet::Id> actual_yield_ids;
+    
+    std::set<lanelet::Id> yield_ids;
     for (const auto & yield_lanelet : yield_lanelets) {
-      actual_yield_ids.push_back(yield_lanelet.id());
+      yield_ids.insert(yield_lanelet.id());
     }
-
-    std::vector<lanelet::Id> expected_yield_ids;
-    for (const auto & conflicting_lanelet : conflicting_lanelets) {
-      expected_yield_ids.push_back(conflicting_lanelet.id());
+    
+    std::set<lanelet::Id> missing_yields;
+    std::set_difference(conflicting_ids.begin(), conflicting_ids.end(),
+                        yield_ids.begin(), yield_ids.end(),
+                        std::inserter(missing_yields, missing_yields.begin()));
+    
+    for (const auto & missing_id : missing_yields) {
+      // Issue-005: Conflicting lanelet not set as yield role
+      std::map<std::string, std::string> reason_map;
+      reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
     }
-
-    for (const auto & actual_id : actual_yield_ids) {
-      if (
-        std::find(expected_yield_ids.begin(), expected_yield_ids.end(), actual_id) ==
-        expected_yield_ids.end()) {
-        // Issue-006: Unnecessary yield relationship
-        std::map<std::string, std::string> reason_map;
-        reason_map["unnecessary_yield_to"] = std::to_string(actual_id);
-        issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
-      }
+    
+    std::set<lanelet::Id> unnecessary_yields;
+    std::set_difference(yield_ids.begin(), yield_ids.end(),
+                        conflicting_ids.begin(), conflicting_ids.end(),
+                        std::inserter(unnecessary_yields, unnecessary_yields.begin()));
+    
+    for (const auto & unnecessary_id : unnecessary_yields) {
+      // Issue-006: Unnecessary yield relationship
+      std::map<std::string, std::string> reason_map;
+      reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
     }
   }
   return issues;
