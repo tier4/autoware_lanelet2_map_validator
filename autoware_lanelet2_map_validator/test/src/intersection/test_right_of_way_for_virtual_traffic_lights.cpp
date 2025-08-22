@@ -110,8 +110,7 @@ TEST_F(
   }
 }
 
-TEST_F(
-  TestRightOfWayForVirtualTrafficLightsValidator, MultipleRole)  // NOLINT for gtest
+TEST_F(TestRightOfWayForVirtualTrafficLightsValidator, MultipleRole)  // NOLINT for gtest
 {
   load_target_map("intersection/right_of_way_virtual_traffic_light_with_multiple_role.osm");
 
