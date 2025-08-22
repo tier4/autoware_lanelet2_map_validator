@@ -126,17 +126,17 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
     for (const auto & conflicting_lanelet : conflicting_lanelets) {
       conflicting_ids.insert(conflicting_lanelet.id());
     }
-    
+
     std::set<lanelet::Id> yield_ids;
     for (const auto & yield_lanelet : yield_lanelets) {
       yield_ids.insert(yield_lanelet.id());
     }
-    
+
     std::set<lanelet::Id> missing_yields;
-    std::set_difference(conflicting_ids.begin(), conflicting_ids.end(),
-                        yield_ids.begin(), yield_ids.end(),
-                        std::inserter(missing_yields, missing_yields.begin()));
-    
+    std::set_difference(
+      conflicting_ids.begin(), conflicting_ids.end(), yield_ids.begin(), yield_ids.end(),
+      std::inserter(missing_yields, missing_yields.begin()));
+
     for (const auto & missing_id : missing_yields) {
       // Issue-005: Conflicting lanelet not set as yield role
       std::map<std::string, std::string> reason_map;
@@ -144,12 +144,12 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
       issues.emplace_back(construct_issue_from_code(
         issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
     }
-    
+
     std::set<lanelet::Id> unnecessary_yields;
-    std::set_difference(yield_ids.begin(), yield_ids.end(),
-                        conflicting_ids.begin(), conflicting_ids.end(),
-                        std::inserter(unnecessary_yields, unnecessary_yields.begin()));
-    
+    std::set_difference(
+      yield_ids.begin(), yield_ids.end(), conflicting_ids.begin(), conflicting_ids.end(),
+      std::inserter(unnecessary_yields, unnecessary_yields.begin()));
+
     for (const auto & unnecessary_id : unnecessary_yields) {
       // Issue-006: Unnecessary yield relationship
       std::map<std::string, std::string> reason_map;
