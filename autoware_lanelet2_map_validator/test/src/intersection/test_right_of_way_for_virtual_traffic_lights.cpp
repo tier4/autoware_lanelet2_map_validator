@@ -181,9 +181,9 @@ TEST_F(
   EXPECT_EQ(issues.size(), 1);
 
   if (issues.size() == 1) {
-    const lanelet::Id expected_regulatory_element_id = 11150;
+    const lanelet::Id expected_regulatory_element_id = 11149;
     std::map<std::string, std::string> substitutions;
-    substitutions["unnecessary_yield_to"] = "58";
+    substitutions["unnecessary_yield_to"] = "54";
     const auto expected_issue = construct_issue_from_code(
       issue_code(test_target_, 6), expected_regulatory_element_id, substitutions);
     const auto difference = compare_an_issue(expected_issue, issues[0]);
