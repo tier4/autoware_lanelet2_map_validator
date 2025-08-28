@@ -247,6 +247,46 @@
       "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
     }
   },
+  "Intersection.RightOfWayWithoutTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with turn_direction '{turn_direction}' but no traffic lights must be referenced by a right_of_way regulatory element.",
+      "ja": "turn_direction '{turn_direction}' を持ち信号機のない lanelet は right_of_way regulatory element に参照されている必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
+      "ja": "right_of_way 規制要素は正確に1つの right_of_way 役割を持つ必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element does not set this lanelet as the right_of_way role.",
+      "ja": "right_of_way 規制要素がこの lanelet を right_of_way 役割として設定していません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role for {turn_direction} turn at intersection without traffic lights.",
+      "ja": "信号機のない交差点での {turn_direction} 転回において、競合する lanelet {conflicting_lanelet_id} が yield 役割として設定されていません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} for {turn_direction} turn at intersection without traffic lights.",
+      "ja": "信号機のない交差点での {turn_direction} 転回において、lanelet {unnecessary_yield_to} への不要な譲歩関係があります。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
