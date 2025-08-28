@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
-#define AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -24,13 +24,17 @@ class RightOfWayWithoutTrafficLightsValidator : public lanelet::validation::MapV
 {
 public:
   // Write the validator's name here
-  constexpr static const char * name() { return "mapping.intersection.right_of_way_without_traffic_lights"; }
+  constexpr static const char * name()
+  {
+    return "mapping.intersection.right_of_way_without_traffic_lights";
+  }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  lanelet::validation::Issues check_right_of_way_without_traffic_lights(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_right_of_way_without_traffic_lights(
+    const lanelet::LaneletMap & map);
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // AUTOWARE_LANELET2_MAP_VALIDATOR__TEMPLATE__VALIDATOR_TEMPLATE_HPP_
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_
