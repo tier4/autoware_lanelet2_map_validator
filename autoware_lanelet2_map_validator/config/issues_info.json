@@ -462,5 +462,21 @@
       "en": "Attribute participant:pedestrian of refers is not set to \"yes\" or \"true\".",
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
+  },
+  "Lane.LateralSubtypeConnection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet {adjacent_lanelet_id} of subtype `{adjacent_subtype}` and the designated lanelet of subtype `{self_adjacent_subtype}` cannot share linestring.",
+      "ja": "linestring を共有している Lanelet {adjacent_lanelet_id} (subtype `{adjacent_subtype}`) と、指定された Lanelet (subtype `{self_adjacent_subtype}`) は、横に隣り合っていてはいけません。"
+    }
+  },
+  "Area.MissingRegulatoryElementsForBusStopAreas-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This bus_stop_area is not referred by any regulatory element.",
+      "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
+    }
   }
 }
