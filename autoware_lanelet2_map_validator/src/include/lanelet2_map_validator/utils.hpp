@@ -121,8 +121,7 @@ std::string primitives_to_ids_string(const std::vector<T> & primitives)
  */
 inline bool has_same_source(
   const lanelet::routing::RoutingGraphConstPtr & routing_graph,
-  const lanelet::ConstLanelet & lanelet1,
-  const lanelet::ConstLanelet & lanelet2)
+  const lanelet::ConstLanelet & lanelet1, const lanelet::ConstLanelet & lanelet2)
 {
   auto prev1 = routing_graph->previous(lanelet1);
   auto prev2 = routing_graph->previous(lanelet2);
