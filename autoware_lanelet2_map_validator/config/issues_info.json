@@ -249,21 +249,13 @@
   },
   "Intersection.RightOfWayWithoutTrafficLights-001": {
     "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Lanelet with turn_direction '{turn_direction}' but no traffic lights must be referenced by a right_of_way regulatory element.",
-      "ja": "turn_direction '{turn_direction}' を持ち信号機のない lanelet は right_of_way regulatory element に参照されている必要があります。"
-    }
-  },
-  "Intersection.RightOfWayWithoutTrafficLights-002": {
-    "severity": "Error",
     "primitive": "regulatory element",
     "message": {
       "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
       "ja": "right_of_way 規制要素は正確に1つの right_of_way 役割を持つ必要があります。"
     }
   },
-  "Intersection.RightOfWayWithoutTrafficLights-003": {
+  "Intersection.RightOfWayWithoutTrafficLights-002": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
@@ -271,7 +263,7 @@
       "ja": "right_of_way 規制要素がこの lanelet を right_of_way 役割として設定していません。"
     }
   },
-  "Intersection.RightOfWayWithoutTrafficLights-004": {
+  "Intersection.RightOfWayWithoutTrafficLights-003": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
@@ -279,7 +271,7 @@
       "ja": "信号機のない交差点での {turn_direction} 転回において、競合する lanelet {conflicting_lanelet_id} が yield 役割として設定されていません。"
     }
   },
-  "Intersection.RightOfWayWithoutTrafficLights-005": {
+  "Intersection.RightOfWayWithoutTrafficLights-004": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {

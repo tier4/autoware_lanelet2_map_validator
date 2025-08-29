@@ -112,6 +112,30 @@ std::string primitives_to_ids_string(const std::vector<T> & primitives)
   return result;
 }
 
+/**
+ * @brief Checks if two lanelets have the same upstream source (i.e., share any previous lanelet).
+ * @param routing_graph The routing graph
+ * @param lanelet1 First lanelet
+ * @param lanelet2 Second lanelet
+ * @return true if they share at least one previous lanelet, false otherwise
+ */
+inline bool has_same_source(
+  const lanelet::routing::RoutingGraphConstPtr & routing_graph,
+  const lanelet::ConstLanelet & lanelet1,
+  const lanelet::ConstLanelet & lanelet2)
+{
+  auto prev1 = routing_graph->previous(lanelet1);
+  auto prev2 = routing_graph->previous(lanelet2);
+  for (const auto & p1 : prev1) {
+    for (const auto & p2 : prev2) {
+      if (p1.id() == p2.id()) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 }  // namespace lanelet::autoware::validation
 
 std::string snake_to_upper_camel(const std::string & snake_case);
