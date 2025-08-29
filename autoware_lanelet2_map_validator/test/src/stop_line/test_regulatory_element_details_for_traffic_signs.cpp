@@ -75,8 +75,10 @@ TEST_F(TestRegulatoryElementDetailsForTrafficSignsValidator, MissingRefLine)  //
   lanelet::autoware::validation::RegulatoryElementDetailsForTrafficSignsValidator checker;
   const auto & issues = checker(*map_);
 
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 2166);
   EXPECT_EQ(issues.size(), 1);
-  EXPECT_EQ(issues[0].id, 2166);
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(
