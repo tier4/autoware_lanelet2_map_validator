@@ -1,4 +1,4 @@
-# Start from Autoware core-devel (has ROS2 + Autoware dependencies pre-installed)
+# Start from Autoware core-devel
 FROM ghcr.io/autowarefoundation/autoware:core-devel
 
 # Install Qt X11 dependencies
