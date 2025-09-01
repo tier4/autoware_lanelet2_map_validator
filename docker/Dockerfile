@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-dri=23.2.1-1ubuntu3.1~22.04.3 \
     && rm -rf /var/lib/apt/lists/*
 
+COPY autoware_lanelet2_map_validator/map_requirements /home/autoware_lanelet2_map_validator/map_requirements
+COPY autoware_lanelet2_map_validator/config/params.yaml /home/autoware_lanelet2_map_validator/config
+
 # Run the same build-and-clean process Autoware uses
 # hadolint ignore=SC1091
 RUN --mount=type=bind,source=./autoware_lanelet2_map_validator,target=/autoware/src/autoware_lanelet2_map_validator \
@@ -21,6 +24,8 @@ RUN --mount=type=bind,source=./autoware_lanelet2_map_validator,target=/autoware/
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro "$ROS_DISTRO" && \
     /autoware/build_and_clean.sh /ccache /opt/autoware "--packages-up-to autoware_lanelet2_map_validator"
+
+WORKDIR /home/autoware_lanelet2_map_validator
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
