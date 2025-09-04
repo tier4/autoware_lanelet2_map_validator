@@ -1,0 +1,141 @@
+// Copyright 2025 Autoware Foundation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include "lanelet2_map_validator/validators/area/buffer_zone_validity.hpp"
+
+#include "lanelet2_map_validator/utils.hpp"
+
+#include <boost/geometry/algorithms/intersects.hpp>
+#include <boost/geometry/algorithms/is_valid.hpp>
+#include <boost/geometry/algorithms/within.hpp>
+
+#include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/Polygon.h>
+#include <lanelet2_core/primitives/Lanelet.h>
+#include <lanelet2_core/primitives/Polygon.h>
+
+#include <iostream>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+
+namespace lanelet::autoware::validation
+{
+namespace
+{
+lanelet::validation::RegisterMapValidator<BufferZoneValidity> reg;
+}
+
+lanelet::validation::Issues BufferZoneValidity::operator()(const lanelet::LaneletMap & map)
+{
+  lanelet::validation::Issues issues;
+
+  lanelet::autoware::validation::appendIssues(issues, check_buffer_zone_validity(map));
+
+  return issues;
+}
+
+lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
+  const lanelet::LaneletMap & map)
+{
+  lanelet::validation::Issues issues;
+
+  for (const auto & polygon : map.polygonLayer) {
+    if (
+      !polygon.hasAttribute(lanelet::AttributeName::Type) ||
+      polygon.attribute(lanelet::AttributeName::Type).value() != "hatched_road_markings") {
+      continue;
+    }
+
+    lanelet::BoundingBox2d bbox2d =
+      lanelet::geometry::boundingBox2d(lanelet::traits::to2D(polygon.basicPolygon()));
+    lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox2d);
+
+    std::set<lanelet::Id> lanelet_point_ids;
+    for (const auto & ll : nearby_lanelets) {
+      for (const auto & lineString : {ll.leftBound(), ll.rightBound()}) {
+        for (const auto & pt : lineString) {
+          lanelet_point_ids.insert(pt.id());
+        }
+      }
+    }
+
+    // Issue-001
+    std::vector<lanelet::Id> unshared_point_ids;
+    for (const auto & pt : polygon) {
+      if (lanelet_point_ids.find(pt.id()) == lanelet_point_ids.end()) {
+        unshared_point_ids.push_back(pt.id());
+      }
+    }
+
+    if (!unshared_point_ids.empty()) {
+      std::map<std::string, std::string> point_ids_map;
+      std::ostringstream ids_stream;
+
+      for (size_t i = 0; i < unshared_point_ids.size(); ++i) {
+        ids_stream << unshared_point_ids[i];
+        if (i < unshared_point_ids.size() - 1) {
+          ids_stream << ", ";
+        }
+      }
+
+      point_ids_map["point_ids"] = ids_stream.str();
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 1), polygon.id(), point_ids_map));
+    }
+
+    lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
+    for (const lanelet::ConstPolygon3d & intersection_poly : map.polygonLayer) {
+      if (
+        !intersection_poly.hasAttribute(lanelet::AttributeName::Type) ||
+        intersection_poly.attribute(lanelet::AttributeName::Type).value() != "intersection_area") {
+        continue;
+      }
+      lanelet::BasicPolygon2d intersection_poly2d =
+        lanelet::traits::to2D(intersection_poly.basicPolygon());
+
+      // Issue-002
+      if (boost::geometry::intersects(buffer_poly2d, intersection_poly2d)) {
+        if (
+          !boost::geometry::within(buffer_poly2d, intersection_poly2d) &&
+          !boost::geometry::within(intersection_poly2d, buffer_poly2d)) {
+          std::map<std::string, std::string> overlap_map;
+          overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), overlap_map));
+        }
+      }
+    }
+
+    // Issue-003
+    std::string reason;
+    bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, reason);
+    if (!polygon_is_valid) {
+      std::string simplified_reason = reason;
+      size_t pos = reason.find(";");
+      if (pos != std::string::npos) {
+        simplified_reason = reason.substr(0, pos);
+      }
+
+      std::map<std::string, std::string> reason_map;
+      reason_map["boost_geometry_message"] = simplified_reason;
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), reason_map));
+    }
+  }
+
+  return issues;
+}
+}  // namespace lanelet::autoware::validation

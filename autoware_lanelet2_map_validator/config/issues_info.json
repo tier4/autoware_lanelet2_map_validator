@@ -478,5 +478,29 @@
       "en": "This bus_stop_area is not referred by any regulatory element.",
       "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
     }
+  },
+  "Area.BufferZoneValidity-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Buffer zone polygon has points not shared with any nearby lanelet. (Point IDs: {point_ids})",
+      "ja": "バッファゾーンポリゴンの一部の点が隣接するレーンレットと共有されていません。(点ID: {point_ids})"
+    }
+  },
+  "Area.BufferZoneValidity-002": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Buffer zone polygon partially overlaps with intersection area (Intersection Area ID: {intersection_area_id}).",
+      "ja": "バッファゾーンポリゴンが交差点エリア (ID: {intersection_area_id}) と部分的に重なっています。"
+    }
+  },
+  "Area.BufferZoneValidity-003": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
+      "ja": "バッファゾーンポリゴンの形状が不正です: {boost_geometry_message}"
+    }
   }
 }
