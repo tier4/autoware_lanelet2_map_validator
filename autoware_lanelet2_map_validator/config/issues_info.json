@@ -127,6 +127,30 @@
       "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: {point_ids}）"
     }
   },
+  "Intersection.IntersectionAreaTagging-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is covered by intersection area {area_id} but missing intersection_area tag.",
+      "ja": "この lanelet は intersection area {area_id} にカバーされていますが、intersection_area タグが設定されていません。"
+    }
+  },
+  "Intersection.IntersectionAreaTagging-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is covered by intersection area {expected_area_id} but has incorrect intersection_area tag {actual_area_id}.",
+      "ja": "この lanelet は intersection area {expected_area_id} にカバーされていますが、intersection_area タグが {actual_area_id} に設定されています。"
+    }
+  },
+  "Intersection.IntersectionAreaTagging-003": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet has intersection_area tag {area_id} but is not completely covered by that intersection area.",
+      "ja": "この lanelet は intersection_area タグに {area_id} が設定されていますが、その intersection area に完全にカバーされていません。"
+    }
+  },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
     "severity": "Error",
     "primitive": "linestring",
