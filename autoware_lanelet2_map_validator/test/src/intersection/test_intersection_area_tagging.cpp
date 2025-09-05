@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_validation_tester.hpp"
 #include "lanelet2_map_validator/validators/intersection/intersection_area_tagging.hpp"
+#include "map_validation_tester.hpp"
 
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
@@ -23,13 +23,14 @@
 class TestIntersectionAreaTaggingValidator : public MapValidationTester
 {
 protected:
-  const std::string test_target_ = 
+  const std::string test_target_ =
     std::string(lanelet::autoware::validation::IntersectionAreaTaggingValidator::name());
 };
 
 TEST_F(TestIntersectionAreaTaggingValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::IntersectionAreaTaggingValidator::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::IntersectionAreaTaggingValidator::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line
@@ -60,10 +61,10 @@ TEST_F(TestIntersectionAreaTaggingValidator, MissingIntersectionAreaTag)  // NOL
 
   const lanelet::Id expected_lanelet_id = 49;
   const lanelet::Id expected_area_id = 10803;
-  
+
   std::map<std::string, std::string> area_id_map;
   area_id_map["area_id"] = std::to_string(expected_area_id);
-  const auto expected_issue = 
+  const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id, area_id_map);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
@@ -83,11 +84,11 @@ TEST_F(TestIntersectionAreaTaggingValidator, IncorrectIntersectionAreaTag)  // N
   const lanelet::Id expected_lanelet_id = 49;
   const lanelet::Id expected_area_id = 10803;
   const lanelet::Id wrong_area_id = 2195;
-  
+
   std::map<std::string, std::string> tag_map;
   tag_map["expected_area_id"] = std::to_string(expected_area_id);
   tag_map["actual_area_id"] = std::to_string(wrong_area_id);
-  const auto expected_issue = 
+  const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 2), expected_lanelet_id, tag_map);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
@@ -95,9 +96,11 @@ TEST_F(TestIntersectionAreaTaggingValidator, IncorrectIntersectionAreaTag)  // N
   EXPECT_EQ(issues[0].id, expected_lanelet_id);
 }
 
-TEST_F(TestIntersectionAreaTaggingValidator, LaneletNotCoveredByIntersectionArea)  // NOLINT for gtest
+TEST_F(
+  TestIntersectionAreaTaggingValidator, LaneletNotCoveredByIntersectionArea)  // NOLINT for gtest
 {
-  load_target_map("intersection/intersection_area_with_lanelet_not_covered_by_intersection_area.osm");
+  load_target_map(
+    "intersection/intersection_area_with_lanelet_not_covered_by_intersection_area.osm");
 
   lanelet::autoware::validation::IntersectionAreaTaggingValidator checker;
   const auto & issues = checker(*map_);
@@ -106,11 +109,11 @@ TEST_F(TestIntersectionAreaTaggingValidator, LaneletNotCoveredByIntersectionArea
 
   const lanelet::Id expected_lanelet_ids[3] = {52, 53, 54};
   const lanelet::Id expected_area_id = 10803;
-  
+
   for (int i = 0; i < 3; i++) {
     std::map<std::string, std::string> area_id_map;
     area_id_map["area_id"] = std::to_string(expected_area_id);
-    const auto expected_issue = 
+    const auto expected_issue =
       construct_issue_from_code(issue_code(test_target_, 3), expected_lanelet_ids[i], area_id_map);
 
     bool found = false;
