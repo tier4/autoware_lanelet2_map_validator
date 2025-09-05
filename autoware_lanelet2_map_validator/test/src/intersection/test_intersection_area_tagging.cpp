@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestIntersectionAreaTaggingValidator : public MapValidationTester
