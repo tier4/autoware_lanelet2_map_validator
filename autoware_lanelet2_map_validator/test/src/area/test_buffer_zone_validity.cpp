@@ -40,7 +40,7 @@ TEST_F(TestBufferZoneValidity, SampleMap)  // NOLINT for gtest
 
 TEST_F(TestBufferZoneValidity, ValidBufferZone)  // NOLINT for gtest
 {
-  load_target_map("area/buffer_zone_validty.osm");
+  load_target_map("area/buffer_zone_validity.osm");
 
   lanelet::autoware::validation::BufferZoneValidity checker;
   const auto & issues = checker(*map_);
