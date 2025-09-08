@@ -66,6 +66,14 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
       continue;
     }
 
+    // omit invalid reg_elem
+    if (
+      reg_elem->getParameters<lanelet::ConstLineString3d>("start_line").empty() ||
+      reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::RefLine).empty() ||
+      reg_elem->getParameters<lanelet::ConstLineString3d>("end_line").empty()) {
+      continue;
+    }
+
     // retrieve start_line and stop_line with their corresponding lanelet.
     const lanelet::ConstLineString3d start_line =
       reg_elem->getParameters<lanelet::ConstLineString3d>("start_line").front();
