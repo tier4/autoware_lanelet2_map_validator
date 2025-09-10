@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestRightOfWayWithoutTrafficLightsValidator : public MapValidationTester
@@ -73,9 +74,9 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingRightOfWayReference) 
   }
 }
 
-TEST_F(TestRightOfWayWithoutTrafficLightsValidator, WrongRightOfWayRoleCount)  // NOLINT for gtest
+TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MultipleRightofWayRole)  // NOLINT for gtest
 {
-  load_target_map("intersection/right_of_way_without_traffic_light_wrong_role_count.osm");
+  load_target_map("intersection/right_of_way_without_traffic_light_with_multiple_role.osm");
 
   lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
@@ -94,10 +95,9 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, WrongRightOfWayRoleCount)  /
   }
 }
 
-TEST_F(
-  TestRightOfWayWithoutTrafficLightsValidator, WrongRightOfWayLaneletReference)  // NOLINT for gtest
+TEST_F(TestRightOfWayWithoutTrafficLightsValidator, WrongRightOfWayLaneletRole)  // NOLINT for gtest
 {
-  load_target_map("intersection/right_of_way_without_traffic_light_wrong_lanelet.osm");
+  load_target_map("intersection/right_of_way_without_traffic_light_with_wrong_role.osm");
 
   lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
@@ -118,7 +118,7 @@ TEST_F(
 
 TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingYieldRole)  // NOLINT for gtest
 {
-  load_target_map("intersection/right_of_way_without_traffic_light_missing_yield.osm");
+  load_target_map("intersection/right_of_way_without_traffic_light_missing_yield_role.osm");
 
   lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
   const auto & issues = checker(*map_);
@@ -144,7 +144,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingYieldRole)  // NOLINT
 
 TEST_F(TestRightOfWayWithoutTrafficLightsValidator, UnnecessaryYieldRole)  // NOLINT for gtest
 {
-  load_target_map("intersection/right_of_way_without_traffic_light_unnecessary_yield.osm");
+  load_target_map("intersection/right_of_way_without_traffic_light_with_unnecessary_yield.osm");
 
   lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
   const auto & issues = checker(*map_);

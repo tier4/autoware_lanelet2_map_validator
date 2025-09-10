@@ -252,15 +252,15 @@
     "primitive": "regulatory element",
     "message": {
       "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
-      "ja": "right_of_way 規制要素は正確に1つの right_of_way 役割を持つ必要があります。"
+      "ja": "right_of_way regulatory element はちょうど1つの right_of_way role を持つ必要があります。"
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-002": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "The right_of_way regulatory element does not set this lanelet as the right_of_way role.",
-      "ja": "right_of_way 規制要素がこの lanelet を right_of_way 役割として設定していません。"
+      "en": "This regulatory element doesn't set the referrer lanelet as the right_of_way role.",
+      "ja": "right_of_way regulatory element が呼び出し元の lanelet を right_of_way role に設定していません。"
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-003": {
