@@ -20,18 +20,18 @@
 
 namespace lanelet::autoware::validation
 {
-class RightOfWayWithTrafficLightsValidator : public lanelet::validation::MapValidator
+class RightOfWayForVirtualTrafficLightsValidator : public lanelet::validation::MapValidator
 {
 public:
   constexpr static const char * name()
   {
-    return "mapping.intersection.right_of_way_with_traffic_lights";
+    return "mapping.intersection.right_of_way_for_virtual_traffic_lights";
   }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  lanelet::validation::Issues check_right_of_way_with_traffic_lights(
+  lanelet::validation::Issues check_right_of_way_for_virtual_traffic_lights(
     const lanelet::LaneletMap & map);
 };
 }  // namespace lanelet::autoware::validation

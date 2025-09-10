@@ -93,6 +93,7 @@ The built executable in `./dist/map_validator_gui` can be distributed to other s
 ### Basic Workflow
 
 1. **Load a Map**:
+
    - Click "Browse" next to "OSM File" or drag & drop an `.osm` file
    - The map will automatically load in the visualization tab
 

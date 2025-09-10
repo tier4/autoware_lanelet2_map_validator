@@ -273,10 +273,10 @@
   },
   "Intersection.RightOfWayForVirtualTrafficLights-004": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "regulatory element",
     "message": {
-      "en": "The right_of_way regulatory element does not set this lanelet as the right_of_way role.",
-      "ja": "right_of_way 規制要素がこの lanelet を right_of_way 役割として設定していません。"
+      "en": "This right_of_way regulatory element does not set the right lanelet as their right_of_way role.",
+      "ja": "この right_of_way 規制要素が適切な lanelet を right_of_way 役割として設定していません。"
     }
   },
   "Intersection.RightOfWayForVirtualTrafficLights-005": {

@@ -110,21 +110,13 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
     const auto yield_lanelets =
       right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::Yield);
 
-    std::vector<lanelet::ConstLanelet> conflicting_lanelets;
-    for (const auto & other_lanelet : map.laneletLayer) {
-      if (other_lanelet.id() == lanelet.id()) {
+    const auto conflicting_primitives = routing_graph->conflicting(lanelet);
+    std::set<lanelet::Id> conflicting_ids;
+    for (const auto & primitive : conflicting_primitives) {
+      if (primitive.isArea()) {
         continue;
       }
-
-      const auto relation = routing_graph->routingRelation(lanelet, other_lanelet);
-      if (relation == lanelet::routing::RelationType::Conflicting) {
-        conflicting_lanelets.push_back(other_lanelet);
-      }
-    }
-
-    std::set<lanelet::Id> conflicting_ids;
-    for (const auto & conflicting_lanelet : conflicting_lanelets) {
-      conflicting_ids.insert(conflicting_lanelet.id());
+      conflicting_ids.insert(primitive.id());
     }
 
     std::set<lanelet::Id> yield_ids;
