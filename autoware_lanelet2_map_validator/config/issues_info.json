@@ -484,7 +484,7 @@
     "primitive": "polygon",
     "message": {
       "en": "Buffer zone polygon has points not shared with any nearby lanelet. (Point IDs: {point_ids})",
-      "ja": "バッファゾーンポリゴンの一部の点が隣接するレーンレットと共有されていません。(点ID: {point_ids})"
+      "ja": "導流帯ポリゴンの一部の point が隣接する lanelet と共有されていません。(Point ID: {point_ids})"
     }
   },
   "Area.BufferZoneValidity-002": {
@@ -492,7 +492,7 @@
     "primitive": "polygon",
     "message": {
       "en": "Buffer zone polygon partially overlaps with intersection area (Intersection Area ID: {intersection_area_id}).",
-      "ja": "バッファゾーンポリゴンが交差点エリア (ID: {intersection_area_id}) と部分的に重なっています。"
+      "ja": "導流帯ポリゴンが intersection_area (ID: {intersection_area_id}) と部分的に重なっています。"
     }
   },
   "Area.BufferZoneValidity-003": {
@@ -500,7 +500,7 @@
     "primitive": "polygon",
     "message": {
       "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
-      "ja": "バッファゾーンポリゴンの形状が不正です: {boost_geometry_message}"
+      "ja": "導流帯ポリゴンの形状が不正です: {boost_geometry_message}"
     }
   }
 }

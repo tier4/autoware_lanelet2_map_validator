@@ -12,7 +12,7 @@ This validator checks that buffer zones (polygons with type "hatched_road_markin
 2. Buffer zones should not partially overlap with intersection areas
 3. Buffer zone polygons must be geometrically valid according to boost::geometry::is_valid
 
-[Vector Map Requirements vm-06-06](https://docs.pilot.auto/en/reference-design/common/map-requirements/vector-map-requirements/category_area/#vm-06-01-buffer-zone).
+[Vector Map Requirements vm-06-01](https://docs.pilot.auto/en/reference-design/common/map-requirements/vector-map-requirements/category_area/#vm-06-01-buffer-zone).
 
 | Issue Code                  | Message                                                                                                       | Severity | Primitive | Description                                                                                   | Approach                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------- | -------- | --------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |

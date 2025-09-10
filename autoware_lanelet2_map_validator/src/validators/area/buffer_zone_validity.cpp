@@ -18,7 +18,7 @@
 
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/is_valid.hpp>
-#include <boost/geometry/algorithms/within.hpp>
+#include <boost/geometry/algorithms/covered_by.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/Polygon.h>
@@ -97,7 +97,8 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
     }
 
     lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
-    for (const lanelet::ConstPolygon3d & intersection_poly : map.polygonLayer) {
+    lanelet::ConstPolygons nearby_polygons = map.polygonLayer.search(bbox2d);
+    for (const lanelet::ConstPolygon3d & intersection_poly : nearby_polygons) {
       if (
         !intersection_poly.hasAttribute(lanelet::AttributeName::Type) ||
         intersection_poly.attribute(lanelet::AttributeName::Type).value() != "intersection_area") {
@@ -109,8 +110,8 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
       // Issue-002
       if (boost::geometry::intersects(buffer_poly2d, intersection_poly2d)) {
         if (
-          !boost::geometry::within(buffer_poly2d, intersection_poly2d) &&
-          !boost::geometry::within(intersection_poly2d, buffer_poly2d)) {
+          !boost::geometry::covered_by(buffer_poly2d, intersection_poly2d) &&
+          !boost::geometry::covered_by(intersection_poly2d, buffer_poly2d)) {
           std::map<std::string, std::string> overlap_map;
           overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
           issues.emplace_back(
@@ -120,17 +121,11 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
     }
 
     // Issue-003
-    std::string reason;
-    bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, reason);
-    if (!polygon_is_valid) {
-      std::string simplified_reason = reason;
-      size_t pos = reason.find(";");
-      if (pos != std::string::npos) {
-        simplified_reason = reason.substr(0, pos);
-      }
-
+    boost::geometry::validity_failure_type failure_type;
+    bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, failure_type);
+    if (!polygon_is_valid && failure_type != boost::geometry::validity_failure_type::failure_wrong_orientation) {
       std::map<std::string, std::string> reason_map;
-      reason_map["boost_geometry_message"] = simplified_reason;
+      reason_map["boost_geometry_message"] = boost::geometry::validity_failure_type_message(failure_type);
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), reason_map));
     }
