@@ -16,9 +16,9 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <boost/geometry/algorithms/covered_by.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/is_valid.hpp>
-#include <boost/geometry/algorithms/covered_by.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/Polygon.h>
@@ -123,9 +123,12 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
     // Issue-003
     boost::geometry::validity_failure_type failure_type;
     bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, failure_type);
-    if (!polygon_is_valid && failure_type != boost::geometry::validity_failure_type::failure_wrong_orientation) {
+    if (
+      !polygon_is_valid &&
+      failure_type != boost::geometry::validity_failure_type::failure_wrong_orientation) {
       std::map<std::string, std::string> reason_map;
-      reason_map["boost_geometry_message"] = boost::geometry::validity_failure_type_message(failure_type);
+      reason_map["boost_geometry_message"] =
+        boost::geometry::validity_failure_type_message(failure_type);
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), reason_map));
     }

@@ -100,8 +100,7 @@ TEST_F(TestBufferZoneValidity, InvalidGeometryIssue)  // NOLINT for gtest
 
   const lanelet::Id expected_polygon_id = 20005;
   std::map<std::string, std::string> reason_map;
-  reason_map["boost_geometry_message"] =
-    "Geometry has invalid self-intersections";
+  reason_map["boost_geometry_message"] = "Geometry has invalid self-intersections";
 
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 3), expected_polygon_id, reason_map);
