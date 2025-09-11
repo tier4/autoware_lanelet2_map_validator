@@ -97,7 +97,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
     }
 
     lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
-    lanelet::ConstPolygons nearby_polygons = map.polygonLayer.search(bbox2d);
+    lanelet::ConstPolygons3d nearby_polygons = map.polygonLayer.search(bbox2d);
     for (const lanelet::ConstPolygon3d & intersection_poly : nearby_polygons) {
       if (
         !intersection_poly.hasAttribute(lanelet::AttributeName::Type) ||
