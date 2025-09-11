@@ -87,6 +87,38 @@
       "ja": "この stop_line に対応する regulatory element がありません。"
     }
   },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic_sign regulatory element is missing refers.",
+      "ja": "この traffic_sign regulatory element には refers がありません。"
+    }
+  },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This refers linestring either does not have traffic_sign type or stop_sign subtype.",
+      "ja": "この refers linestring は traffic_sign タイプでも stop_sign サブタイプでもありません。"
+    }
+  },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic_sign regulatory element is missing ref_line.",
+      "ja": "この traffic_sign regulatory element には ref_line がありません。"
+    }
+  },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-004": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This ref_line linestring does not have stop_line subtype.",
+      "ja": "この ref_line linestring は stop_line サブタイプではありません。"
+    }
+  },
   "Intersection.IntersectionAreaDanglingReference-001": {
     "severity": "Error",
     "primitive": "lanelet",
