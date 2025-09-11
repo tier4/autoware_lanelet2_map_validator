@@ -303,6 +303,54 @@
       "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
     }
   },
+  "Intersection.RightOfWayForVirtualTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with virtual_traffic_light regulatory element must also reference a right_of_way regulatory element.",
+      "ja": "virtual_traffic_light regulatory element を持つ lanelet は right_of_way regulatory element も参照する必要があります。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Multiple right_of_way regulatory elements exist in the same lanelet with virtual traffic light.",
+      "ja": "複数の right_of_way regulatory element が同一の lanelet に定義されています。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
+      "ja": "right_of_way regulatory element はちょうど 1 つの right_of_way role を持つ必要があります。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This right_of_way regulatory element does not set the right lanelet as their right_of_way role.",
+      "ja": "この right_of_way 規制要素が適切な lanelet を right_of_way 役割として設定していません。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role in the right_of_way regulatory element.",
+      "ja": "重複する lanelet {conflicting_lanelet_id} が right_of_way regulatory element の yield として設定されていません。"
+    }
+  },
+  "Intersection.RightOfWayForVirtualTrafficLights-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} in right_of_way regulatory element.",
+      "ja": "不要な yield lanelet {unnecessary_yield_to} が定義されています。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
