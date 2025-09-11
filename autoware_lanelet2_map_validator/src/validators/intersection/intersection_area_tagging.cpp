@@ -17,17 +17,15 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <boost/geometry/algorithms/covered_by.hpp>
-#include <boost/geometry/algorithms/envelope.hpp>
-#include <boost/geometry/algorithms/intersects.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_core/primitives/Polygon.h>
 
 #include <map>
 #include <string>
 #include <unordered_set>
-#include <vector>
 
 namespace lanelet::autoware::validation
 {
@@ -51,49 +49,35 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
 {
   lanelet::validation::Issues issues;
 
-  // Forward check: For each intersection area, check covered lanelets have correct tags
   for (const lanelet::ConstPolygon3d & polygon3d : map.polygonLayer) {
-    if (polygon3d.attributeOr(lanelet::AttributeName::Type, "none") != "intersection_area") {
+    if (
+      polygon3d.attributeOr(lanelet::AttributeName::Type, "none") !=
+      std::string("intersection_area")) {
       continue;
     }
 
-    lanelet::BasicPolygon2d area_polygon2d = lanelet::traits::to2D(polygon3d.basicPolygon());
+    lanelet::BasicPolygon2d area_polygon2d = lanelet::traits::toBasicPolygon2d(polygon3d);
+    lanelet::BoundingBox2d bbox2d = lanelet::geometry::boundingBox2d(area_polygon2d);
+    lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox2d);
 
-    // Get bounding box for spatial filtering
-    boost::geometry::model::box<lanelet::BasicPoint2d> area_bbox;
-    boost::geometry::envelope(area_polygon2d, area_bbox);
-
-    // Filter lanelets by bounding box intersection first
-    std::vector<lanelet::ConstLanelet> candidate_lanelets;
-    for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
-      lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
-      boost::geometry::model::box<lanelet::BasicPoint2d> lanelet_bbox;
-      boost::geometry::envelope(lanelet_polygon, lanelet_bbox);
-
-      if (boost::geometry::intersects(area_bbox, lanelet_bbox)) {
-        candidate_lanelets.push_back(lanelet);
-      }
-    }
-
-    // Check precise coverage for candidate lanelets
-    for (const lanelet::ConstLanelet & lanelet : candidate_lanelets) {
+    // Check precise coverage for nearby lanelets
+    for (const lanelet::ConstLanelet & lanelet : nearby_lanelets) {
       lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
       if (boost::geometry::covered_by(lanelet_polygon, area_polygon2d)) {
-        std::string intersection_area_attr = lanelet.attributeOr("intersection_area", "none");
-        if (intersection_area_attr == "none") {
+        lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
+        if (tagged_area_id == lanelet::InvalId) {
           // Issue-001: Lanelet missing intersection_area tag
           std::map<std::string, std::string> area_id_map;
           area_id_map["area_id"] = std::to_string(polygon3d.id());
           issues.emplace_back(
             construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), area_id_map));
         } else {
-          lanelet::Id tagged_area_id =
-            static_cast<lanelet::Id>(std::atoi(intersection_area_attr.c_str()));
+          // Direct ID comparison
           if (tagged_area_id != polygon3d.id()) {
             // Issue-002: Lanelet has wrong intersection_area tag
             std::map<std::string, std::string> tag_map;
             tag_map["expected_area_id"] = std::to_string(polygon3d.id());
-            tag_map["actual_area_id"] = intersection_area_attr;
+            tag_map["actual_area_id"] = std::to_string(tagged_area_id);
             issues.emplace_back(
               construct_issue_from_code(issue_code(this->name(), 2), lanelet.id(), tag_map));
           }
@@ -105,22 +89,32 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
   // Issue-003: Lanelet has intersection_area tag but is not completely covered by the referenced
   // area
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
-    lanelet::id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
-    if (tagged_area_id != lanelet::InvalId) {
-      auto area_it = intersection_areas.find(tagged_area_id);
-      if (area_it == intersection_areas.end()) {
-        continue;
-      }
+    lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
+    if (tagged_area_id == lanelet::InvalId) {
+      continue;
+    }
+    bool found_area = false;
+    lanelet::BasicPolygon2d area_polygon2d;
 
-      lanelet::BasicPolygon2d area_polygon2d =
-        lanelet::traits::to2D(area_it->second.basicPolygon());
-      lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
-      if (!boost::geometry::covered_by(lanelet_polygon, area_polygon2d)) {
-        std::map<std::string, std::string> area_id_map;
-        area_id_map["area_id"] = std::to_string(tagged_area_id);
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 3), lanelet.id(), area_id_map));
+    if (map.polygonLayer.exists(tagged_area_id)) {
+      lanelet::ConstPolygon3d polygon3d = map.polygonLayer.get(tagged_area_id);
+      if (
+        polygon3d.attributeOr(lanelet::AttributeName::Type, "none") ==
+        std::string("intersection_area")) {
+        area_polygon2d = lanelet::traits::toBasicPolygon2d(polygon3d);
+        found_area = true;
       }
+    }
+
+    if (!found_area) {
+      continue;  // (should be caught by dangling reference validator)
+    }
+    lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
+    if (!boost::geometry::covered_by(lanelet_polygon, area_polygon2d)) {
+      std::map<std::string, std::string> area_id_map;
+      area_id_map["area_id"] = std::to_string(tagged_area_id);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 3), lanelet.id(), area_id_map));
     }
   }
 
