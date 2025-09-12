@@ -66,7 +66,6 @@
     <tag k="one_way" v="yes"/>
   </relation>
   <relation id="2166">
-    <member type="way" role="refers" ref="2164"/>
     <member type="way" role="ref_line" ref="2156"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_sign"/>
