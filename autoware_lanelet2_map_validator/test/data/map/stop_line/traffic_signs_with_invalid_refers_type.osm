@@ -47,13 +47,19 @@
     <nd ref="2147"/>
     <nd ref="2150"/>
     <tag k="type" v="stop_line"/>
-    <tag k="subtype" v="stop_line"/>
+    <tag k="subtype" v="solid"/>
   </way>
   <way id="2164">
     <nd ref="2162"/>
     <nd ref="2163"/>
-    <tag k="type" v="traffic_sign"/>
+    <tag k="type" v="line_thin"/>
     <tag k="subtype" v="stop_sign"/>
+  </way>
+  <way id="2165">
+    <nd ref="2162"/>
+    <nd ref="2163"/>
+    <tag k="type" v="traffic_sign"/>
+    <tag k="subtype" v="speed_limit"/>
   </way>
   <relation id="2153">
     <member type="way" role="left" ref="2149"/>
@@ -67,6 +73,7 @@
   </relation>
   <relation id="2166">
     <member type="way" role="refers" ref="2164"/>
+    <member type="way" role="refers" ref="2165"/>
     <member type="way" role="ref_line" ref="2156"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="traffic_sign"/>

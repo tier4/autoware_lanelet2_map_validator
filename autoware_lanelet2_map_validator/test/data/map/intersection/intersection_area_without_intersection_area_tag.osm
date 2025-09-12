@@ -2696,7 +2696,6 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="straight"/>
-    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="50">
     <member type="way" role="left" ref="199"/>
