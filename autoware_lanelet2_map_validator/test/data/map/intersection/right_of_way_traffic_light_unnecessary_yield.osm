@@ -5323,7 +5323,7 @@
     <nd ref="1795"/>
     <nd ref="1787"/>
     <nd ref="1788"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="virtual"/>
     <tag k="subtype" v="solid"/>
     <tag k="width" v="0.200"/>
   </way>
@@ -5334,7 +5334,7 @@
     <nd ref="1571"/>
     <nd ref="2049"/>
     <nd ref="2048"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="virtual"/>
     <tag k="subtype" v="solid"/>
     <tag k="width" v="0.200"/>
   </way>
@@ -7095,6 +7095,7 @@
   <relation id="49">
     <member type="way" role="left" ref="197"/>
     <member type="way" role="right" ref="204"/>
+    <member type="relation" role="regulatory_element" ref="20000"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7154,7 +7155,6 @@
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
     <member type="relation" role="regulatory_element" ref="11143"/>
-    <member type="relation" role="regulatory_element" ref="11151"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7799,6 +7799,8 @@
     <member type="relation" role="yield" ref="58"/>
     <member type="relation" role="yield" ref="60"/>
     <member type="relation" role="yield" ref="56"/>
+    <member type="relation" role="yield" ref="49"/>
+    <member type="relation" role="yield" ref="50"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
@@ -7829,10 +7831,14 @@
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
-  <relation id="11151">
-    <member type="relation" role="right_of_way" ref="53"/>
-    <member type="relation" role="yield" ref="50"/>
+  <relation id="20000">
+    <member type="relation" role="right_of_way" ref="49"/>
     <member type="relation" role="yield" ref="54"/>
+    <member type="relation" role="yield" ref="55"/>
+    <member type="relation" role="yield" ref="56"/>
+    <member type="relation" role="yield" ref="57"/>
+    <member type="relation" role="yield" ref="58"/>
+    <member type="relation" role="yield" ref="60"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
