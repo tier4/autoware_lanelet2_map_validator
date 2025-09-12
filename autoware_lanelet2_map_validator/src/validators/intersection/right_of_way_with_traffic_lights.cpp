@@ -17,12 +17,18 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/LineString.h>
 #include <lanelet2_core/primitives/BasicRegulatoryElements.h>
 #include <lanelet2_core/primitives/RegulatoryElement.h>
+#include <lanelet2_routing/RoutingGraph.h>
+#include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <map>
+#include <optional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -31,7 +37,65 @@ namespace lanelet::autoware::validation
 namespace
 {
 lanelet::validation::RegisterMapValidator<RightOfWayWithTrafficLightsValidator> reg;
+
+std::optional<lanelet::ConstLineString3d> get_traffic_light_linestring(
+  const lanelet::ConstLanelet & assigned_lanelet)
+{
+  const auto tl_reg_elems = assigned_lanelet.regulatoryElementsAs<lanelet::TrafficLight>();
+  if (tl_reg_elems.empty()) {
+    return std::nullopt;
+  }
+
+  const auto & tl_reg_elem = tl_reg_elems[0];
+  const auto refers =
+    tl_reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
+  if (refers.empty()) {
+    return std::nullopt;
+  }
+  return refers[0];
 }
+
+double compute_linestring_direction(const lanelet::ConstLineString3d & linestring)
+{
+  if (linestring.size() < 2) {
+    return 0.0;
+  }
+
+  const auto & start_point = linestring[0];
+  const auto & end_point = linestring[linestring.size() - 1];
+
+  double dx = end_point.x() - start_point.x();
+  double dy = end_point.y() - start_point.y();
+
+  return std::atan2(dy, dx);
+}
+
+bool is_different_signal_timing(
+  const lanelet::ConstLanelet & lane1, const lanelet::ConstLanelet & lane2,
+  double perpendicular_threshold = M_PI / 4)  // 45 degrees threshold
+{
+  auto tl1_linestring = get_traffic_light_linestring(lane1);
+  auto tl2_linestring = get_traffic_light_linestring(lane2);
+
+  if (!tl1_linestring || !tl2_linestring) {
+    return true;
+  }
+
+  double dir1 = compute_linestring_direction(*tl1_linestring);
+  double dir2 = compute_linestring_direction(*tl2_linestring);
+
+  double dir_diff = std::abs(dir1 - dir2);
+  if (dir_diff > M_PI) {
+    dir_diff = 2 * M_PI - dir_diff;
+  }
+
+  if (std::abs(dir_diff - M_PI) < perpendicular_threshold) {
+    return false;  // same signal timing (opposing directions)
+  }
+
+  return true;
+}
+}  // namespace
 
 lanelet::validation::Issues RightOfWayWithTrafficLightsValidator::operator()(
   const lanelet::LaneletMap & map)
@@ -48,6 +112,10 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
   const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
+
+  auto traffic_rules = lanelet::traffic_rules::TrafficRulesFactory::create(
+    lanelet::Locations::Germany, lanelet::Participants::Vehicle);
+  auto routing_graph = lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
     if (!lanelet.hasAttribute("turn_direction")) {
@@ -94,6 +162,112 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       // issue-003: right_of_way regulatory element doesn't set this lanelet as right_of_way role
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 3), right_of_way_elem->id()));
+      continue;
+    }
+    auto yield_lanelets =
+      right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::Yield);
+
+    // find all conflicting lanelets using routing graph
+    std::vector<lanelet::ConstLanelet> conflicting_lanelets;
+    for (const auto & other_lanelet : map.laneletLayer) {
+      if (other_lanelet.id() == lanelet.id()) {
+        continue;
+      }
+
+      const auto relation = routing_graph->routingRelation(lanelet, other_lanelet);
+      if (relation == lanelet::routing::RelationType::Conflicting) {
+        conflicting_lanelets.push_back(other_lanelet);
+      }
+    }
+
+    std::set<lanelet::Id> expected_yield_ids;
+
+    // Cache previous lanelets for current lanelet to avoid repeated lookups
+    auto current_previous = routing_graph->previous(lanelet);
+    std::set<lanelet::Id> current_prev_ids;
+    for (const auto & prev : current_previous) {
+      current_prev_ids.insert(prev.id());
+    }
+
+    for (const auto & conflicting_lanelet : conflicting_lanelets) {
+      // Rule 0: check if lanelets are going in the same direction (no yield needed)
+      bool same_direction = false;
+
+      // check if they have the same previous lanelet (coming from same source)
+      // TODO(MRADITYA01): Use same_source utils after utils are merged
+      auto other_previous = routing_graph->previous(conflicting_lanelet);
+
+      // Check for any common previous lanelet
+      for (const auto & other_prev : other_previous) {
+        if (current_prev_ids.find(other_prev.id()) != current_prev_ids.end()) {
+          same_direction = true;
+          break;
+        }
+      }
+
+      // if same direction, skip yield logic
+      if (same_direction) {
+        continue;
+      }
+
+      bool should_yield = false;
+
+      // Rule 1: Yield to conflicting lanelets that have different signal timing
+      if (is_different_signal_timing(lanelet, conflicting_lanelet)) {
+        should_yield = true;
+      }
+
+      // Rule 2: If vehicle is turning left, yield to opposing right-turn lanes
+      if (turn_direction == "left" && conflicting_lanelet.hasAttribute("turn_direction")) {
+        auto other_turn_direction = conflicting_lanelet.attribute("turn_direction").value();
+        if (other_turn_direction == "right") {
+          should_yield = true;
+        }
+      }
+
+      // Rule 3: No yield required for straight lanes (turn_direction:straight)
+      if (turn_direction == "straight") {
+        should_yield = false;
+      }
+
+      if (should_yield) {
+        expected_yield_ids.insert(conflicting_lanelet.id());
+      }
+    }
+
+    std::set<lanelet::Id> actual_yield_ids;
+    for (const auto & yield_lanelet : yield_lanelets) {
+      actual_yield_ids.insert(yield_lanelet.id());
+    }
+
+    // find missing yield relationships (in expected but not in actual)
+    std::set<lanelet::Id> missing_yields;
+    std::set_difference(
+      expected_yield_ids.begin(), expected_yield_ids.end(), actual_yield_ids.begin(),
+      actual_yield_ids.end(), std::inserter(missing_yields, missing_yields.begin()));
+
+    for (const auto & missing_id : missing_yields) {
+      // issue-004: Missing required yield relationship
+      std::map<std::string, std::string> reason_map;
+      reason_map["missing_yield_to"] = std::to_string(missing_id);
+      reason_map["turn_direction"] = turn_direction;
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
+    }
+
+    // find unnecessary yield relationships (in actual but not in expected)
+    std::set<lanelet::Id> unnecessary_yields;
+    std::set_difference(
+      actual_yield_ids.begin(), actual_yield_ids.end(), expected_yield_ids.begin(),
+      expected_yield_ids.end(), std::inserter(unnecessary_yields, unnecessary_yields.begin()));
+
+    for (const auto & unnecessary_id : unnecessary_yields) {
+      // issue-005: Unnecessary yield relationship
+      std::map<std::string, std::string> reason_map;
+      reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
+      reason_map["turn_direction"] = turn_direction;
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
     }
   }
 
