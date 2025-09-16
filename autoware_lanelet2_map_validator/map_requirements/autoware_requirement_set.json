@@ -2,6 +2,14 @@
   "version": "0.0.0",
   "requirements": [
     {
+      "id": "vm-01-03_vm-01-04",
+      "validators": [
+        {
+          "name": "mapping.lane.border_sharing"
+        }
+      ]
+    },
+    {
       "id": "vm-01-10",
       "validators": [
         {
@@ -152,14 +160,6 @@
       "validators": [
         {
           "name": "mapping.area.missing_regulatory_elements_for_bus_stop_areas"
-        }
-      ]
-    },
-    {
-      "id": "vm-01-03_vm-01-04",
-      "validators": [
-        {
-          "name": "mapping.lane.border_sharing"
         }
       ]
     }
