@@ -2,18 +2,18 @@
   "version": "1.0.3",
   "requirements": [
     {
-      "id": "vm-01-03_vm-01-04",
-      "validators": [
-        {
-          "name": "mapping.lane.border_sharing"
-        }
-      ]
-    },
-    {
       "id": "vm-01-10",
       "validators": [
         {
           "name": "mapping.lane.centerline_geometry"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-20",
+      "validators": [
+        {
+          "name": "mapping.lane.lateral_subtype_connection"
         }
       ]
     },
@@ -30,6 +30,9 @@
       "validators": [
         {
           "name": "mapping.intersection.intersection_area_dangling_reference"
+        },
+        {
+          "name": "mapping.intersection.intersection_area_tagging"
         }
       ]
     },
@@ -38,6 +41,9 @@
       "validators": [
         {
           "name": "mapping.intersection.turn_direction_tagging"
+        },
+        {
+          "name": "mapping.intersection.lanelet_border_type"
         }
       ]
     },
@@ -90,6 +96,22 @@
         },
         {
           "name": "mapping.crosswalk.regulatory_element_details"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-01",
+      "validators": [
+        {
+          "name": "mapping.area.buffer_zone_validity"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-03_vm-01-04",
+      "validators": [
+        {
+          "name": "mapping.lane.border_sharing"
         }
       ]
     }
