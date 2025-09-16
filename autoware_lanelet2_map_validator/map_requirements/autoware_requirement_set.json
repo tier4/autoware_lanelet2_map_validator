@@ -67,12 +67,7 @@
           "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
         },
         {
-          "name": "mapping.intersection.virtual_traffic_light_line_order",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            }
-          ]
+          "name": "mapping.intersection.virtual_traffic_light_line_order"
         }
       ]
     },
@@ -82,9 +77,6 @@
         {
           "name": "mapping.intersection.virtual_traffic_light_section_overlap",
           "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            },
             {
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
@@ -99,20 +91,10 @@
           "name": "mapping.traffic_light.missing_regulatory_elements"
         },
         {
-          "name": "mapping.traffic_light.missing_referrers",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.traffic_light.missing_referrers"
         },
         {
-          "name": "mapping.traffic_light.regulatory_element_details",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.traffic_light.regulatory_element_details"
         }
       ]
     },
@@ -120,15 +102,7 @@
       "id": "vm-04-02",
       "validators": [
         {
-          "name": "mapping.traffic_light.correct_facing",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_referrers"
-            },
-            {
-              "name": "mapping.traffic_light.regulatory_element_details"
-            }
-          ]
+          "name": "mapping.traffic_light.correct_facing"
         }
       ]
     },
@@ -147,12 +121,7 @@
           "name": "mapping.crosswalk.missing_regulatory_elements"
         },
         {
-          "name": "mapping.crosswalk.regulatory_element_details",
-          "prerequisites": [
-            {
-              "name": "mapping.crosswalk.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.crosswalk.regulatory_element_details"
         }
       ]
     }

@@ -24,12 +24,7 @@
           "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
         },
         {
-          "name": "mapping.intersection.virtual_traffic_light_line_order",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            }
-          ]
+          "name": "mapping.intersection.virtual_traffic_light_line_order"
         }
       ]
     },
@@ -39,9 +34,6 @@
         {
           "name": "mapping.intersection.virtual_traffic_light_section_overlap",
           "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            },
             {
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
