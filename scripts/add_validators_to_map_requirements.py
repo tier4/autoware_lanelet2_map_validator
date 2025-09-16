@@ -7,6 +7,12 @@ import os
 
 def parse_vm_id(vm_id: str):
     # Parse an id like 'vm-00-12' into (00, 12) as integers for sorting.
+
+    if not vm_id:
+        return (9999, 9999)
+
+    vm_id = vm_id[:8]  # only consider the first 8 characters
+
     try:
         _, first, second = vm_id.split("-")
         return int(first), int(second)
