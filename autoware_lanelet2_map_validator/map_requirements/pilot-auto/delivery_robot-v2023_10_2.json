@@ -10,6 +10,14 @@
       ]
     },
     {
+      "id": "vm-01-20",
+      "validators": [
+        {
+          "name": "mapping.lane.lateral_subtype_connection"
+        }
+      ]
+    },
+    {
       "id": "vm-02-04",
       "validators": [
         {
@@ -25,6 +33,14 @@
         },
         {
           "name": "mapping.intersection.virtual_traffic_light_line_order"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-17",
+      "validators": [
+        {
+          "name": "mapping.intersection.right_of_way_for_virtual_traffic_lights"
         }
       ]
     },
