@@ -51,29 +51,6 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, SampleMap)  // NOLINT for gt
   EXPECT_EQ(issues.size(), 0);
 }
 
-TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingRightOfWayReference)  // NOLINT for gtest
-{
-  load_target_map("intersection/right_of_way_without_traffic_light_missing_reference.osm");
-
-  lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
-  const auto & issues = checker(*map_);
-
-  EXPECT_EQ(issues.size(), 1);
-
-  if (issues.size() == 1) {
-    const lanelet::Id expected_lanelet_id = 49;
-
-    std::map<std::string, std::string> reason_map;
-    reason_map["turn_direction"] = "straight";
-
-    const auto expected_issue =
-      construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id, reason_map);
-    const auto difference = compare_an_issue(expected_issue, issues[0]);
-    EXPECT_TRUE(difference.empty()) << difference;
-    EXPECT_EQ(issues[0].id, expected_lanelet_id) << "Issue should be for lanelet ID 49";
-  }
-}
-
 TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MultipleRightofWayRole)  // NOLINT for gtest
 {
   load_target_map("intersection/right_of_way_without_traffic_light_with_multiple_role.osm");
@@ -87,7 +64,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MultipleRightofWayRole)  // 
     const lanelet::Id expected_regulatory_element_id = 20000;
 
     const auto expected_issue =
-      construct_issue_from_code(issue_code(test_target_, 2), expected_regulatory_element_id);
+      construct_issue_from_code(issue_code(test_target_, 1), expected_regulatory_element_id);
     const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
     EXPECT_EQ(issues[0].id, expected_regulatory_element_id)
@@ -108,7 +85,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, WrongRightOfWayLaneletRole) 
     const lanelet::Id expected_regulatory_element_id = 20000;
 
     const auto expected_issue =
-      construct_issue_from_code(issue_code(test_target_, 3), expected_regulatory_element_id);
+      construct_issue_from_code(issue_code(test_target_, 2), expected_regulatory_element_id);
     const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
     EXPECT_EQ(issues[0].id, expected_regulatory_element_id)
@@ -134,7 +111,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingYieldRole)  // NOLINT
     reason_map["lane_type"] = "priority";
 
     const auto expected_issue = construct_issue_from_code(
-      issue_code(test_target_, 4), expected_regulatory_element_id, reason_map);
+      issue_code(test_target_, 3), expected_regulatory_element_id, reason_map);
     const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
     EXPECT_EQ(issues[0].id, expected_regulatory_element_id)
@@ -159,7 +136,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, UnnecessaryYieldRole)  // NO
     reason_map["turn_direction"] = "straight";
 
     const auto expected_issue = construct_issue_from_code(
-      issue_code(test_target_, 5), expected_regulatory_element_id, reason_map);
+      issue_code(test_target_, 4), expected_regulatory_element_id, reason_map);
     const auto difference = compare_an_issue(expected_issue, issues[0]);
     EXPECT_TRUE(difference.empty()) << difference;
     EXPECT_EQ(issues[0].id, expected_regulatory_element_id)

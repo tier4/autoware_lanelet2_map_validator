@@ -27,14 +27,6 @@ The validator focuses on intersections where traffic flow is managed through exp
 
 None.
 
-### Priority Rules
-
-The validator implements traffic priority based on turn directions:
-
-- **Turning lanelets** (left/right turns): Must yield to conflicting straight lanes
-- **Straight lanelets**: Have priority over turning movements
-- **Same-source exclusion**: Lanelets from the same upstream source don't conflict
-
 ## Related source codes
 
 - right_of_way_without_traffic_lights.cpp

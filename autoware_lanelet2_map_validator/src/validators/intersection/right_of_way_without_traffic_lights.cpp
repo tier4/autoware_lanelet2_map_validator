@@ -77,15 +77,6 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
 
     const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
 
-    // Issue-001: Lanelet with turn_direction but no traffic lights missing right_of_way reference
-    if (right_of_way_elems.empty()) {
-      std::map<std::string, std::string> reason_map;
-      reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
-      issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), reason_map));
-      continue;
-    }
-
     // Process each right_of_way regulatory element (multiple are allowed)
     for (const auto & right_of_way_elem : right_of_way_elems) {
       auto right_of_way_lanelets =
@@ -94,7 +85,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       // Issue-002: right_of_way regulatory element should have exactly one right_of_way role
       if (right_of_way_lanelets.size() != 1) {
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 2), right_of_way_elem->id()));
+          construct_issue_from_code(issue_code(this->name(), 1), right_of_way_elem->id()));
         continue;
       }
 
@@ -109,7 +100,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       // Issue-003: right_of_way regulatory element doesn't set this lanelet as right_of_way role
       if (!is_set_as_right_of_way) {
         issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 3), right_of_way_elem->id()));
+          construct_issue_from_code(issue_code(this->name(), 2), right_of_way_elem->id()));
         continue;
       }
 
@@ -145,20 +136,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         }
       }
 
-      // determine if this is a priority lane (conflicts with straight lanes)
-      bool is_priority_lane = false;
       std::string turn_direction = lanelet.attribute("turn_direction").value();
-
-      for (const auto & conflicting_lanelet : conflicting_lanelets) {
-        if (conflicting_lanelet.hasAttribute("turn_direction")) {
-          std::string conflicting_turn_direction =
-            conflicting_lanelet.attribute("turn_direction").value();
-          if (conflicting_turn_direction == "straight") {
-            is_priority_lane = true;
-            break;
-          }
-        }
-      }
 
       std::set<lanelet::Id> conflicting_ids;
       for (const auto & conflicting_lanelet : conflicting_lanelets) {
@@ -170,49 +148,20 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         yield_ids.insert(yield_lanelet.id());
       }
 
-      // Issue-004: Check yield relationships based on lane priority (excluding same source)
-      if (is_priority_lane) {
-        // priority lane: should yield to all conflicting lanes except those with same source
-        std::set<lanelet::Id> missing_yields;
-        std::set_difference(
-          conflicting_ids.begin(), conflicting_ids.end(), yield_ids.begin(), yield_ids.end(),
-          std::inserter(missing_yields, missing_yields.begin()));
+      // Issue-004: Check yield relationships, all lanelets with right_of_way regulatory elements
+      // are treated as priority lanes that should yield to all conflicting lanes
+      std::set<lanelet::Id> missing_yields;
+      std::set_difference(
+        conflicting_ids.begin(), conflicting_ids.end(), yield_ids.begin(), yield_ids.end(),
+        std::inserter(missing_yields, missing_yields.begin()));
 
-        for (const auto & missing_id : missing_yields) {
-          std::map<std::string, std::string> reason_map;
-          reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
-          reason_map["turn_direction"] = turn_direction;
-          reason_map["lane_type"] = "priority";
-          issues.emplace_back(construct_issue_from_code(
-            issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
-        }
-      } else {
-        // non-priority lane: should yield to priority lanes (straight lanes) only, excluding same
-        // source
-        std::set<lanelet::Id> straight_lane_ids;
-        for (const auto & conflicting_lanelet : conflicting_lanelets) {
-          if (conflicting_lanelet.hasAttribute("turn_direction")) {
-            std::string conflicting_turn_direction =
-              conflicting_lanelet.attribute("turn_direction").value();
-            if (conflicting_turn_direction == "straight") {
-              straight_lane_ids.insert(conflicting_lanelet.id());
-            }
-          }
-        }
-
-        std::set<lanelet::Id> missing_yields;
-        std::set_difference(
-          straight_lane_ids.begin(), straight_lane_ids.end(), yield_ids.begin(), yield_ids.end(),
-          std::inserter(missing_yields, missing_yields.begin()));
-
-        for (const auto & missing_id : missing_yields) {
-          std::map<std::string, std::string> reason_map;
-          reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
-          reason_map["turn_direction"] = turn_direction;
-          reason_map["lane_type"] = "non-priority";
-          issues.emplace_back(construct_issue_from_code(
-            issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
-        }
+      for (const auto & missing_id : missing_yields) {
+        std::map<std::string, std::string> reason_map;
+        reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
+        reason_map["turn_direction"] = turn_direction;
+        reason_map["lane_type"] = "priority";
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 3), right_of_way_elem->id(), reason_map));
       }
 
       // Issue-005: Check for unnecessary yield relationships
@@ -226,7 +175,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
         reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
         issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
+          issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
       }
     }
   }
