@@ -18,6 +18,14 @@
       ]
     },
     {
+      "id": "vm-01-21",
+      "validators": [
+        {
+          "name": "mapping.lane.longitudinal_subtype_connection"
+        }
+      ]
+    },
+    {
       "id": "vm-02-04",
       "validators": [
         {
