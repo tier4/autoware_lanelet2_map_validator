@@ -606,5 +606,13 @@
       "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
       "ja": "導流帯ポリゴンの形状が不正です: {boost_geometry_message}"
     }
+  },
+  "Area.BufferZoneValidity-004": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
+      "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
+    }
   }
 }
