@@ -106,16 +106,39 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
       }
       lanelet::BasicPolygon2d intersection_poly2d =
         lanelet::traits::to2D(intersection_poly.basicPolygon());
+      boost::geometry::correct(intersection_poly2d);
+      boost::geometry::correct(buffer_poly2d);
 
       // Issue-002
       if (boost::geometry::intersects(buffer_poly2d, intersection_poly2d)) {
-        if (
-          !boost::geometry::covered_by(buffer_poly2d, intersection_poly2d) &&
-          !boost::geometry::covered_by(intersection_poly2d, buffer_poly2d)) {
+        std::vector<lanelet::BasicPolygon2d> intersection_result;
+        boost::geometry::intersection(buffer_poly2d, intersection_poly2d, intersection_result);
+
+        if (intersection_result.empty()) {
           std::map<std::string, std::string> overlap_map;
           overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
           issues.emplace_back(
             construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), overlap_map));
+        } else {
+          double buffer_area = boost::geometry::area(buffer_poly2d);
+          double intersection_area = 0.0;
+          for (const auto & poly : intersection_result) {
+            intersection_area += boost::geometry::area(poly);
+          }
+
+          double intersection_threshold = 0.99;
+          double buffer_coverage = intersection_area / buffer_area;
+          double intersection_area_full = boost::geometry::area(intersection_poly2d);
+          double intersection_coverage = intersection_area / intersection_area_full;
+
+          if (
+            buffer_coverage < intersection_threshold &&
+            intersection_coverage < intersection_threshold) {
+            std::map<std::string, std::string> overlap_map;
+            overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
+            issues.emplace_back(
+              construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), overlap_map));
+          }
         }
       }
     }
