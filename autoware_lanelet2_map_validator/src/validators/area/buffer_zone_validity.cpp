@@ -68,7 +68,6 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
 
     std::set<lanelet::Id> lanelet_point_ids;
     lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
-    boost::geometry::correct(buffer_poly2d);
     double buffer_area = boost::geometry::area(buffer_poly2d);
 
     for (const auto & ll : nearby_lanelets) {
@@ -83,7 +82,6 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
       std::string subtype = ll.attributeOr(lanelet::AttributeName::Subtype, "");
       if (subtype == "road" || subtype == "road_shoulder") {
         lanelet::BasicPolygon2d lanelet_polygon = ll.polygon2d().basicPolygon();
-        boost::geometry::correct(lanelet_polygon);
 
         if (boost::geometry::intersects(buffer_poly2d, lanelet_polygon)) {
           std::vector<lanelet::BasicPolygon2d> intersection_result;
