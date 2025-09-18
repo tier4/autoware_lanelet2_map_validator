@@ -16,6 +16,7 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <boost/geometry/algorithms/correct.hpp>
 #include <boost/geometry/algorithms/covered_by.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/is_valid.hpp>
