@@ -167,18 +167,7 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
     auto yield_lanelets =
       right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::Yield);
 
-    // find all conflicting lanelets using routing graph
-    std::vector<lanelet::ConstLanelet> conflicting_lanelets;
-    for (const auto & other_lanelet : map.laneletLayer) {
-      if (other_lanelet.id() == lanelet.id()) {
-        continue;
-      }
-
-      const auto relation = routing_graph->routingRelation(lanelet, other_lanelet);
-      if (relation == lanelet::routing::RelationType::Conflicting) {
-        conflicting_lanelets.push_back(other_lanelet);
-      }
-    }
+    auto conflicting_lanelets = routing_graph->conflicting(lanelet);
 
     std::set<lanelet::Id> expected_yield_ids;
 
@@ -195,7 +184,9 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
 
       // check if they have the same previous lanelet (coming from same source)
       // TODO(MRADITYA01): Use same_source utils after utils are merged
-      auto other_previous = routing_graph->previous(conflicting_lanelet);
+
+      auto conflicting_opt = *conflicting_lanelet.lanelet();
+      auto other_previous = routing_graph->previous(conflicting_opt);
 
       // Check for any common previous lanelet
       for (const auto & other_prev : other_previous) {
@@ -213,25 +204,20 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       bool should_yield = false;
 
       // Rule 1: Yield to conflicting lanelets that have different signal timing
-      if (is_different_signal_timing(lanelet, conflicting_lanelet)) {
+      if (is_different_signal_timing(lanelet, conflicting_opt)) {
         should_yield = true;
       }
 
       // Rule 2: If vehicle is turning left, yield to opposing right-turn lanes
-      if (turn_direction == "left" && conflicting_lanelet.hasAttribute("turn_direction")) {
-        auto other_turn_direction = conflicting_lanelet.attribute("turn_direction").value();
+      if (turn_direction == "left" && conflicting_opt.hasAttribute("turn_direction")) {
+        auto other_turn_direction = conflicting_opt.attribute("turn_direction").value();
         if (other_turn_direction == "right") {
           should_yield = true;
         }
       }
 
-      // Rule 3: No yield required for straight lanes (turn_direction:straight)
-      if (turn_direction == "straight") {
-        should_yield = false;
-      }
-
       if (should_yield) {
-        expected_yield_ids.insert(conflicting_lanelet.id());
+        expected_yield_ids.insert(conflicting_opt.id());
       }
     }
 
