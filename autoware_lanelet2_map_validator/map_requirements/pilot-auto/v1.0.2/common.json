@@ -18,6 +18,14 @@
       ]
     },
     {
+      "id": "vm-01-20",
+      "validators": [
+        {
+          "name": "mapping.lane.lateral_subtype_connection"
+        }
+      ]
+    },
+    {
       "id": "vm-01-21",
       "validators": [
         {
@@ -38,6 +46,9 @@
       "validators": [
         {
           "name": "mapping.intersection.intersection_area_dangling_reference"
+        },
+        {
+          "name": "mapping.intersection.intersection_area_tagging"
         }
       ]
     },
@@ -46,6 +57,9 @@
       "validators": [
         {
           "name": "mapping.intersection.turn_direction_tagging"
+        },
+        {
+          "name": "mapping.intersection.lanelet_border_type"
         }
       ]
     },
@@ -67,12 +81,15 @@
           "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
         },
         {
-          "name": "mapping.intersection.virtual_traffic_light_line_order",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            }
-          ]
+          "name": "mapping.intersection.virtual_traffic_light_line_order"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-17",
+      "validators": [
+        {
+          "name": "mapping.intersection.right_of_way_for_virtual_traffic_lights"
         }
       ]
     },
@@ -82,9 +99,6 @@
         {
           "name": "mapping.intersection.virtual_traffic_light_section_overlap",
           "prerequisites": [
-            {
-              "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-            },
             {
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
@@ -99,20 +113,10 @@
           "name": "mapping.traffic_light.missing_regulatory_elements"
         },
         {
-          "name": "mapping.traffic_light.missing_referrers",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.traffic_light.missing_referrers"
         },
         {
-          "name": "mapping.traffic_light.regulatory_element_details",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.traffic_light.regulatory_element_details"
         }
       ]
     },
@@ -120,15 +124,7 @@
       "id": "vm-04-02",
       "validators": [
         {
-          "name": "mapping.traffic_light.correct_facing",
-          "prerequisites": [
-            {
-              "name": "mapping.traffic_light.missing_referrers"
-            },
-            {
-              "name": "mapping.traffic_light.regulatory_element_details"
-            }
-          ]
+          "name": "mapping.traffic_light.correct_facing"
         }
       ]
     },
@@ -147,12 +143,23 @@
           "name": "mapping.crosswalk.missing_regulatory_elements"
         },
         {
-          "name": "mapping.crosswalk.regulatory_element_details",
-          "prerequisites": [
-            {
-              "name": "mapping.crosswalk.missing_regulatory_elements"
-            }
-          ]
+          "name": "mapping.crosswalk.regulatory_element_details"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-01",
+      "validators": [
+        {
+          "name": "mapping.area.buffer_zone_validity"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-06",
+      "validators": [
+        {
+          "name": "mapping.area.missing_regulatory_elements_for_bus_stop_areas"
         }
       ]
     }
