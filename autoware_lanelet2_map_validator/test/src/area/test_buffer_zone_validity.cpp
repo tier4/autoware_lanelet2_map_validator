@@ -59,7 +59,7 @@ TEST_F(TestBufferZoneValidity, UnsharedPointsIssue)  // NOLINT for gtest
 
   const lanelet::Id expected_polygon_id = 20005;
   std::map<std::string, std::string> point_ids_map;
-  point_ids_map["point_ids"] = "3079";
+  point_ids_map["point_ids"] = "20008";
 
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 1), expected_polygon_id, point_ids_map);
