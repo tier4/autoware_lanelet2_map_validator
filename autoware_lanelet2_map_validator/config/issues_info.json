@@ -316,7 +316,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "The right_of_way element does not refer the referrer lanelet to its right_of_way role.",
-      "ja": "本 regulatory elemenet は参照元の lanelet を right_of_way role に設定していません。"
+      "ja": "本 regulatory element は参照元の lanelet を right_of_way role に設定していません。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-004": {
