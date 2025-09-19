@@ -106,9 +106,8 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingYieldRole)  // NOLINT
     const lanelet::Id expected_regulatory_element_id = 20000;
 
     std::map<std::string, std::string> reason_map;
-    reason_map["conflicting_lanelet_id"] = "60";  // ID of the missing yield lanelet
+    reason_map["conflicting_lanelet_id"] = "60";
     reason_map["turn_direction"] = "straight";
-    reason_map["lane_type"] = "priority";
 
     const auto expected_issue = construct_issue_from_code(
       issue_code(test_target_, 3), expected_regulatory_element_id, reason_map);
@@ -132,7 +131,7 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, UnnecessaryYieldRole)  // NO
     const lanelet::Id expected_regulatory_element_id = 20000;
 
     std::map<std::string, std::string> reason_map;
-    reason_map["unnecessary_yield_to"] = "52";  // ID of an unnecessary yield lanelet
+    reason_map["unnecessary_yield_to"] = "52";
     reason_map["turn_direction"] = "straight";
 
     const auto expected_issue = construct_issue_from_code(
@@ -141,5 +140,31 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, UnnecessaryYieldRole)  // NO
     EXPECT_TRUE(difference.empty()) << difference;
     EXPECT_EQ(issues[0].id, expected_regulatory_element_id)
       << "Issue should be for regulatory element ID 20000";
+  }
+}
+
+TEST_F(
+  TestRightOfWayWithoutTrafficLightsValidator, MissingRightOfWayIntersection)  // NOLINT for gtest
+{
+  load_target_map(
+    "intersection/right_of_way_without_traffic_light_missing_right_of_way_intersection.osm");
+
+  lanelet::autoware::validation::RightOfWayWithoutTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  if (issues.size() == 1) {
+    const lanelet::Id expected_intersection_id = 10803;
+
+    std::map<std::string, std::string> reason_map;
+    reason_map["intersection_id"] = "10803";
+
+    const auto expected_issue =
+      construct_issue_from_code(issue_code(test_target_, 5), expected_intersection_id, reason_map);
+    const auto difference = compare_an_issue(expected_issue, issues[0]);
+    EXPECT_TRUE(difference.empty()) << difference;
+    EXPECT_EQ(issues[0].id, expected_intersection_id)
+      << "Issue should be for intersection area ID 10803";
   }
 }

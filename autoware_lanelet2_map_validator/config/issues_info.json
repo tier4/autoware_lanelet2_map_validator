@@ -376,11 +376,19 @@
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-004": {
-    "severity": "Error",
+    "severity": "Warning",
     "primitive": "regulatory element",
     "message": {
-      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} for {turn_direction} turn at intersection without traffic lights.",
-      "ja": "信号機のない交差点での {turn_direction} 転回において、lanelet {unnecessary_yield_to} への不要な譲歩関係があります。"
+      "en": "Unnecessary lanelets are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
+      "ja": "不要なレーンレットが譲り先として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Intersection {intersection_id} doesn't have any right_of_way regulatory element.",
+      "ja": "交差点 {intersection_id} に right_of_way regulatory element がありません。"
     }
   },
   "TrafficLight.MissingRegulatoryElements-001": {

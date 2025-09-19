@@ -59,8 +59,13 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
     lanelet::Locations::Germany, lanelet::Participants::Vehicle);
   auto routing_graph = lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
+  std::map<lanelet::Id, bool> intersection_has_right_of_way;
+
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
-    if (!lanelet.hasAttribute("turn_direction")) {
+    bool has_turn_direction = lanelet.hasAttribute("turn_direction");
+    bool has_intersection_area = lanelet.hasAttribute("intersection_area");
+
+    if (!(has_turn_direction || has_intersection_area)) {
       continue;
     }
 
@@ -76,13 +81,24 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
     }
 
     const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
+    // track intersections for Issue-005
+    lanelet::Id intersection_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
+    if (intersection_area_id != lanelet::InvalId) {
+      if (
+        intersection_has_right_of_way.find(intersection_area_id) ==
+        intersection_has_right_of_way.end()) {
+        intersection_has_right_of_way[intersection_area_id] = false;
+        if (!right_of_way_elems.empty()) {
+          intersection_has_right_of_way[intersection_area_id] = true;
+        }
+      }
+    }
 
-    // Process each right_of_way regulatory element (multiple are allowed)
     for (const auto & right_of_way_elem : right_of_way_elems) {
       auto right_of_way_lanelets =
         right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
 
-      // Issue-002: right_of_way regulatory element should have exactly one right_of_way role
+      // Issue-001: right_of_way regulatory element should have exactly one right_of_way role
       if (right_of_way_lanelets.size() != 1) {
         issues.emplace_back(
           construct_issue_from_code(issue_code(this->name(), 1), right_of_way_elem->id()));
@@ -97,7 +113,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         }
       }
 
-      // Issue-003: right_of_way regulatory element doesn't set this lanelet as right_of_way role
+      // Issue-002: right_of_way regulatory element doesn't set this lanelet as right_of_way role
       if (!is_set_as_right_of_way) {
         issues.emplace_back(
           construct_issue_from_code(issue_code(this->name(), 2), right_of_way_elem->id()));
@@ -107,32 +123,27 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       auto yield_lanelets =
         right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::Yield);
 
+      auto all_conflicting = routing_graph->conflicting(lanelet);
+
       std::vector<lanelet::ConstLanelet> conflicting_lanelets;
-      for (const auto & other_lanelet : map.laneletLayer) {
-        if (other_lanelet.id() == lanelet.id()) {
-          continue;
+      for (const auto & other_lanelet : all_conflicting) {
+        bool has_same_source = false;
+
+        auto prev_lanelets_current = routing_graph->previous(lanelet);
+        auto prev_lanelets_other = routing_graph->previous(*other_lanelet.lanelet());
+
+        for (const auto & prev_current : prev_lanelets_current) {
+          for (const auto & prev_other : prev_lanelets_other) {
+            if (prev_current.id() == prev_other.id()) {
+              has_same_source = true;
+              break;
+            }
+          }
+          if (has_same_source) break;
         }
 
-        const auto relation = routing_graph->routingRelation(lanelet, other_lanelet);
-        if (relation == lanelet::routing::RelationType::Conflicting) {
-          bool has_same_source = false;
-
-          auto prev_lanelets_current = routing_graph->previous(lanelet);
-          auto prev_lanelets_other = routing_graph->previous(other_lanelet);
-
-          for (const auto & prev_current : prev_lanelets_current) {
-            for (const auto & prev_other : prev_lanelets_other) {
-              if (prev_current.id() == prev_other.id()) {
-                has_same_source = true;
-                break;
-              }
-            }
-            if (has_same_source) break;
-          }
-
-          if (!has_same_source) {
-            conflicting_lanelets.push_back(other_lanelet);
-          }
+        if (!has_same_source) {
+          conflicting_lanelets.push_back(*other_lanelet.lanelet());
         }
       }
 
@@ -148,7 +159,7 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         yield_ids.insert(yield_lanelet.id());
       }
 
-      // Issue-004: Check yield relationships, all lanelets with right_of_way regulatory elements
+      // Issue-003: Check yield relationships, all lanelets with right_of_way regulatory elements
       // are treated as priority lanes that should yield to all conflicting lanes
       std::set<lanelet::Id> missing_yields;
       std::set_difference(
@@ -159,12 +170,11 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         std::map<std::string, std::string> reason_map;
         reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
         reason_map["turn_direction"] = turn_direction;
-        reason_map["lane_type"] = "priority";
         issues.emplace_back(construct_issue_from_code(
           issue_code(this->name(), 3), right_of_way_elem->id(), reason_map));
       }
 
-      // Issue-005: Check for unnecessary yield relationships
+      // Issue-004: Check for unnecessary yield relationships
       std::set<lanelet::Id> unnecessary_yields;
       std::set_difference(
         yield_ids.begin(), yield_ids.end(), conflicting_ids.begin(), conflicting_ids.end(),
@@ -173,12 +183,25 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       for (const auto & unnecessary_id : unnecessary_yields) {
         std::map<std::string, std::string> reason_map;
         reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
-        reason_map["turn_direction"] = lanelet.attribute("turn_direction").value();
-        issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
+        reason_map["turn_direction"] = turn_direction;
+
+        auto issue = construct_issue_from_code(
+          issue_code(this->name(), 4), right_of_way_elem->id(), reason_map);
+        issues.emplace_back(issue);
       }
     }
   }
+
+  // Issue-005: check for intersections that don't have any right_of_way regulatory elements
+  for (const auto & [intersection_id, has_right_of_way] : intersection_has_right_of_way) {
+    if (!has_right_of_way) {
+      std::map<std::string, std::string> reason_map;
+      reason_map["intersection_id"] = std::to_string(intersection_id);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 5), intersection_id, reason_map));
+    }
+  }
+
   return issues;
 }
 
