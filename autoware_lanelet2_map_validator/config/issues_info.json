@@ -300,7 +300,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Lanelet with turn_direction '{turn_direction}' and traffic lights must be referenced by a right_of_way regulatory element.",
-      "ja": "turn_direction '{turn_direction}' を持ち信号機のある lanelet は right_of_way regulatory element に参照されている必要があります。"
+      "ja": "turn_direction '{turn_direction}'  を持ち traffic light を参照する lanelet は right_of_way regulatory element を参照する必要があります。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-002": {
@@ -308,31 +308,31 @@
     "primitive": "regulatory element",
     "message": {
       "en": "More than one right_of_way regulatory element exist in the same lanelet.",
-      "ja": "同一のレーンレットに複数の right_of_way 規制要素が存在します。"
+      "ja": "同一のLanelet に複数の right_of_way regulatory element が存在します。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-003": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "The right_of_way element does not reference the correct lanelet in its right_of_way role.",
-      "ja": "right_of_way 要素は、right_of_way の役割において正しい lanelet を参照していません。"
+      "en": "The right_of_way element does not refer the referrer lanelet to its right_of_way role.",
+      "ja": "本 regulatory elemenet は参照元の lanelet を right_of_way role に設定していません。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-004": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "Missing required yield relationship to lanelet {missing_yield_to} for {turn_direction} turn at intersection.",
-      "ja": "交差点での {turn_direction} 転回において、lanelet {missing_yield_to} への必要な譲歩関係が不足しています。"
+      "en": "Missing required yield relationship to lanelet {missing_yield_to} at intersection.",
+      "ja": "Lanelet {missing_yield_to} は yield として設定する必要があります。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-005": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} for {turn_direction} turn at intersection.",
-      "ja": "交差点での {turn_direction} 転回において、lanelet {unnecessary_yield_to} への不要な譲歩関係があります。"
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} at intersection.",
+      "ja": "Lanelet {unnecessary_yield_to} は yield である必要がありません。"
     }
   },
   "Intersection.LaneletBorderType-001": {

@@ -55,21 +55,6 @@ std::optional<lanelet::ConstLineString3d> get_traffic_light_linestring(
   return refers[0];
 }
 
-double compute_linestring_direction(const lanelet::ConstLineString3d & linestring)
-{
-  if (linestring.size() < 2) {
-    return 0.0;
-  }
-
-  const auto & start_point = linestring[0];
-  const auto & end_point = linestring[linestring.size() - 1];
-
-  double dx = end_point.x() - start_point.x();
-  double dy = end_point.y() - start_point.y();
-
-  return std::atan2(dy, dx);
-}
-
 bool is_different_signal_timing(
   const lanelet::ConstLanelet & lane1, const lanelet::ConstLanelet & lane2,
   double perpendicular_threshold = M_PI / 4)  // 45 degrees threshold
@@ -81,15 +66,28 @@ bool is_different_signal_timing(
     return true;
   }
 
-  double dir1 = compute_linestring_direction(*tl1_linestring);
-  double dir2 = compute_linestring_direction(*tl2_linestring);
+  const auto & tl1_start = tl1_linestring->front();
+  const auto & tl1_end = tl1_linestring->back();
+  double dx1 = tl1_end.x() - tl1_start.x();
+  double dy1 = tl1_end.y() - tl1_start.y();
 
-  double dir_diff = std::abs(dir1 - dir2);
-  if (dir_diff > M_PI) {
-    dir_diff = 2 * M_PI - dir_diff;
+  const auto & tl2_start = tl2_linestring->front();
+  const auto & tl2_end = tl2_linestring->back();
+  double dx2 = tl2_end.x() - tl2_start.x();
+  double dy2 = tl2_end.y() - tl2_start.y();
+
+  double mag1 = std::hypot(dx1, dy1);
+  double mag2 = std::hypot(dx2, dy2);
+
+  if (mag1 < 1e-6 || mag2 < 1e-6) {
+    return true;
   }
 
-  if (std::abs(dir_diff - M_PI) < perpendicular_threshold) {
+  double dot_product = (dx1 * dx2 + dy1 * dy2) / (mag1 * mag2);
+
+  dot_product = std::max(-1.0, std::min(1.0, dot_product));
+
+  if (dot_product < -std::cos(perpendicular_threshold)) {
     return false;  // same signal timing (opposing directions)
   }
 
