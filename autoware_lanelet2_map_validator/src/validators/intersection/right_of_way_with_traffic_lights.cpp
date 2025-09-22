@@ -46,13 +46,13 @@ std::optional<lanelet::ConstLineString3d> get_traffic_light_linestring(
     return std::nullopt;
   }
 
-  const auto & tl_reg_elem = tl_reg_elems[0];
+  const auto & tl_reg_elem = tl_reg_elems.front();
   const auto refers =
     tl_reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
   if (refers.empty()) {
     return std::nullopt;
   }
-  return refers[0];
+  return refers.front();
 }
 
 bool is_different_signal_timing(
@@ -85,9 +85,10 @@ bool is_different_signal_timing(
 
   double dot_product = (dx1 * dx2 + dy1 * dy2) / (mag1 * mag2);
 
-  dot_product = std::max(-1.0, std::min(1.0, dot_product));
+  dot_product = std::abs(dot_product);
+  dot_product = std::min(1.0, dot_product);
 
-  if (dot_product < -std::cos(perpendicular_threshold)) {
+  if (dot_product > std::cos(perpendicular_threshold)) {
     return false;  // same signal timing (opposing directions)
   }
 
