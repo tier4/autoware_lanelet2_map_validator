@@ -131,7 +131,12 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         auto prev_lanelets_current = routing_graph->previous(lanelet);
         auto prev_lanelets_other = routing_graph->previous(*other_lanelet.lanelet());
 
-        if (!has_same_source(routing_graph, lanelet, *other_lanelet.lanelet())) {
+        auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
+        auto conflicting_polygon = other_lanelet.lanelet()->polygon2d().basicPolygon();
+
+        if (
+          !has_same_source(routing_graph, lanelet, *other_lanelet.lanelet()) &&
+          polygon_overlap_ratio(lanelet_polygon, conflicting_polygon) > 0.01) {
           conflicting_lanelets.push_back(*other_lanelet.lanelet());
         }
       }

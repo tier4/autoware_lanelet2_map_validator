@@ -200,6 +200,13 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
         continue;
       }
 
+      // if the conflicting is too small, also skip
+      auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
+      auto conflicting_polygon = conflicting_opt.polygon2d().basicPolygon();
+      if (polygon_overlap_ratio(lanelet_polygon, conflicting_polygon) < 0.01) {
+        continue;
+      }
+
       bool should_yield = false;
 
       // Rule 1: Yield to conflicting lanelets that have different signal timing
