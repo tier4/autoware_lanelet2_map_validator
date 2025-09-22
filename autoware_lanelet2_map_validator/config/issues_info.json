@@ -675,19 +675,11 @@
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "Buffer zone polygon partially overlaps with intersection area (Intersection Area ID: {intersection_area_id}).",
-      "ja": "導流帯ポリゴンが intersection_area (ID: {intersection_area_id}) と部分的に重なっています。"
-    }
-  },
-  "Area.BufferZoneValidity-003": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
       "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
       "ja": "導流帯ポリゴンの形状が不正です: {boost_geometry_message}"
     }
   },
-  "Area.BufferZoneValidity-004": {
+  "Area.BufferZoneValidity-003": {
     "severity": "Error",
     "primitive": "polygon",
     "message": {

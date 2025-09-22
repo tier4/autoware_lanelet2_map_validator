@@ -79,7 +79,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
         }
       }
 
-      // check for road/road_shoulder overlap (Issue-004)
+      // check for road/road_shoulder overlap (Issue-003)
       std::string subtype = ll.attributeOr(lanelet::AttributeName::Subtype, "");
       if (subtype == "road" || subtype == "road_shoulder") {
         lanelet::BasicPolygon2d lanelet_polygon = ll.polygon2d().basicPolygon();
@@ -103,7 +103,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
               overlap_map["lanelet_id"] = std::to_string(ll.id());
               overlap_map["lanelet_subtype"] = subtype;
               issues.emplace_back(
-                construct_issue_from_code(issue_code(this->name(), 4), polygon.id(), overlap_map));
+                construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), overlap_map));
             }
           }
         }
@@ -134,30 +134,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
         construct_issue_from_code(issue_code(this->name(), 1), polygon.id(), point_ids_map));
     }
 
-    lanelet::ConstPolygons3d nearby_polygons = map.polygonLayer.search(bbox2d);
-    for (const lanelet::ConstPolygon3d & intersection_poly : nearby_polygons) {
-      if (
-        !intersection_poly.hasAttribute(lanelet::AttributeName::Type) ||
-        intersection_poly.attribute(lanelet::AttributeName::Type).value() != "intersection_area") {
-        continue;
-      }
-      lanelet::BasicPolygon2d intersection_poly2d =
-        lanelet::traits::to2D(intersection_poly.basicPolygon());
-
-      // Issue-002
-      if (boost::geometry::intersects(buffer_poly2d, intersection_poly2d)) {
-        if (
-          !boost::geometry::covered_by(buffer_poly2d, intersection_poly2d) &&
-          !boost::geometry::covered_by(intersection_poly2d, buffer_poly2d)) {
-          std::map<std::string, std::string> overlap_map;
-          overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
-          issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), overlap_map));
-        }
-      }
-    }
-
-    // Issue-003
+    // Issue-002
     boost::geometry::validity_failure_type failure_type;
     bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, failure_type);
     if (
@@ -167,7 +144,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
       reason_map["boost_geometry_message"] =
         boost::geometry::validity_failure_type_message(failure_type);
       issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), reason_map));
+        construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), reason_map));
     }
   }
 
