@@ -94,6 +94,7 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
       continue;
     }
 
+    // Get the referrer
     // Get line strings of traffic light referred by regulatory element
     auto refers = elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers);
     // Get stop line referred by regulatory element
@@ -104,7 +105,15 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
     // Report error if regulatory element does not have stop line and this is not a pedestrian
     // traffic light
     if (ref_lines.empty() && !isPedestrianTrafficLight(refers)) {
-      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), elem->id()));
+      // check whether elem is only seen by crosswalks. If so, skip it.
+      const auto referrers = map.laneletLayer.findUsages(elem);
+      bool is_only_seen_by_crosswalks =
+        std::all_of(referrers.begin(), referrers.end(), [](lanelet::ConstLanelet lane) {
+          return lane.attributeOr(lanelet::AttributeName::Subtype, "") == std::string("crosswalk");
+        });
+      if (!is_only_seen_by_crosswalks) {
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), elem->id()));
+      }
     }
 
     for (const auto & refer : refers) {
