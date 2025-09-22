@@ -295,6 +295,46 @@
       "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
     }
   },
+  "Intersection.RightOfWayWithTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with turn_direction '{turn_direction}' and traffic lights must be referenced by a right_of_way regulatory element.",
+      "ja": "turn_direction '{turn_direction}'  を持ち traffic light を参照する lanelet は right_of_way regulatory element を参照する必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "More than one right_of_way regulatory element exist in the same lanelet.",
+      "ja": "同一のLanelet に複数の right_of_way regulatory element が存在します。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way element does not refer the referrer lanelet to its right_of_way role.",
+      "ja": "本 regulatory element は参照元の lanelet を right_of_way role に設定していません。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Missing required yield relationship to lanelet {missing_yield_to} at intersection.",
+      "ja": "Lanelet {missing_yield_to} は yield として設定する必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} at intersection.",
+      "ja": "Lanelet {unnecessary_yield_to} は yield である必要がありません。"
+    }
+  },
   "Intersection.LaneletBorderType-001": {
     "severity": "Error",
     "primitive": "lanelet",

@@ -7154,7 +7154,6 @@
     <member type="relation" role="regulatory_element" ref="1015"/>
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
-    <member type="relation" role="regulatory_element" ref="11143"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
