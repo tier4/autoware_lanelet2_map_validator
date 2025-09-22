@@ -68,27 +68,6 @@ TEST_F(TestBufferZoneValidity, UnsharedPointsIssue)  // NOLINT for gtest
   EXPECT_EQ(issues[0].id, expected_polygon_id);
 }
 
-TEST_F(TestBufferZoneValidity, PartialOverlapIssue)  // NOLINT for gtest
-{
-  load_target_map("area/buffer_zone_validity_with_partial_overlap.osm");
-
-  lanelet::autoware::validation::BufferZoneValidity checker;
-  const auto & issues = checker(*map_);
-
-  EXPECT_EQ(issues.size(), 1);
-
-  const lanelet::Id expected_polygon_id = 20005;
-  std::map<std::string, std::string> intersection_area_id;
-  intersection_area_id["intersection_area_id"] = "10803";
-
-  const auto expected_issue = construct_issue_from_code(
-    issue_code(test_target_, 2), expected_polygon_id, intersection_area_id);
-
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
-  EXPECT_EQ(issues[0].id, expected_polygon_id);
-}
-
 TEST_F(TestBufferZoneValidity, InvalidGeometryIssue)  // NOLINT for gtest
 {
   load_target_map("area/buffer_zone_validity_with_non_valid_geometry.osm");
@@ -103,7 +82,7 @@ TEST_F(TestBufferZoneValidity, InvalidGeometryIssue)  // NOLINT for gtest
   reason_map["boost_geometry_message"] = "Geometry has invalid self-intersections";
 
   const auto expected_issue =
-    construct_issue_from_code(issue_code(test_target_, 3), expected_polygon_id, reason_map);
+    construct_issue_from_code(issue_code(test_target_, 2), expected_polygon_id, reason_map);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
