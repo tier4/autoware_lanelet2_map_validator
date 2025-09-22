@@ -24,6 +24,8 @@
   <depend>pugixml-dev</depend>
   <depend>yaml-cpp</depend>
 
+  <exec_depend>python3-pyside6</exec_depend>
+
   <test_depend>ament_cmake_ros</test_depend>
 
   <export>
