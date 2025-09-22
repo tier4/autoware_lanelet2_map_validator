@@ -372,7 +372,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "This right_of_way regulatory element does not set the right lanelet as their right_of_way role.",
-      "ja": "この right_of_way 規制要素が適切な lanelet を right_of_way 役割として設定していません。"
+      "ja": "この right_of_way regulatory element が適切な lanelet を right_of_way role として設定していません。"
     }
   },
   "Intersection.RightOfWayForVirtualTrafficLights-005": {
@@ -389,6 +389,46 @@
     "message": {
       "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} in right_of_way regulatory element.",
       "ja": "不要な yield lanelet {unnecessary_yield_to} が定義されています。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
+      "ja": "right_of_way regulatory element はちょうど1つの right_of_way role を持つ必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This regulatory element doesn't set the referrer lanelet as the right_of_way role.",
+      "ja": "right_of_way regulatory element が呼び出し元の lanelet を right_of_way role に設定していません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role.",
+      "ja": "重複する lanelet {conflicting_lanelet_id} が yield role として設定されていません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-004": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary lanelets {unnecessary_yield_to} are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
+      "ja": "不要な Lanelet {unnecessary_yield_to} が yield として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Intersection {intersection_id} doesn't have any right_of_way regulatory element.",
+      "ja": "交差点 {intersection_id} に right_of_way regulatory element がありません。"
     }
   },
   "TrafficLight.MissingRegulatoryElements-001": {
