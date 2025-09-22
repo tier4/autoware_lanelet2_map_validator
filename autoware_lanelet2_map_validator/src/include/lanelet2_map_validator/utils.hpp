@@ -15,6 +15,7 @@
 #ifndef LANELET2_MAP_VALIDATOR__UTILS_HPP_
 #define LANELET2_MAP_VALIDATOR__UTILS_HPP_
 
+#include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
@@ -120,8 +121,8 @@ std::string primitives_to_ids_string(const std::vector<T> & primitives)
  * @return true if they share at least one previous lanelet, false otherwise
  */
 inline bool has_same_source(
-  const lanelet::routing::RoutingGraphConstPtr & routing_graph,
-  const lanelet::ConstLanelet & lanelet1, const lanelet::ConstLanelet & lanelet2)
+  const lanelet::routing::RoutingGraphPtr & routing_graph, const lanelet::ConstLanelet & lanelet1,
+  const lanelet::ConstLanelet & lanelet2)
 {
   auto prev1 = routing_graph->previous(lanelet1);
   auto prev2 = routing_graph->previous(lanelet2);

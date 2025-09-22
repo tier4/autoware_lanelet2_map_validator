@@ -107,7 +107,6 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, MissingYieldRole)  // NOLINT
 
     std::map<std::string, std::string> reason_map;
     reason_map["conflicting_lanelet_id"] = "60";
-    reason_map["turn_direction"] = "straight";
 
     const auto expected_issue = construct_issue_from_code(
       issue_code(test_target_, 3), expected_regulatory_element_id, reason_map);
@@ -132,7 +131,6 @@ TEST_F(TestRightOfWayWithoutTrafficLightsValidator, UnnecessaryYieldRole)  // NO
 
     std::map<std::string, std::string> reason_map;
     reason_map["unnecessary_yield_to"] = "52";
-    reason_map["turn_direction"] = "straight";
 
     const auto expected_issue = construct_issue_from_code(
       issue_code(test_target_, 4), expected_regulatory_element_id, reason_map);

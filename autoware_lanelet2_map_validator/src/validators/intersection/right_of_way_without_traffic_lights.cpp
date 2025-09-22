@@ -57,7 +57,8 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
 
   auto traffic_rules = lanelet::traffic_rules::TrafficRulesFactory::create(
     lanelet::Locations::Germany, lanelet::Participants::Vehicle);
-  auto routing_graph = lanelet::routing::RoutingGraph::build(map, *traffic_rules);
+  lanelet::routing::RoutingGraphPtr routing_graph =
+    lanelet::routing::RoutingGraph::build(map, *traffic_rules);
 
   std::map<lanelet::Id, bool> intersection_has_right_of_way;
 
@@ -88,9 +89,9 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         intersection_has_right_of_way.find(intersection_area_id) ==
         intersection_has_right_of_way.end()) {
         intersection_has_right_of_way[intersection_area_id] = false;
-        if (!right_of_way_elems.empty()) {
-          intersection_has_right_of_way[intersection_area_id] = true;
-        }
+      }
+      if (!right_of_way_elems.empty()) {
+        intersection_has_right_of_way[intersection_area_id] = true;
       }
     }
 
@@ -127,22 +128,10 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
 
       std::vector<lanelet::ConstLanelet> conflicting_lanelets;
       for (const auto & other_lanelet : all_conflicting) {
-        bool has_same_source = false;
-
         auto prev_lanelets_current = routing_graph->previous(lanelet);
         auto prev_lanelets_other = routing_graph->previous(*other_lanelet.lanelet());
 
-        for (const auto & prev_current : prev_lanelets_current) {
-          for (const auto & prev_other : prev_lanelets_other) {
-            if (prev_current.id() == prev_other.id()) {
-              has_same_source = true;
-              break;
-            }
-          }
-          if (has_same_source) break;
-        }
-
-        if (!has_same_source) {
+        if (!has_same_source(routing_graph, lanelet, *other_lanelet.lanelet())) {
           conflicting_lanelets.push_back(*other_lanelet.lanelet());
         }
       }
@@ -169,7 +158,6 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       for (const auto & missing_id : missing_yields) {
         std::map<std::string, std::string> reason_map;
         reason_map["conflicting_lanelet_id"] = std::to_string(missing_id);
-        reason_map["turn_direction"] = turn_direction;
         issues.emplace_back(construct_issue_from_code(
           issue_code(this->name(), 3), right_of_way_elem->id(), reason_map));
       }
@@ -183,11 +171,8 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       for (const auto & unnecessary_id : unnecessary_yields) {
         std::map<std::string, std::string> reason_map;
         reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
-        reason_map["turn_direction"] = turn_direction;
-
-        auto issue = construct_issue_from_code(
-          issue_code(this->name(), 4), right_of_way_elem->id(), reason_map);
-        issues.emplace_back(issue);
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
       }
     }
   }

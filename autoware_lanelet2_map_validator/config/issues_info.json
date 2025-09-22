@@ -372,7 +372,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "This right_of_way regulatory element does not set the right lanelet as their right_of_way role.",
-      "ja": "この right_of_way 規制要素が適切な lanelet を right_of_way 役割として設定していません。"
+      "ja": "この right_of_way regulatory element が適切な lanelet を right_of_way role として設定していません。"
     }
   },
   "Intersection.RightOfWayForVirtualTrafficLights-005": {
@@ -411,16 +411,16 @@
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role for {turn_direction} turn at intersection without traffic lights.",
-      "ja": "信号機のない交差点での {turn_direction} 転回において、競合する lanelet {conflicting_lanelet_id} が yield 役割として設定されていません。"
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role.",
+      "ja": "重複する lanelet {conflicting_lanelet_id} が yield role として設定されていません。"
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-004": {
     "severity": "Warning",
     "primitive": "regulatory element",
     "message": {
-      "en": "Unnecessary lanelets are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
-      "ja": "不要なレーンレットが譲り先として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
+      "en": "Unnecessary lanelets {unnecessary_yield_to} are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
+      "ja": "不要な Lanelet {unnecessary_yield_to} が yield として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-005": {

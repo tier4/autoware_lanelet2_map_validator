@@ -7109,7 +7109,6 @@
     <member type="relation" role="regulatory_element" ref="1012"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
-    <member type="relation" role="regulatory_element" ref="11149"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7124,7 +7123,6 @@
     <member type="relation" role="regulatory_element" ref="1012"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
     <member type="relation" role="regulatory_element" ref="10360"/>
-    <member type="relation" role="regulatory_element" ref="11145"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7153,7 +7151,6 @@
     <member type="relation" role="regulatory_element" ref="1015"/>
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
-    <member type="relation" role="regulatory_element" ref="11143"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7169,7 +7166,6 @@
     <member type="relation" role="regulatory_element" ref="10275"/>
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10360"/>
-    <member type="relation" role="regulatory_element" ref="11147"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7198,7 +7194,6 @@
     <member type="relation" role="regulatory_element" ref="1018"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
     <member type="relation" role="regulatory_element" ref="10360"/>
-    <member type="relation" role="regulatory_element" ref="11150"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7213,7 +7208,6 @@
     <member type="relation" role="regulatory_element" ref="1018"/>
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10360"/>
-    <member type="relation" role="regulatory_element" ref="11146"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7242,7 +7236,6 @@
     <member type="relation" role="regulatory_element" ref="1021"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
     <member type="relation" role="regulatory_element" ref="10353"/>
-    <member type="relation" role="regulatory_element" ref="11144"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7256,7 +7249,6 @@
     <member type="way" role="right" ref="206"/>
     <member type="relation" role="regulatory_element" ref="10334"/>
     <member type="relation" role="regulatory_element" ref="10341"/>
-    <member type="relation" role="regulatory_element" ref="11148"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -7760,73 +7752,6 @@
   <relation id="11142">
     <member type="relation" role="right_of_way" ref="18"/>
     <member type="relation" role="yield" ref="13"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11143">
-    <member type="relation" role="right_of_way" ref="53"/>
-    <member type="relation" role="yield" ref="50"/>
-    <member type="relation" role="yield" ref="55"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11144">
-    <member type="relation" role="right_of_way" ref="59"/>
-    <member type="relation" role="yield" ref="56"/>
-    <member type="relation" role="yield" ref="52"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11145">
-    <member type="relation" role="right_of_way" ref="51"/>
-    <member type="relation" role="yield" ref="58"/>
-    <member type="relation" role="yield" ref="54"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11146">
-    <member type="relation" role="right_of_way" ref="57"/>
-    <member type="relation" role="yield" ref="49"/>
-    <member type="relation" role="yield" ref="60"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11147">
-    <member type="relation" role="right_of_way" ref="54"/>
-    <member type="relation" role="yield" ref="55"/>
-    <member type="relation" role="yield" ref="58"/>
-    <member type="relation" role="yield" ref="60"/>
-    <member type="relation" role="yield" ref="56"/>
-    <member type="relation" role="yield" ref="49"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11148">
-    <member type="relation" role="right_of_way" ref="60"/>
-    <member type="relation" role="yield" ref="49"/>
-    <member type="relation" role="yield" ref="52"/>
-    <member type="relation" role="yield" ref="54"/>
-    <member type="relation" role="yield" ref="50"/>
-    <member type="relation" role="yield" ref="55"/>
-    <member type="relation" role="yield" ref="57"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11149">
-    <member type="relation" role="right_of_way" ref="50"/>
-    <member type="relation" role="yield" ref="55"/>
-    <member type="relation" role="yield" ref="58"/>
-    <member type="relation" role="yield" ref="60"/>
-    <member type="relation" role="yield" ref="56"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="11150">
-    <member type="relation" role="right_of_way" ref="56"/>
-    <member type="relation" role="yield" ref="49"/>
-    <member type="relation" role="yield" ref="52"/>
-    <member type="relation" role="yield" ref="50"/>
-    <member type="relation" role="yield" ref="54"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
