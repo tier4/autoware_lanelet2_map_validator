@@ -136,6 +136,16 @@ inline bool has_same_source(
   return false;
 }
 
+/**
+ * @brief Returns the ratio of "the overlapping area" over "the area of the base_polygon"
+ *
+ * @param base_polygon
+ * @param another_polygon
+ * @return double
+ */
+double polygon_overlap_ratio(
+  lanelet::BasicPolygon2d & base_polygon, lanelet::BasicPolygon2d & another_polygon);
+
 }  // namespace lanelet::autoware::validation
 
 std::string snake_to_upper_camel(const std::string & snake_case);

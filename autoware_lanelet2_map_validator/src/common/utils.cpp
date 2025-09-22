@@ -16,11 +16,36 @@
 
 #include "lanelet2_map_validator/config_store.hpp"
 
+#include <boost/geometry/algorithms/area.hpp>
+#include <boost/geometry/algorithms/correct.hpp>
+#include <boost/geometry/algorithms/intersection.hpp>
+
 #include <fmt/args.h>
 #include <fmt/core.h>
+#include <lanelet2_core/geometry/Polygon.h>
 
 #include <map>
 #include <string>
+#include <vector>
+
+namespace lanelet::autoware::validation
+{
+double polygon_overlap_ratio(
+  lanelet::BasicPolygon2d & base_polygon, lanelet::BasicPolygon2d & another_polygon)
+{
+  boost::geometry::correct(base_polygon);
+  boost::geometry::correct(another_polygon);
+
+  std::vector<lanelet::BasicPolygon2d> overlaps;
+  boost::geometry::intersection(base_polygon, another_polygon, overlaps);
+  double overlapping_area = 0.0;
+  for (const auto & portion : overlaps) {
+    overlapping_area += boost::geometry::area(portion);
+  }
+
+  return overlapping_area / boost::geometry::area(base_polygon);
+}
+}  // namespace lanelet::autoware::validation
 
 std::string snake_to_upper_camel(const std::string & snake_case)
 {
