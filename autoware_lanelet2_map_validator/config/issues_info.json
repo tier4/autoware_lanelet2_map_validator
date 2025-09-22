@@ -155,8 +155,8 @@
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Point ID: {point_ids})",
-      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（Point ID: {point_ids}）"
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Violating Point ID: {point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（違反 Point ID: {point_ids}）"
     }
   },
   "Intersection.IntersectionAreaTagging-001": {
@@ -308,7 +308,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "More than one right_of_way regulatory element exist in the same lanelet.",
-      "ja": "同一のLanelet に複数の right_of_way regulatory element が存在します。"
+      "ja": "同一の Lanelet に複数の right_of_way regulatory element が存在します。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-003": {
@@ -360,7 +360,7 @@
     }
   },
   "Intersection.RightOfWayForVirtualTrafficLights-003": {
-    "severity": "Error",
+    "severity": "info",
     "primitive": "regulatory element",
     "message": {
       "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
@@ -372,7 +372,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "This right_of_way regulatory element does not set the right lanelet as their right_of_way role.",
-      "ja": "この right_of_way regulatory element が適切な lanelet を right_of_way role として設定していません。"
+      "ja": "この right_of_way regulatory element が参照元 lanelet を right_of_way role として設定していません。"
     }
   },
   "Intersection.RightOfWayForVirtualTrafficLights-005": {
@@ -392,7 +392,7 @@
     }
   },
   "Intersection.RightOfWayWithoutTrafficLights-001": {
-    "severity": "Error",
+    "severity": "info",
     "primitive": "regulatory element",
     "message": {
       "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
@@ -675,8 +675,8 @@
     "severity": "Error",
     "primitive": "polygon",
     "message": {
-      "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
-      "ja": "導流帯ポリゴンの形状が不正です: {boost_geometry_message}"
+      "en": "This buffer zone polygon doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
+      "ja": "この導流帯ポリゴンは boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
     }
   },
   "Area.BufferZoneValidity-003": {
