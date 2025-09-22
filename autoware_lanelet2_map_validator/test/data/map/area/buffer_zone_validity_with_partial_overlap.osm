@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="59" validation_version=""/>
+  <MetaInfo format_version="1" map_version="61" validation_version=""/>
   <node id="285" lat="35.90327302784" lon="139.9336616108">
     <tag k="local_x" v="3774.4814"/>
     <tag k="local_y" v="73745.2383"/>
@@ -92,9 +92,9 @@
     <tag k="local_y" v="73755.3574"/>
     <tag k="ele" v="19.398"/>
   </node>
-  <node id="1101" lat="35.90334438898" lon="139.93374394464">
-    <tag k="local_x" v="3781.9978"/>
-    <tag k="local_y" v="73753.0725"/>
+  <node id="1101" lat="35.90335434421" lon="139.93376691442">
+    <tag k="local_x" v="3784.0827"/>
+    <tag k="local_y" v="73754.1541"/>
     <tag k="ele" v="19.378"/>
   </node>
   <node id="1102" lat="35.90340808418" lon="139.93389005557">
@@ -332,16 +332,6 @@
     <tag k="local_y" v="73743.4621"/>
     <tag k="ele" v="19.37"/>
   </node>
-  <node id="1901" lat="35.90326569456" lon="139.93356344394">
-    <tag k="local_x" v="3765.6137"/>
-    <tag k="local_y" v="73744.5216"/>
-    <tag k="ele" v="19.362"/>
-  </node>
-  <node id="1903" lat="35.90325908421" lon="139.93354830588">
-    <tag k="local_x" v="3764.2396"/>
-    <tag k="local_y" v="73743.8033"/>
-    <tag k="ele" v="19.372"/>
-  </node>
   <node id="1970" lat="35.9035492506" lon="139.9334043051">
     <tag k="local_x" v="3751.596"/>
     <tag k="local_y" v="73776.1301"/>
@@ -412,9 +402,9 @@
     <tag k="local_y" v="73731.378"/>
     <tag k="ele" v="19.311"/>
   </node>
-  <node id="2000" lat="35.90332827859" lon="139.93363780501">
-    <tag k="local_x" v="3772.4"/>
-    <tag k="local_y" v="73751.3901"/>
+  <node id="2000" lat="35.90332495451" lon="139.93363018802">
+    <tag k="local_x" v="3771.7086"/>
+    <tag k="local_y" v="73751.0289"/>
     <tag k="ele" v="19.289"/>
   </node>
   <node id="2001" lat="35.90332919481" lon="139.93363986159">
@@ -422,9 +412,9 @@
     <tag k="local_y" v="73751.4897"/>
     <tag k="ele" v="19.289"/>
   </node>
-  <node id="2002" lat="35.90335355606" lon="139.93369572231">
-    <tag k="local_x" v="3777.6572"/>
-    <tag k="local_y" v="73754.1368"/>
+  <node id="2002" lat="35.9033299815" lon="139.93364154646">
+    <tag k="local_x" v="3772.7397"/>
+    <tag k="local_y" v="73751.5753"/>
     <tag k="ele" v="19.309"/>
   </node>
   <node id="2003" lat="35.9033788335" lon="139.93375363855">
@@ -512,9 +502,9 @@
     <tag k="local_y" v="73737.5597"/>
     <tag k="ele" v="19.3542"/>
   </node>
-  <node id="2199" lat="35.90332511131" lon="139.93369972195">
-    <tag k="local_x" v="3777.9837"/>
-    <tag k="local_y" v="73750.9778"/>
+  <node id="2199" lat="35.90332939244" lon="139.93370841096">
+    <tag k="local_x" v="3778.773"/>
+    <tag k="local_y" v="73751.4441"/>
     <tag k="ele" v="19.36"/>
   </node>
   <node id="2200" lat="35.90330583363" lon="139.93365550039">
@@ -3489,6 +3479,16 @@
     <tag k="local_y" v="73718.3375"/>
     <tag k="ele" v="19.452"/>
   </node>
+  <node id="20006" lat="35.90331522487" lon="139.93363769978">
+    <tag k="local_x" v="3772.3747"/>
+    <tag k="local_y" v="73749.9423"/>
+    <tag k="ele" v="19.36"/>
+  </node>
+  <node id="20007" lat="35.90334100308" lon="139.93368753655">
+    <tag k="local_x" v="3776.9033"/>
+    <tag k="local_y" v="73752.7525"/>
+    <tag k="ele" v="19.378"/>
+  </node>
   <way id="35">
     <nd ref="2007"/>
     <nd ref="2008"/>
@@ -3561,6 +3561,8 @@
   <way id="43">
     <nd ref="2001"/>
     <nd ref="2002"/>
+    <nd ref="20006"/>
+    <nd ref="20007"/>
     <nd ref="2003"/>
     <nd ref="2004"/>
     <nd ref="1740"/>
@@ -3680,16 +3682,6 @@
     <nd ref="6048"/>
     <nd ref="2000"/>
     <nd ref="2001"/>
-    <tag k="type" v="virtual"/>
-  </way>
-  <way id="204">
-    <nd ref="2195"/>
-    <nd ref="5974"/>
-    <nd ref="1903"/>
-    <nd ref="1899"/>
-    <nd ref="1901"/>
-    <nd ref="5970"/>
-    <nd ref="2200"/>
     <tag k="type" v="virtual"/>
   </way>
   <way id="205">
@@ -4956,25 +4948,13 @@
     <tag k="area" v="yes"/>
   </way>
   <way id="20005">
-    <nd ref="6033"/>
-    <nd ref="6035"/>
-    <nd ref="6002"/>
     <nd ref="2002"/>
+    <nd ref="20006"/>
+    <nd ref="20007"/>
+    <nd ref="2003"/>
     <tag k="type" v="hatched_road_markings"/>
     <tag k="area" v="yes"/>
   </way>
-  <relation id="49">
-    <member type="way" role="left" ref="197"/>
-    <member type="way" role="right" ref="204"/>
-    <member type="relation" role="regulatory_element" ref="20000"/>
-    <tag k="type" v="lanelet"/>
-    <tag k="subtype" v="road"/>
-    <tag k="speed_limit" v="30"/>
-    <tag k="location" v="urban"/>
-    <tag k="one_way" v="yes"/>
-    <tag k="turn_direction" v="straight"/>
-    <tag k="intersection_area" v="10803"/>
-  </relation>
   <relation id="50">
     <member type="way" role="left" ref="199"/>
     <member type="way" role="right" ref="218"/>
@@ -5003,20 +4983,6 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
-    <tag k="intersection_area" v="10803"/>
-  </relation>
-  <relation id="52">
-    <member type="way" role="left" ref="203"/>
-    <member type="way" role="right" ref="204"/>
-    <member type="relation" role="regulatory_element" ref="1015"/>
-    <member type="relation" role="regulatory_element" ref="10334"/>
-    <member type="relation" role="regulatory_element" ref="10353"/>
-    <tag k="type" v="lanelet"/>
-    <tag k="subtype" v="road"/>
-    <tag k="speed_limit" v="30"/>
-    <tag k="location" v="urban"/>
-    <tag k="one_way" v="yes"/>
-    <tag k="turn_direction" v="straight"/>
     <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="53">
@@ -5393,7 +5359,6 @@
   <relation id="11144">
     <member type="relation" role="right_of_way" ref="59"/>
     <member type="relation" role="yield" ref="56"/>
-    <member type="relation" role="yield" ref="52"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
@@ -5406,7 +5371,6 @@
   </relation>
   <relation id="11146">
     <member type="relation" role="right_of_way" ref="57"/>
-    <member type="relation" role="yield" ref="49"/>
     <member type="relation" role="yield" ref="60"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
@@ -5417,14 +5381,11 @@
     <member type="relation" role="yield" ref="58"/>
     <member type="relation" role="yield" ref="60"/>
     <member type="relation" role="yield" ref="56"/>
-    <member type="relation" role="yield" ref="49"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
   <relation id="11148">
     <member type="relation" role="right_of_way" ref="60"/>
-    <member type="relation" role="yield" ref="49"/>
-    <member type="relation" role="yield" ref="52"/>
     <member type="relation" role="yield" ref="54"/>
     <member type="relation" role="yield" ref="50"/>
     <tag k="type" v="regulatory_element"/>
@@ -5441,21 +5402,8 @@
   </relation>
   <relation id="11150">
     <member type="relation" role="right_of_way" ref="56"/>
-    <member type="relation" role="yield" ref="49"/>
-    <member type="relation" role="yield" ref="52"/>
     <member type="relation" role="yield" ref="50"/>
     <member type="relation" role="yield" ref="54"/>
-    <tag k="type" v="regulatory_element"/>
-    <tag k="subtype" v="right_of_way"/>
-  </relation>
-  <relation id="20000">
-    <member type="relation" role="right_of_way" ref="49"/>
-    <member type="relation" role="yield" ref="54"/>
-    <member type="relation" role="yield" ref="55"/>
-    <member type="relation" role="yield" ref="56"/>
-    <member type="relation" role="yield" ref="57"/>
-    <member type="relation" role="yield" ref="58"/>
-    <member type="relation" role="yield" ref="60"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
