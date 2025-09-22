@@ -60,6 +60,11 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
 
     // Check precise coverage for nearby lanelets
     for (const lanelet::ConstLanelet & lanelet : nearby_lanelets) {
+      if (
+        lanelet.attributeOr(lanelet::AttributeName::Subtype, "") !=
+        std::string(lanelet::AttributeValueString::Road)) {
+        continue;
+      }
       lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
       if (polygon_overlap_ratio(lanelet_polygon, area_polygon2d) >= 0.99) {
         lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
