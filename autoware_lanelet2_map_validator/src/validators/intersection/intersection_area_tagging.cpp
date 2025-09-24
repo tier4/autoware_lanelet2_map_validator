@@ -16,8 +16,6 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <boost/geometry/algorithms/covered_by.hpp>
-
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
@@ -62,8 +60,13 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
 
     // Check precise coverage for nearby lanelets
     for (const lanelet::ConstLanelet & lanelet : nearby_lanelets) {
+      if (
+        lanelet.attributeOr(lanelet::AttributeName::Subtype, "") !=
+        std::string(lanelet::AttributeValueString::Road)) {
+        continue;
+      }
       lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
-      if (boost::geometry::covered_by(lanelet_polygon, area_polygon2d)) {
+      if (polygon_overlap_ratio(lanelet_polygon, area_polygon2d) >= 0.99) {
         lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
         if (tagged_area_id == lanelet::InvalId) {
           // Issue-001: Lanelet missing intersection_area tag
@@ -110,7 +113,7 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
       continue;  // (should be caught by dangling reference validator)
     }
     lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
-    if (!boost::geometry::covered_by(lanelet_polygon, area_polygon2d)) {
+    if (polygon_overlap_ratio(lanelet_polygon, area_polygon2d) < 0.99) {
       std::map<std::string, std::string> area_id_map;
       area_id_map["area_id"] = std::to_string(tagged_area_id);
       issues.emplace_back(
