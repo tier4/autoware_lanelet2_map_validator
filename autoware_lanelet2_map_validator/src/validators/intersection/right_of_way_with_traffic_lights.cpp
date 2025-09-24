@@ -169,6 +169,7 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
     auto conflicting_lanelets = routing_graph->conflicting(lanelet);
 
     std::set<lanelet::Id> expected_yield_ids;
+    std::map<lanelet::Id, double> soft_conflicting_ids;
 
     // Cache previous lanelets for current lanelet to avoid repeated lookups
     auto current_previous = routing_graph->previous(lanelet);
@@ -203,7 +204,9 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       // if the conflicting is too small, also skip
       auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
       auto conflicting_polygon = conflicting_opt.polygon2d().basicPolygon();
-      if (polygon_overlap_ratio(lanelet_polygon, conflicting_polygon) < 0.01) {
+      double coverage_ratio = polygon_overlap_ratio(lanelet_polygon, conflicting_polygon);
+      if (coverage_ratio < 0.01) {
+        soft_conflicting_ids[conflicting_opt.id()] = coverage_ratio;
         continue;
       }
 
@@ -260,6 +263,21 @@ RightOfWayWithTrafficLightsValidator::check_right_of_way_with_traffic_lights(
       reason_map["turn_direction"] = turn_direction;
       issues.emplace_back(construct_issue_from_code(
         issue_code(this->name(), 5), right_of_way_elem->id(), reason_map));
+    }
+
+    // Issue-006: Slight chance to be yield (info)
+    for (const auto & [soft_conflicting_id, ratio] : soft_conflicting_ids) {
+      std::map<std::string, std::string> reason_map;
+      std::ostringstream oss;
+      if (ratio >= 0.01) {
+        oss << std::setprecision(6) << ratio * 100;
+      } else {
+        oss << std::scientific << std::setprecision(6) << ratio * 100;
+      }
+      reason_map["soft_conflicting_id"] = std::to_string(soft_conflicting_id);
+      reason_map["percentage"] = oss.str();
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
     }
   }
 
