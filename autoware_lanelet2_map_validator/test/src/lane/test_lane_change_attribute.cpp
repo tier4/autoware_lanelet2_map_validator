@@ -30,7 +30,7 @@ protected:
 
 TEST_F(TestLaneChangeAttributeValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = 
+  std::string expected_validator_name =
     lanelet::autoware::validation::LaneChangeAttributeValidator::name();
 
   lanelet::validation::Strings validators =
@@ -47,7 +47,7 @@ TEST_F(TestLaneChangeAttributeValidator, SampleMap)  // NOLINT for gtest
 
   lanelet::autoware::validation::LaneChangeAttributeValidator checker;
   const auto & issues = checker(*map_);
-  
+
   EXPECT_EQ(issues.size(), 0);
 }
 
@@ -60,7 +60,8 @@ TEST_F(TestLaneChangeAttributeValidator, MissingLeftLaneChangeAttribute)  // NOL
 
   std::map<std::string, std::string> bound_type_map;
   bound_type_map["bound_type"] = "left";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 10, bound_type_map);
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 10, bound_type_map);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
@@ -76,8 +77,9 @@ TEST_F(TestLaneChangeAttributeValidator, InvalidLaneChangeValues)  // NOLINT for
   std::map<std::string, std::string> left_bound_map;
   left_bound_map["bound_type"] = "left";
   left_bound_map["invalid_value"] = "maybe";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 10, left_bound_map);
-    
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 2), 10, left_bound_map);
+
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }

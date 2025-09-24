@@ -16,7 +16,7 @@
     <tag k="local_y" v="73731.9351"/>
     <tag k="ele" v="19.3397"/>
   </node>
-  
+
   <node id="4" lat="35.90310010653" lon="139.93326236239">
     <tag k="local_x" v="3738.2428"/>
     <tag k="local_y" v="73726.4514"/>
@@ -32,7 +32,7 @@
     <tag k="local_y" v="73729.2711"/>
     <tag k="ele" v="19.3397"/>
   </node>
-  
+
   <node id="7" lat="35.90307622734" lon="139.93327796833">
     <tag k="local_x" v="3739.6221"/>
     <tag k="local_y" v="73723.7874"/>
@@ -48,7 +48,7 @@
     <tag k="local_y" v="73726.6071"/>
     <tag k="ele" v="19.3397"/>
   </node>
-  
+
   <way id="1">
     <nd ref="1"/>
     <nd ref="2"/>
@@ -57,7 +57,7 @@
     <tag k="subtype" v="solid"/>
     <tag k="lane_change" v="no"/>
   </way>
-  
+
   <way id="10">
     <nd ref="4"/>
     <nd ref="5"/>
@@ -66,7 +66,7 @@
     <tag k="subtype" v="dashed"/>
     <tag k="lane_change" v="maybe"/>
   </way>
-  
+
   <way id="20">
     <nd ref="7"/>
     <nd ref="8"/>
@@ -75,7 +75,7 @@
     <tag k="subtype" v="solid"/>
     <tag k="lane_change" v="no"/>
   </way>
-  
+
   <relation id="100">
     <member type="way" role="left" ref="1"/>
     <member type="way" role="right" ref="10"/>
@@ -85,7 +85,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
   </relation>
-  
+
   <relation id="101">
     <member type="way" role="left" ref="10"/>
     <member type="way" role="right" ref="20"/>
