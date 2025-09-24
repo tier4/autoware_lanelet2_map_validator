@@ -606,5 +606,21 @@
       "en": "Buffer zone polygon is not a valid geometry: {boost_geometry_message}",
       "ja": "導流帯ポリゴンの形状が不正です: {boost_geometry_message}"
     }
+  },
+  "Lane.RoadLaneletAttribute-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban'.",
+      "ja": "道路レーンレットに必要な 'location' 属性がないか、'urban' に設定されていません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
+      "ja": "道路レーンレットに必要な 'one_way' 属性がないか、'yes' に設定されていません。"
+    }
   }
 }
