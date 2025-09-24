@@ -35,7 +35,7 @@ jobs:
 
       - name: Apply Fixes to CHANGELOG.rst
         run: |
-          START_WORD=https://github.com/tier4/autoware_lanelet2_map_validator/issues/6
+          START_WORD="https://github.com/tier4/autoware_lanelet2_map_validator/issues/6>"
 
           awk -v start_word="$START_WORD" '
           BEGIN { found=0 }
