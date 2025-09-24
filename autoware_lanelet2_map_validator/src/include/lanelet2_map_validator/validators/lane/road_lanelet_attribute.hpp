@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
-#define AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
@@ -32,4 +32,4 @@ private:
 };
 }  // namespace lanelet::autoware::validation
 
-#endif  // AUTOWARE_LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__ROAD_LANELET_ATTRIBUTE_HPP_
