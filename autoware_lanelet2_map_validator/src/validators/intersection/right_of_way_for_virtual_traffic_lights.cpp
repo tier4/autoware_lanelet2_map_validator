@@ -25,6 +25,7 @@
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
 #include <algorithm>
+#include <iomanip>
 #include <map>
 #include <set>
 #include <string>
@@ -112,10 +113,20 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
 
     const auto conflicting_primitives = routing_graph->conflicting(lanelet);
     std::set<lanelet::Id> conflicting_ids;
+    std::map<lanelet::Id, double> soft_conflicting_ids;
     for (const auto & primitive : conflicting_primitives) {
       if (primitive.isArea()) {
         continue;
       }
+
+      auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
+      auto conflicting_polygon = primitive.lanelet()->polygon2d().basicPolygon();
+      double coverage_ratio = polygon_overlap_ratio(lanelet_polygon, conflicting_polygon);
+      if (coverage_ratio < 0.01) {
+        soft_conflicting_ids[primitive.id()] = coverage_ratio;
+        continue;
+      }
+
       conflicting_ids.insert(primitive.id());
     }
 
@@ -148,6 +159,21 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
       reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
       issues.emplace_back(construct_issue_from_code(
         issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
+    }
+
+    for (const auto & [soft_conflicting_id, ratio] : soft_conflicting_ids) {
+      // Issue-007: Slight chance to be yield (info)
+      std::map<std::string, std::string> reason_map;
+      std::ostringstream oss;
+      if (ratio >= 0.01) {
+        oss << std::setprecision(6) << ratio * 100;
+      } else {
+        oss << std::scientific << std::setprecision(6) << ratio * 100;
+      }
+      reason_map["soft_conflicting_id"] = std::to_string(soft_conflicting_id);
+      reason_map["percentage"] = oss.str();
+      issues.emplace_back(construct_issue_from_code(
+        issue_code(this->name(), 7), right_of_way_elem->id(), reason_map));
     }
   }
   return issues;

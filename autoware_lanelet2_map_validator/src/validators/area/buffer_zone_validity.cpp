@@ -16,7 +16,9 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <boost/geometry/algorithms/covered_by.hpp>
+#include <boost/geometry/algorithms/area.hpp>
+#include <boost/geometry/algorithms/correct.hpp>
+#include <boost/geometry/algorithms/intersection.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/is_valid.hpp>
 
@@ -64,10 +66,45 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
     lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox2d);
 
     std::set<lanelet::Id> lanelet_point_ids;
+    lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
+    double buffer_area = boost::geometry::area(buffer_poly2d);
+    boost::geometry::correct(buffer_poly2d);
+
     for (const auto & ll : nearby_lanelets) {
+      // check for point sharing (Issue-001)
       for (const auto & lineString : {ll.leftBound(), ll.rightBound()}) {
         for (const auto & pt : lineString) {
           lanelet_point_ids.insert(pt.id());
+        }
+      }
+
+      // check for road/road_shoulder overlap (Issue-003)
+      std::string subtype = ll.attributeOr(lanelet::AttributeName::Subtype, "");
+      if (subtype == "road" || subtype == "road_shoulder") {
+        lanelet::BasicPolygon2d lanelet_polygon = ll.polygon2d().basicPolygon();
+        boost::geometry::correct(lanelet_polygon);
+
+        if (boost::geometry::intersects(buffer_poly2d, lanelet_polygon)) {
+          std::vector<lanelet::BasicPolygon2d> intersection_result;
+          boost::geometry::intersection(buffer_poly2d, lanelet_polygon, intersection_result);
+
+          if (!intersection_result.empty()) {
+            double intersection_area = 0.0;
+            for (const auto & poly : intersection_result) {
+              intersection_area += boost::geometry::area(poly);
+            }
+
+            double overlap_threshold = 0.01;
+            double overlap_ratio = intersection_area / buffer_area;
+
+            if (overlap_ratio > overlap_threshold) {
+              std::map<std::string, std::string> overlap_map;
+              overlap_map["lanelet_id"] = std::to_string(ll.id());
+              overlap_map["lanelet_subtype"] = subtype;
+              issues.emplace_back(
+                construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), overlap_map));
+            }
+          }
         }
       }
     }
@@ -96,31 +133,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
         construct_issue_from_code(issue_code(this->name(), 1), polygon.id(), point_ids_map));
     }
 
-    lanelet::BasicPolygon2d buffer_poly2d = lanelet::traits::to2D(polygon.basicPolygon());
-    lanelet::ConstPolygons3d nearby_polygons = map.polygonLayer.search(bbox2d);
-    for (const lanelet::ConstPolygon3d & intersection_poly : nearby_polygons) {
-      if (
-        !intersection_poly.hasAttribute(lanelet::AttributeName::Type) ||
-        intersection_poly.attribute(lanelet::AttributeName::Type).value() != "intersection_area") {
-        continue;
-      }
-      lanelet::BasicPolygon2d intersection_poly2d =
-        lanelet::traits::to2D(intersection_poly.basicPolygon());
-
-      // Issue-002
-      if (boost::geometry::intersects(buffer_poly2d, intersection_poly2d)) {
-        if (
-          !boost::geometry::covered_by(buffer_poly2d, intersection_poly2d) &&
-          !boost::geometry::covered_by(intersection_poly2d, buffer_poly2d)) {
-          std::map<std::string, std::string> overlap_map;
-          overlap_map["intersection_area_id"] = std::to_string(intersection_poly.id());
-          issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), overlap_map));
-        }
-      }
-    }
-
-    // Issue-003
+    // Issue-002
     boost::geometry::validity_failure_type failure_type;
     bool polygon_is_valid = boost::geometry::is_valid(buffer_poly2d, failure_type);
     if (
@@ -130,7 +143,7 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
       reason_map["boost_geometry_message"] =
         boost::geometry::validity_failure_type_message(failure_type);
       issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 3), polygon.id(), reason_map));
+        construct_issue_from_code(issue_code(this->name(), 2), polygon.id(), reason_map));
     }
   }
 
