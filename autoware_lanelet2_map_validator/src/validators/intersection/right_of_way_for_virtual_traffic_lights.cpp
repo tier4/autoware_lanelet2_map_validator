@@ -116,6 +116,13 @@ RightOfWayForVirtualTrafficLightsValidator::check_right_of_way_for_virtual_traff
       if (primitive.isArea()) {
         continue;
       }
+
+      auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
+      auto conflicting_polygon = primitive.lanelet()->polygon2d().basicPolygon();
+      if (polygon_overlap_ratio(lanelet_polygon, conflicting_polygon) < 0.01) {
+        continue;
+      }
+
       conflicting_ids.insert(primitive.id());
     }
 
