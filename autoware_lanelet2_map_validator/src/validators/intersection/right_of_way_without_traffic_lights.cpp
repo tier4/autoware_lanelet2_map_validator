@@ -25,6 +25,7 @@
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <set>
@@ -127,9 +128,19 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       auto all_conflicting = routing_graph->conflicting(lanelet);
 
       std::vector<lanelet::ConstLanelet> conflicting_lanelets;
+      std::map<lanelet::Id, double> soft_conflicting_ids;
       for (const auto & other_lanelet : all_conflicting) {
         auto prev_lanelets_current = routing_graph->previous(lanelet);
         auto prev_lanelets_other = routing_graph->previous(*other_lanelet.lanelet());
+
+        auto lanelet_polygon = lanelet.polygon2d().basicPolygon();
+        auto conflicting_polygon = other_lanelet.lanelet()->polygon2d().basicPolygon();
+        double coverage_ratio = polygon_overlap_ratio(lanelet_polygon, conflicting_polygon);
+
+        if (coverage_ratio < 0.01) {
+          soft_conflicting_ids[other_lanelet.lanelet()->id()] = coverage_ratio;
+          continue;
+        }
 
         if (!has_same_source(routing_graph, lanelet, *other_lanelet.lanelet())) {
           conflicting_lanelets.push_back(*other_lanelet.lanelet());
@@ -173,6 +184,21 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         reason_map["unnecessary_yield_to"] = std::to_string(unnecessary_id);
         issues.emplace_back(construct_issue_from_code(
           issue_code(this->name(), 4), right_of_way_elem->id(), reason_map));
+      }
+
+      // Issue-006: Slight chance to be yield (info)
+      for (const auto & [soft_conflicting_id, ratio] : soft_conflicting_ids) {
+        std::map<std::string, std::string> reason_map;
+        std::ostringstream oss;
+        if (ratio >= 0.01) {
+          oss << std::setprecision(6) << ratio * 100;
+        } else {
+          oss << std::scientific << std::setprecision(6) << ratio * 100;
+        }
+        reason_map["soft_conflicting_id"] = std::to_string(soft_conflicting_id);
+        reason_map["percentage"] = oss.str();
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 6), right_of_way_elem->id(), reason_map));
       }
     }
   }

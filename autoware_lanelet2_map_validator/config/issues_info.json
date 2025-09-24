@@ -335,6 +335,14 @@
       "ja": "Lanelet {unnecessary_yield_to} は yield である必要がありません。"
     }
   },
+  "Intersection.RightOfWayWithTrafficLights-006": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
+      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
+    }
+  },
   "Intersection.LaneletBorderType-001": {
     "severity": "Error",
     "primitive": "lanelet",
@@ -391,6 +399,14 @@
       "ja": "不要な yield lanelet {unnecessary_yield_to} が定義されています。"
     }
   },
+  "Intersection.RightOfWayForVirtualTrafficLights-007": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
+      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
+    }
+  },
   "Intersection.RightOfWayWithoutTrafficLights-001": {
     "severity": "info",
     "primitive": "regulatory element",
@@ -429,6 +445,14 @@
     "message": {
       "en": "Intersection {intersection_id} doesn't have any right_of_way regulatory element.",
       "ja": "交差点 {intersection_id} に right_of_way regulatory element がありません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-006": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
+      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
     }
   },
   "TrafficLight.MissingRegulatoryElements-001": {
