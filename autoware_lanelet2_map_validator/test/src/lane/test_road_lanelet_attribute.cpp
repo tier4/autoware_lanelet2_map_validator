@@ -67,22 +67,20 @@ TEST_F(TestRoadLaneletAttributeValidator, WrongLocationAttributes)  // NOLINT fo
   const auto & issues = checker(*map_);
 
   const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 24);
-  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const auto difference = compare_issues(expected_issues, issues);
+  const auto difference = compare_an_issue(expected_issue1, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
 TEST_F(TestRoadLaneletAttributeValidator, WrongOneWayAttributes)  // NOLINT for gtest
 {
-  load_target_map("lane/road_lanelet_wrong_one_way_attributes.osm.osm");
+  load_target_map("lane/road_lanelet_wrong_one_way_attributes.osm");
 
   lanelet::autoware::validation::RoadLaneletAttributeValidator checker;
   const auto & issues = checker(*map_);
 
   const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 2), 24);
-  const auto expected_issues = {expected_issue1, expected_issue2};
 
-  const auto difference = compare_issues(expected_issues, issues);
+  const auto difference = compare_an_issue(expected_issue2, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
