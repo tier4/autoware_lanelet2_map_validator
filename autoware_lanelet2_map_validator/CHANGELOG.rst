@@ -41,82 +41,82 @@ Changelog for package autoware_lanelet2_map_validator
 * feat: add GUI for autoware_lanelet2_map_validator (`#66 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/66>`_)
   Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
   Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
-* feat: check turn signal distance overlap (`#67 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/67>`_)
+* feat: check turn signal distance overlap (`#67 <https://github.com/autowarefoundation/autoware_tools/issues/67>`_)
   Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* docs: add information about issues_info to how_to_contribute.md (`#64 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/64>`_)
-* docs: remove the update version section from the how_to_contribute.md (`#63 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/63>`_)
-* feat: enable stand alone execution by removing dependency on ament_index_cpp (`#62 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/62>`_)
-* fix: do not count wrong polygon orientation as an issue (`#61 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/61>`_)
-* feat: check whether the custom centerline is sticking out the lanelet (`#60 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/60>`_)
-* feat: validate overlaps between paths of virtual_traffic_lights (`#53 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/53>`_)
+* docs: add information about issues_info to how_to_contribute.md (`#64 <https://github.com/autowarefoundation/autoware_tools/issues/64>`_)
+* docs: remove the update version section from the how_to_contribute.md (`#63 <https://github.com/autowarefoundation/autoware_tools/issues/63>`_)
+* feat: enable stand alone execution by removing dependency on ament_index_cpp (`#62 <https://github.com/autowarefoundation/autoware_tools/issues/62>`_)
+* fix: do not count wrong polygon orientation as an issue (`#61 <https://github.com/autowarefoundation/autoware_tools/issues/61>`_)
+* feat: check whether the custom centerline is sticking out the lanelet (`#60 <https://github.com/autowarefoundation/autoware_tools/issues/60>`_)
+* feat: validate overlaps between paths of virtual_traffic_lights (`#53 <https://github.com/autowarefoundation/autoware_tools/issues/53>`_)
   Co-authored-by: Mamoru Sobue <hilo.soblin@gmail.com>
-* fix: remove debug line for `#58 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/58>`_ (`#59 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/59>`_)
-* ci: quit using autoware:latest-prebuilt (`#58 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/58>`_)
-* feat: make validators adaptable to different refers type of virtual traffic lights (`#57 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/57>`_)
-* refactor: add docstring, comment and disambiguate std::string/ValidatorName (`#47 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/47>`_)
+* fix: remove debug line for `#58 <https://github.com/autowarefoundation/autoware_tools/issues/58>`_ (`#59 <https://github.com/autowarefoundation/autoware_tools/issues/59>`_)
+* ci: quit using autoware:latest-prebuilt (`#58 <https://github.com/autowarefoundation/autoware_tools/issues/58>`_)
+* feat: make validators adaptable to different refers type of virtual traffic lights (`#57 <https://github.com/autowarefoundation/autoware_tools/issues/57>`_)
+* refactor: add docstring, comment and disambiguate std::string/ValidatorName (`#47 <https://github.com/autowarefoundation/autoware_tools/issues/47>`_)
   Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
 * Contributors: Giovanni Muhammad Raditya, Mamoru Sobue, Taiki Yamada
 
 1.4.1 (2025-06-04)
 ------------------
-* fix: fix english message in Crosswalk.RegulatoryElementDetails-003 (`#54 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/54>`_)
+* fix: fix english message in Crosswalk.RegulatoryElementDetails-003 (`#54 <https://github.com/autowarefoundation/autoware_tools/issues/54>`_)
 * Contributors: Taiki Yamada
 
 1.4.0 (2025-05-21)
 ------------------
-* chore: bump version to 1.4.0 (`#51 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/51>`_)
+* chore: bump version to 1.4.0 (`#51 <https://github.com/autowarefoundation/autoware_tools/issues/51>`_)
   Co-authored-by: github-actions <github-actions@github.com>
-* fix: fix name mistakes about mapping.intersection.virtual_traffic_light_line_order (`#50 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/50>`_)
-* chore: write what validator fails for what prerequisite (`#49 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/49>`_)
-* chore: update map requirements, and change maintainers (`#48 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/48>`_)
-* feat: apply construct_issue_from_code to all validators (`#46 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/46>`_)
-* feat: create issues info for consistent issue information management (`#45 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/45>`_)
-* feat: validator line orders for virtual traffic lights (`#38 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/38>`_)
-* feat: check the details of regulatory elements for virtual traffic lights (`#36 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/36>`_)
-* feat: create ValidatorConfigStore to read parameters (`#43 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/43>`_)
-* feat: add validation_info to the lanelet2_validation_results.json (`#44 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/44>`_)
-* docs: add missing requirements (`#42 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/42>`_)
-* feat: check longitudinal connections of lanelets (`#33 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/33>`_)
+* fix: fix name mistakes about mapping.intersection.virtual_traffic_light_line_order (`#50 <https://github.com/autowarefoundation/autoware_tools/issues/50>`_)
+* chore: write what validator fails for what prerequisite (`#49 <https://github.com/autowarefoundation/autoware_tools/issues/49>`_)
+* chore: update map requirements, and change maintainers (`#48 <https://github.com/autowarefoundation/autoware_tools/issues/48>`_)
+* feat: apply construct_issue_from_code to all validators (`#46 <https://github.com/autowarefoundation/autoware_tools/issues/46>`_)
+* feat: create issues info for consistent issue information management (`#45 <https://github.com/autowarefoundation/autoware_tools/issues/45>`_)
+* feat: validator line orders for virtual traffic lights (`#38 <https://github.com/autowarefoundation/autoware_tools/issues/38>`_)
+* feat: check the details of regulatory elements for virtual traffic lights (`#36 <https://github.com/autowarefoundation/autoware_tools/issues/36>`_)
+* feat: create ValidatorConfigStore to read parameters (`#43 <https://github.com/autowarefoundation/autoware_tools/issues/43>`_)
+* feat: add validation_info to the lanelet2_validation_results.json (`#44 <https://github.com/autowarefoundation/autoware_tools/issues/44>`_)
+* docs: add missing requirements (`#42 <https://github.com/autowarefoundation/autoware_tools/issues/42>`_)
+* feat: check longitudinal connections of lanelets (`#33 <https://github.com/autowarefoundation/autoware_tools/issues/33>`_)
 * Contributors: Taiki Yamada, TaikiYamada4
 
 1.3.0 (2025-03-28)
 ------------------
-* chore: bump to version 1.3.0 (`#34 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/34>`_)
+* chore: bump to version 1.3.0 (`#34 <https://github.com/autowarefoundation/autoware_tools/issues/34>`_)
   Co-authored-by: github-actions <github-actions@github.com>
-* feat: add new input requirements (`#30 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/30>`_)
-* feat: validator for lanelets sharing their borders correctly (`#32 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/32>`_)
+* feat: add new input requirements (`#30 <https://github.com/autowarefoundation/autoware_tools/issues/30>`_)
+* feat: validator for lanelets sharing their borders correctly (`#32 <https://github.com/autowarefoundation/autoware_tools/issues/32>`_)
 * Contributors: TaikiYamada4
 
 1.2.0 (2025-03-13)
 ------------------
-* chore: bump version to 1.2.0 (`#31 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/31>`_)
+* chore: bump version to 1.2.0 (`#31 <https://github.com/autowarefoundation/autoware_tools/issues/31>`_)
   Co-authored-by: github-actions <github-actions@github.com>
-* feat: check light bulb attributes (`#28 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/28>`_)
-* feat: check light bulbs pairing (`#29 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/29>`_)
-* feat: exclude specific primitives (`#25 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/25>`_)
+* feat: check light bulb attributes (`#28 <https://github.com/autowarefoundation/autoware_tools/issues/28>`_)
+* feat: check light bulbs pairing (`#29 <https://github.com/autowarefoundation/autoware_tools/issues/29>`_)
+* feat: exclude specific primitives (`#25 <https://github.com/autowarefoundation/autoware_tools/issues/25>`_)
   Co-authored-by: Mamoru Sobue <hilo.soblin@gmail.com>
 * Contributors: TaikiYamada4
 
 1.1.0 (2025-02-28)
 ------------------
-* chore: bump version to 1.1.0 (`#27 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/27>`_)
+* chore: bump version to 1.1.0 (`#27 <https://github.com/autowarefoundation/autoware_tools/issues/27>`_)
   Co-authored-by: github-actions <github-actions@github.com>
-* feat: follow to the latest vm-05-01 (`#26 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/26>`_)
+* feat: follow to the latest vm-05-01 (`#26 <https://github.com/autowarefoundation/autoware_tools/issues/26>`_)
 * Contributors: TaikiYamada4
 
 1.0.1 (2025-02-20)
 ------------------
-* chore: bump version to 1.0.1 (`#24 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/24>`_)
+* chore: bump version to 1.0.1 (`#24 <https://github.com/autowarefoundation/autoware_tools/issues/24>`_)
   Co-authored-by: github-actions <github-actions@github.com>
-* docs: fix internal links (`#20 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/20>`_)
-* chore: move docs into autoware_lanelet2_map_validator directory (`#18 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/18>`_)
-* refactor: extract mapping_issues to main (`#13 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/13>`_)
+* docs: fix internal links (`#20 <https://github.com/autowarefoundation/autoware_tools/issues/20>`_)
+* chore: move docs into autoware_lanelet2_map_validator directory (`#18 <https://github.com/autowarefoundation/autoware_tools/issues/18>`_)
+* refactor: extract mapping_issues to main (`#13 <https://github.com/autowarefoundation/autoware_tools/issues/13>`_)
 * Contributors: TaikiYamada4
 
 1.0.0 (2025-02-10)
 ------------------
-* chore: bump version to 1.0.0 (`#12 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/12>`_)
-* Merge pull request `#6 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/6>`_ from tier4/feat/manage_version_control
+* chore: bump version to 1.0.0 (`#12 <https://github.com/autowarefoundation/autoware_tools/issues/12>`_)
+* Merge pull request `#6 <https://github.com/autowarefoundation/autoware_tools/issues/6>`_ from tier4/feat/manage_version_control
   feat: apply version control
 * remove CHANGELOG.rst brought from autoware_tools and make a new one
 * added test code for version control functions
