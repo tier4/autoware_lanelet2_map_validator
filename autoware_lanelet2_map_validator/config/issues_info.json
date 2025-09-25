@@ -710,5 +710,29 @@
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
     }
+  },
+  "Lane.PedestrianLane-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Pedestrian lane must have at least one adjacent lanelet.",
+      "ja": "歩行者レーンは少なくとも1つの隣接レーンレットを持つ必要があります。"
+    }
+  },
+  "Lane.PedestrianLane-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接するレーンレットは道路サブタイプのレーンレットでなければなりません。"
+    }
+  },
+  "Lane.PedestrianLane-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線ストリングは road_border タイプでなければなりません。"
+    }
   }
 }
