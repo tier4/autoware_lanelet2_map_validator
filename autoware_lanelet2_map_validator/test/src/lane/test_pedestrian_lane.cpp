@@ -1,10 +1,4 @@
-// Copyright 2025 Autoclass TestPedestrianLaneValidator : public MapValidationTester
-{
-protected:
-  const std::string test_target_ =
-    std::string(lanelet::autoware::validation::PedestrianLaneValidator::name());
-};
-oundation
+// Copyright 2025 Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +24,7 @@ oundation
 {
 protected:
   const std::string test_target_ =
-    std::string(lanelet::autoware::validation::RoadShoulderValidator::name());
+    std::string(lanelet::autoware::validation::PedestrianLaneValidator::name());
 };
 
 TEST_F(TestPedestrianLaneValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -72,7 +66,7 @@ TEST_F(TestPedestrianLaneValidator, NoAdjacentLanelets)  // NOLINT for gtest
 
 TEST_F(TestPedestrianLaneValidator, NonRoadAdjacentLanelet)  // NOLINT for gtest
 {
-  load_target_map("lane/shoulder_road_with_non_road_adjacent.osm");
+  load_target_map("lane/pedestrian_lane_with_non_road_adjacent.osm");
 
   lanelet::autoware::validation::PedestrianLaneValidator checker;
   const auto & issues = checker(*map_);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
   <MetaInfo format_version="1" map_version="2"/>
+  <!-- First lanelet: road_shoulder -->
   <node id="1" lat="35.90312398544" lon="139.93324675646">
     <tag k="local_x" v="3736.8634"/>
     <tag k="local_y" v="73729.1154"/>
@@ -51,57 +52,41 @@
     <tag k="local_y" v="73732.2284"/>
     <tag k="ele" v="19.3259"/>
   </node>
-
-  <node id="11" lat="35.90307622762" lon="139.93327796832">
-    <tag k="local_x" v="3739.6075"/>
-    <tag k="local_y" v="73723.7673"/>
-    <tag k="ele" v="19.3413"/>
-  </node>
-  <node id="12" lat="35.90308910305" lon="139.9333077326">
-    <tag k="local_x" v="3742.3091"/>
-    <tag k="local_y" v="73725.1661"/>
-    <tag k="ele" v="19.3397"/>
-  </node>
-  <node id="13" lat="35.90310292378" lon="139.93333968161">
-    <tag k="local_x" v="3745.209"/>
-    <tag k="local_y" v="73726.6676"/>
-    <tag k="ele" v="19.3724"/>
-  </node>
-  <node id="14" lat="35.90311632292" lon="139.93337065448">
-    <tag k="local_x" v="3748.0203"/>
-    <tag k="local_y" v="73728.1233"/>
-    <tag k="ele" v="19.3259"/>
-  </node>
-  <node id="15" lat="35.90305234871" lon="139.93329358177">
+  
+  <!-- Second lanelet: offroad -->
+  <node id="11" lat="35.90305234871" lon="139.93329358177">
     <tag k="local_x" v="3740.9869"/>
     <tag k="local_y" v="73721.1032"/>
     <tag k="ele" v="19.3413"/>
   </node>
-  <node id="16" lat="35.90306522504" lon="139.93332334603">
+  <node id="12" lat="35.90306522504" lon="139.93332334603">
     <tag k="local_x" v="3743.6885"/>
     <tag k="local_y" v="73722.5021"/>
     <tag k="ele" v="19.3397"/>
   </node>
-  <node id="17" lat="35.90307904576" lon="139.93335529503">
+  <node id="13" lat="35.90307904576" lon="139.93335529503">
     <tag k="local_x" v="3746.5884"/>
     <tag k="local_y" v="73724.0036"/>
     <tag k="ele" v="19.3724"/>
   </node>
-  <node id="18" lat="35.9030924458" lon="139.93338626789">
+  <node id="14" lat="35.9030924458" lon="139.93338626789">
     <tag k="local_x" v="3749.3997"/>
     <tag k="local_y" v="73725.4594"/>
     <tag k="ele" v="19.3259"/>
   </node>
-
+  
+  <!-- Left boundary of road_shoulder -->
   <way id="19">
     <nd ref="1"/>
     <nd ref="2"/>
     <nd ref="3"/>
     <nd ref="4"/>
     <nd ref="5"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
+  
+  <!-- Shared boundary between road_shoulder and offroad -->
   <way id="20">
     <nd ref="6"/>
     <nd ref="7"/>
@@ -111,7 +96,8 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-
+  
+  <!-- Right boundary of offroad -->
   <way id="21">
     <nd ref="11"/>
     <nd ref="12"/>
@@ -120,7 +106,8 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-
+  
+  <!-- Road shoulder lanelet -->
   <relation id="23">
     <member type="way" role="left" ref="19"/>
     <member type="way" role="right" ref="20"/>
@@ -130,12 +117,13 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
   </relation>
-
+  
+  <!-- Non-road lanelet (adjacent to road shoulder) -->
   <relation id="24">
     <member type="way" role="left" ref="20"/>
     <member type="way" role="right" ref="21"/>
     <tag k="type" v="lanelet"/>
-    <tag k="subtype" v="road"/>
+    <tag k="subtype" v="road_shoulder"/>
     <tag k="lane_change" v="no"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
