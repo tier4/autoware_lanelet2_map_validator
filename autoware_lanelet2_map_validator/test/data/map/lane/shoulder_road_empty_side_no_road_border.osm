@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
   <MetaInfo format_version="1" map_version="2"/>
-  <!-- First lanelet: road_shoulder -->
   <node id="1" lat="35.90312398544" lon="139.93324675646">
     <tag k="local_x" v="3736.8634"/>
     <tag k="local_y" v="73729.1154"/>
@@ -52,8 +51,6 @@
     <tag k="local_y" v="73732.2284"/>
     <tag k="ele" v="19.3259"/>
   </node>
-
-  <!-- Second lanelet: road -->
   <node id="11" lat="35.90307622762" lon="139.93327796832">
     <tag k="local_x" v="3739.6075"/>
     <tag k="local_y" v="73723.7673"/>
@@ -94,8 +91,6 @@
     <tag k="local_y" v="73725.4594"/>
     <tag k="ele" v="19.3259"/>
   </node>
-
-  <!-- Ways for road_shoulder lanelet -->
   <way id="19">
     <nd ref="1"/>
     <nd ref="2"/>
@@ -104,7 +99,6 @@
     <nd ref="5"/>
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
-    <!-- Missing road_border type -->
   </way>
   <way id="20">
     <nd ref="6"/>
@@ -115,8 +109,6 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-
-  <!-- Ways for road lanelet (shared right boundary) -->
   <way id="21">
     <nd ref="11"/>
     <nd ref="12"/>
@@ -125,8 +117,6 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-
-  <!-- Road shoulder lanelet -->
   <relation id="23">
     <member type="way" role="left" ref="19"/>
     <member type="way" role="right" ref="20"/>
@@ -136,8 +126,6 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
   </relation>
-
-  <!-- Road lanelet -->
   <relation id="24">
     <member type="way" role="left" ref="20"/>
     <member type="way" role="right" ref="21"/>

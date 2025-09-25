@@ -723,16 +723,16 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Road shoulder with only left/right adjacent lanelet must be adjacent to a road subtype lanelet.",
-      "ja": "左/右にのみ隣接するレーンを持つ路肩レーンは、road サブタイプのレーンに隣接していなければなりません。"
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接するレーンレットは道路サブタイプのレーンレットでなければなりません。"
     }
   },
   "Lane.RoadShoulder-003": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {
-      "en": "Road shoulder with empty left/right side must have a left/right bound with road_border type.",
-      "ja": "左/右側が空の路肩レーンの左/右境界は、road_border タイプでなければなりません。"
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線ストリングは road_border タイプでなければなりません。"
     }
   }
 }
