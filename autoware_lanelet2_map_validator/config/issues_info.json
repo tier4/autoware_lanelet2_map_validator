@@ -710,5 +710,29 @@
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
     }
+  },
+  "Lane.RoadShoulder-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder lanelet has no adjacent lanelets.",
+      "ja": "路肩レーンには隣接するレーンが存在しません。"
+    }
+  },
+  "Lane.RoadShoulder-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder with only left/right adjacent lanelet must be adjacent to a road subtype lanelet.",
+      "ja": "左/右にのみ隣接するレーンを持つ路肩レーンは、road サブタイプのレーンに隣接していなければなりません。"
+    }
+  },
+  "Lane.RoadShoulder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "Road shoulder with empty left/right side must have a left/right bound with road_border type.",
+      "ja": "左/右側が空の路肩レーンの左/右境界は、road_border タイプでなければなりません。"
+    }
   }
 }
