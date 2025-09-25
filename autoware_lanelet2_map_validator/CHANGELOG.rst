@@ -2,6 +2,11 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.1 (2025-09-25)
+------------------
+* fix: add autoware_lanelet2_extension_python as dependency (`#100 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/100>`_)
+* Contributors: Taiki Yamada
+
 1.5.0 (2025-09-24)
 ------------------
 * Merge pull request `#86 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/86>`_ from tier4/feat/v1.5.0/the_grand_finale
