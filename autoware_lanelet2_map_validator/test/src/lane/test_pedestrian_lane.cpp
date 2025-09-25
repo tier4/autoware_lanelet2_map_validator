@@ -20,7 +20,7 @@
 
 #include <string>
 
-  class TestPedestrianLaneValidator : public MapValidationTester
+class TestPedestrianLaneValidator : public MapValidationTester
 {
 protected:
   const std::string test_target_ =

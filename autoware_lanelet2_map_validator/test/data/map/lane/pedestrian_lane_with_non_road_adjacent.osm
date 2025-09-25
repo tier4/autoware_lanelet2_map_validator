@@ -52,7 +52,7 @@
     <tag k="local_y" v="73732.2284"/>
     <tag k="ele" v="19.3259"/>
   </node>
-  
+
   <!-- Second lanelet: offroad -->
   <node id="11" lat="35.90305234871" lon="139.93329358177">
     <tag k="local_x" v="3740.9869"/>
@@ -74,7 +74,7 @@
     <tag k="local_y" v="73725.4594"/>
     <tag k="ele" v="19.3259"/>
   </node>
-  
+
   <!-- Left boundary of road_shoulder -->
   <way id="19">
     <nd ref="1"/>
@@ -85,7 +85,7 @@
     <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
-  
+
   <!-- Shared boundary between road_shoulder and offroad -->
   <way id="20">
     <nd ref="6"/>
@@ -96,7 +96,7 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-  
+
   <!-- Right boundary of offroad -->
   <way id="21">
     <nd ref="11"/>
@@ -106,7 +106,7 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
-  
+
   <!-- Road shoulder lanelet -->
   <relation id="23">
     <member type="way" role="left" ref="19"/>
@@ -117,7 +117,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
   </relation>
-  
+
   <!-- Non-road lanelet (adjacent to road shoulder) -->
   <relation id="24">
     <member type="way" role="left" ref="20"/>
