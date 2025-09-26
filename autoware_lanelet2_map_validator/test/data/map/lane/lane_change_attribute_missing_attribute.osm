@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm generator="VMB">
+  <MetaInfo format_version="1" map_version="2"/>
+  <node id="1" lat="35.90312398544" lon="139.93324675646">
+    <tag k="local_x" v="3736.8634"/>
+    <tag k="local_y" v="73729.1154"/>
+    <tag k="ele" v="19.3488"/>
+  </node>
+  <node id="2" lat="35.90313706429" lon="139.93327698894">
+    <tag k="local_x" v="3739.6075"/>
+    <tag k="local_y" v="73730.5363"/>
+    <tag k="ele" v="19.3413"/>
+  </node>
+  <node id="3" lat="35.90314993972" lon="139.93330675322">
+    <tag k="local_x" v="3742.3091"/>
+    <tag k="local_y" v="73731.9351"/>
+    <tag k="ele" v="19.3397"/>
+  </node>
+
+  <node id="4" lat="35.90310010653" lon="139.93326236239">
+    <tag k="local_x" v="3738.2428"/>
+    <tag k="local_y" v="73726.4514"/>
+    <tag k="ele" v="19.3488"/>
+  </node>
+  <node id="5" lat="35.90311318447" lon="139.93329259488">
+    <tag k="local_x" v="3740.9869"/>
+    <tag k="local_y" v="73727.8722"/>
+    <tag k="ele" v="19.3413"/>
+  </node>
+  <node id="6" lat="35.9031260608" lon="139.93332235914">
+    <tag k="local_x" v="3743.6885"/>
+    <tag k="local_y" v="73729.2711"/>
+    <tag k="ele" v="19.3397"/>
+  </node>
+
+  <node id="7" lat="35.90307622734" lon="139.93327796833">
+    <tag k="local_x" v="3739.6221"/>
+    <tag k="local_y" v="73723.7874"/>
+    <tag k="ele" v="19.3488"/>
+  </node>
+  <node id="8" lat="35.90308930617" lon="139.93330820081">
+    <tag k="local_x" v="3742.3662"/>
+    <tag k="local_y" v="73725.2082"/>
+    <tag k="ele" v="19.3413"/>
+  </node>
+  <node id="9" lat="35.90310218162" lon="139.93333796508">
+    <tag k="local_x" v="3745.0678"/>
+    <tag k="local_y" v="73726.6071"/>
+    <tag k="ele" v="19.3397"/>
+  </node>
+
+  <way id="1">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="3"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+    <tag k="lane_change" v="yes"/>
+  </way>
+
+  <way id="10">
+    <nd ref="4"/>
+    <nd ref="5"/>
+    <nd ref="6"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="dashed"/>
+  </way>
+
+  <way id="20">
+    <nd ref="7"/>
+    <nd ref="8"/>
+    <nd ref="9"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+    <tag k="lane_change" v="no"/>
+  </way>
+
+  <relation id="100">
+    <member type="way" role="left" ref="1"/>
+    <member type="way" role="right" ref="10"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="10"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+  </relation>
+
+  <relation id="101">
+    <member type="way" role="left" ref="10"/>
+    <member type="way" role="right" ref="20"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="10"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+  </relation>
+</osm>
