@@ -68,7 +68,7 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
       lanelet::BasicPolygon2d lanelet_polygon = lanelet.polygon2d().basicPolygon();
       if (polygon_overlap_ratio(lanelet_polygon, area_polygon2d) >= 0.99) {
         lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
-        
+
         if (tagged_area_id == lanelet::InvalId) {
           // Issue-001: Lanelet missing intersection_area tag
           std::map<std::string, std::string> area_id_map;
@@ -96,7 +96,7 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
     lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
     std::string turn_direction = lanelet.attributeOr("turn_direction", "");
-    
+
     // Issue-004: Check if lanelet has turn_direction but missing intersection_area tag
     if (!turn_direction.empty() && tagged_area_id == lanelet::InvalId) {
       std::map<std::string, std::string> tag_map;
@@ -104,7 +104,7 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 4), lanelet.id(), tag_map));
     }
-    
+
     // Issue-003: Continue with existing intersection_area validation
     if (tagged_area_id == lanelet::InvalId) {
       continue;
