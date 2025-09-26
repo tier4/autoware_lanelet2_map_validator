@@ -716,7 +716,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban'.",
-      "ja": "道路レーンレットに必要な 'location' 属性がないか、'urban' に設定されていません。"
+      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' に設定されていません。"
     }
   },
   "Lane.RoadLaneletAttribute-002": {
@@ -724,7 +724,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
-      "ja": "道路レーンレットに必要な 'one_way' 属性がないか、'yes' に設定されていません。"
+      "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
     }
   }
 }
