@@ -95,7 +95,7 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
   // Issue-004: Lanelet has turn_direction tag but missing intersection_area tag
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
     lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
-    lanelet::Id turn_direction = lanelet.attributeOr("turn_direction", lanelet::InvalId);
+    std::string turn_direction = lanelet.attributeOr("turn_direction", "");
 
     // Issue-004: Check if lanelet has turn_direction but missing intersection_area tag
     if (!turn_direction.empty() && tagged_area_id == lanelet::InvalId) {
