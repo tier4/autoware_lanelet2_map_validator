@@ -97,7 +97,6 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       continue;
     }
 
-
     for (const auto & right_of_way_elem : right_of_way_elems) {
       auto right_of_way_lanelets =
         right_of_way_elem->getParameters<lanelet::ConstLanelet>(lanelet::RoleName::RightOfWay);
