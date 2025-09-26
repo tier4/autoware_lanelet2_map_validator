@@ -7791,11 +7791,13 @@
   <relation id="11060">
     <member type="way" role="left" ref="11057"/>
     <member type="way" role="right" ref="11059"/>
+    <member type="relation" role="regulatory_element" ref="20001"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
+    <tag k="turn_direction" v="straight"/>
     <tag k="intersection_area" v="20067"/>
   </relation>
   <relation id="11103">
@@ -8062,6 +8064,12 @@
     <member type="relation" role="yield" ref="57"/>
     <member type="relation" role="yield" ref="58"/>
     <member type="relation" role="yield" ref="60"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="right_of_way"/>
+  </relation>
+  <relation id="20001">
+    <member type="relation" role="right_of_way" ref="11060"/>
+    <member type="relation" role="yield" ref="11103"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="right_of_way"/>
   </relation>
