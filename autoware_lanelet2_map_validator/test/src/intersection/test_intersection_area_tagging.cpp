@@ -58,7 +58,7 @@ TEST_F(TestIntersectionAreaTaggingValidator, MissingIntersectionAreaTag)  // NOL
   lanelet::autoware::validation::IntersectionAreaTaggingValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues.size(), 2);
 
   const lanelet::Id expected_lanelet_id = 49;
   const lanelet::Id expected_area_id = 10803;
