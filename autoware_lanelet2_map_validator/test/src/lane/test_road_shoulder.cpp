@@ -57,7 +57,7 @@ TEST_F(TestRoadShoulderValidator, NoAdjacentLanelets)  // NOLINT for gtest
   lanelet::autoware::validation::RoadShoulderValidator checker;
   const auto & issues = checker(*map_);
 
-  ASSERT_FALSE(issues.empty());
+  EXPECT_EQ(issues.size(), 1);
   const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 1), 24);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
@@ -71,7 +71,7 @@ TEST_F(TestRoadShoulderValidator, NonRoadAdjacentLanelet)  // NOLINT for gtest
   lanelet::autoware::validation::RoadShoulderValidator checker;
   const auto & issues = checker(*map_);
 
-  ASSERT_FALSE(issues.empty());
+  EXPECT_EQ(issues.size(), 1);
   const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 23);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
@@ -85,7 +85,7 @@ TEST_F(TestRoadShoulderValidator, NoRoadBorderBound)  // NOLINT for gtest
   lanelet::autoware::validation::RoadShoulderValidator checker;
   const auto & issues = checker(*map_);
 
-  ASSERT_FALSE(issues.empty());
+  EXPECT_EQ(issues.size(), 1);
   const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 19);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
