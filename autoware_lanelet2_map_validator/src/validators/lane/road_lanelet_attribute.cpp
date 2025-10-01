@@ -48,7 +48,9 @@ lanelet::validation::Issues RoadLaneletAttributeValidator::check_road_lanelet_at
       continue;
     }
 
-    if (!lanelet.hasAttribute("location") || lanelet.attribute("location").value() != "urban") {
+    if (
+      !lanelet.hasAttribute("location") || (lanelet.attribute("location").value() != "urban" &&
+                                            lanelet.attribute("location").value() != "private")) {
       issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
     }
 

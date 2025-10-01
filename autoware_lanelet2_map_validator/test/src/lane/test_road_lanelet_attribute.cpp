@@ -68,6 +68,7 @@ TEST_F(TestRoadLaneletAttributeValidator, WrongLocationAttributes)  // NOLINT fo
   const auto & issues = checker(*map_);
 
   const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 24);
+  EXPECT_EQ(issues.size(), 1);
 
   const auto difference = compare_an_issue(expected_issue1, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
@@ -81,6 +82,8 @@ TEST_F(TestRoadLaneletAttributeValidator, WrongOneWayAttributes)  // NOLINT for 
   const auto & issues = checker(*map_);
 
   const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 2), 24);
+
+  EXPECT_EQ(issues.size(), 1);
 
   const auto difference = compare_an_issue(expected_issue2, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
