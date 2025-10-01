@@ -79,6 +79,22 @@
       "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
     }
   },
+  "Lane.LaneChangeAttribute-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring of a road type lanelet is missing a lane_change attribute.",
+      "ja": "この road type lanelet の {bound_type} bound linestring に lane_change タグがありません。"
+    }
+  },
+  "Lane.LaneChangeAttribute-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring has an invalid lane_change attribute value '{invalid_value}'. Valid values are 'yes' or 'no'.",
+      "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
+    }
+  },
   "StopLine.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
