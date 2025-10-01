@@ -54,6 +54,55 @@ lanelet::validation::Issues LaneChangeAttributeValidator::check_lane_change_attr
 
   std::unordered_set<Id> checked_bounds;
 
+  auto check_bound = [&](
+                       const lanelet::ConstLineString3d & bound, const std::string & bound_type,
+                       const lanelet::ConstLanelet & current_lanelet) {
+    if (checked_bounds.find(bound.id()) != checked_bounds.end()) {
+      return;
+    }
+
+    checked_bounds.insert(bound.id());
+
+    lanelet::BoundingBox2d bbox = lanelet::geometry::boundingBox2d(bound);
+    lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox);
+
+    bool is_shared = false;
+    for (const auto & nearby : nearby_lanelets) {
+      if (
+        nearby.id() == current_lanelet.id() ||
+        !nearby.hasAttribute(lanelet::AttributeName::Subtype) ||
+        nearby.attribute(lanelet::AttributeName::Subtype).value() !=
+          lanelet::AttributeValueString::Road) {
+        continue;
+      }
+
+      if (bound.id() == nearby.leftBound().id() || bound.id() == nearby.rightBound().id()) {
+        is_shared = true;
+        break;
+      }
+    }
+
+    if (!is_shared) {
+      return;
+    }
+
+    if (!bound.hasAttribute("lane_change")) {
+      std::map<std::string, std::string> bound_type_map;
+      bound_type_map["bound_type"] = bound_type;
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 1), bound.id(), bound_type_map));
+    } else {
+      const std::string lane_change_value = bound.attribute("lane_change").value();
+      if (lane_change_value != "yes" && lane_change_value != "no") {
+        std::map<std::string, std::string> substitution_map;
+        substitution_map["bound_type"] = bound_type;
+        substitution_map["invalid_value"] = lane_change_value;
+        issues.emplace_back(
+          construct_issue_from_code(issue_code(this->name(), 2), bound.id(), substitution_map));
+      }
+    }
+  };
+
   for (const auto & lanelet : map.laneletLayer) {
     if (
       !lanelet.hasAttribute(lanelet::AttributeName::Subtype) ||
@@ -62,55 +111,8 @@ lanelet::validation::Issues LaneChangeAttributeValidator::check_lane_change_attr
       continue;
     }
 
-    auto check_bound = [&](
-                         const lanelet::ConstLineString3d & bound, const std::string & bound_type) {
-      if (checked_bounds.find(bound.id()) != checked_bounds.end()) {
-        return;
-      }
-
-      checked_bounds.insert(bound.id());
-
-      lanelet::BoundingBox2d bbox = lanelet::geometry::boundingBox2d(bound);
-      lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox);
-
-      bool is_shared = false;
-      for (const auto & nearby : nearby_lanelets) {
-        if (
-          nearby.id() == lanelet.id() || !nearby.hasAttribute(lanelet::AttributeName::Subtype) ||
-          nearby.attribute(lanelet::AttributeName::Subtype).value() !=
-            lanelet::AttributeValueString::Road) {
-          continue;
-        }
-
-        if (bound.id() == nearby.leftBound().id() || bound.id() == nearby.rightBound().id()) {
-          is_shared = true;
-          break;
-        }
-      }
-
-      if (!is_shared) {
-        return;
-      }
-
-      if (!bound.hasAttribute("lane_change")) {
-        std::map<std::string, std::string> bound_type_map;
-        bound_type_map["bound_type"] = bound_type;
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 1), bound.id(), bound_type_map));
-      } else {
-        const std::string lane_change_value = bound.attribute("lane_change").value();
-        if (lane_change_value != "yes" && lane_change_value != "no") {
-          std::map<std::string, std::string> substitution_map;
-          substitution_map["bound_type"] = bound_type;
-          substitution_map["invalid_value"] = lane_change_value;
-          issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 2), bound.id(), substitution_map));
-        }
-      }
-    };
-
-    check_bound(lanelet.leftBound(), "left");
-    check_bound(lanelet.rightBound(), "right");
+    check_bound(lanelet.leftBound(), "left", lanelet);
+    check_bound(lanelet.rightBound(), "right", lanelet);
   }
 
   return issues;

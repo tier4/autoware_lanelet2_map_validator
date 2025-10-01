@@ -59,9 +59,11 @@ TEST_F(TestLaneChangeAttributeValidator, MissingLeftLaneChangeAttribute)  // NOL
   const auto & issues = checker(*map_);
 
   std::map<std::string, std::string> bound_type_map;
-  bound_type_map["bound_type"] = "left";
+  bound_type_map["bound_type"] = "maybe";
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 1), 10, bound_type_map);
+
+  EXPECT_EQ(issues.size(), 1);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
@@ -79,6 +81,8 @@ TEST_F(TestLaneChangeAttributeValidator, InvalidLaneChangeValues)  // NOLINT for
   left_bound_map["invalid_value"] = "maybe";
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 2), 10, left_bound_map);
+
+  EXPECT_EQ(issues.size(), 1);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
