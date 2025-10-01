@@ -195,8 +195,8 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area area {intersection_area_id}.",
-      "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area area {intersection_area_id} で一つの lanelet に統合する必要があります。"
+      "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area {intersection_area_id}.",
+      "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area {intersection_area_id} 内で一つの lanelet として統合する必要があります。"
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
