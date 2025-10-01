@@ -59,7 +59,7 @@ TEST_F(TestLaneChangeAttributeValidator, MissingLeftLaneChangeAttribute)  // NOL
   const auto & issues = checker(*map_);
 
   std::map<std::string, std::string> bound_type_map;
-  bound_type_map["bound_type"] = "maybe";
+  bound_type_map["bound_type"] = "left";
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 1), 10, bound_type_map);
 
