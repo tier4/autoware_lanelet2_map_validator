@@ -715,8 +715,8 @@
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban'.",
-      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' に設定されていません。"
+      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban' or 'private'.",
+      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' または 'private' に設定されていません。"
     }
   },
   "Lane.RoadLaneletAttribute-002": {
