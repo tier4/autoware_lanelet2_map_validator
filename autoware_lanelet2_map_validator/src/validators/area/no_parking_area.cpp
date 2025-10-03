@@ -16,8 +16,6 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <range/v3/view/filter.hpp>
-
 #include <lanelet2_core/LaneletMap.h>
 
 #include <algorithm>
@@ -55,16 +53,16 @@ lanelet::validation::Issues NoParkingAreaValidator::check_no_parking_area(
   }
 
   std::set<lanelet::Id> referenced_no_parking_area_polygon_ids;
-  auto road_lanelets = map.laneletLayer | ranges::views::filter([](const auto & ll) {
-                         return ll.hasAttribute(lanelet::AttributeName::Subtype) &&
-                                ll.attribute(lanelet::AttributeName::Subtype) == "road";
-                       });
 
   std::unordered_set<lanelet::Id> regulatory_elements_used_by_road_lanelets;
-  for (const auto & lanelet : road_lanelets) {
-    const auto & regulatory_elements = lanelet.regulatoryElements();
-    for (const auto & lane_reg_elem : regulatory_elements) {
-      regulatory_elements_used_by_road_lanelets.insert(lane_reg_elem->id());
+  for (const auto & lanelet : map.laneletLayer) {
+    if (
+      lanelet.hasAttribute(lanelet::AttributeName::Subtype) &&
+      lanelet.attribute(lanelet::AttributeName::Subtype) == "road") {
+      const auto & regulatory_elements = lanelet.regulatoryElements();
+      for (const auto & lane_reg_elem : regulatory_elements) {
+        regulatory_elements_used_by_road_lanelets.insert(lane_reg_elem->id());
+      }
     }
   }
 
