@@ -718,5 +718,45 @@
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
     }
+  },
+  "Area.DetectionArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Detection area polygon is not being referred to by any regulatory element.",
+      "ja": "検知エリア polygon は regulatory element から参照されていません。"
+    }
+  },
+  "Area.DetectionArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must refer to exactly one detection_area polygon.",
+      "ja": "検知エリアの regulatory element は単一の detection_area polygon のみを参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Polygon referred by detection area regulatory element must have type 'detection_area'.",
+      "ja": "検知エリアの regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
+    }
+  },
+  "Area.DetectionArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must refer to exactly one stop_line type ref_line.",
+      "ja": "検知エリアの regulatory element は単一の stop_line type の ref_line のみを参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must be referred by at least one road subtype lanelet.",
+      "ja": "検知エリアの regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
+    }
   }
 }
