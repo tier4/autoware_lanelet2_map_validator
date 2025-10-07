@@ -2,6 +2,72 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.5.2 (2025-09-29)
+------------------
+* fix(intersection): add validation for lanelets with turn_direction tag to require intersection_area tag (`#102 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/102>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* Contributors: Giovanni Muhammad Raditya
+
+1.5.1 (2025-09-25)
+------------------
+* fix: add autoware_lanelet2_extension_python as dependency (`#100 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/100>`_)
+* Contributors: Taiki Yamada
+
+1.5.0 (2025-09-24)
+------------------
+* Merge pull request `#86 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/86>`_ from tier4/feat/v1.5.0/the_grand_finale
+  feat: merge the remaining stuff needed for v1.5.0
+* feat(right_of_way): see polygon overlap to ignore lanelets that only conflict a bit to right_of_way validation (`#92 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/92>`_)
+* docs: update documents (`#91 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/91>`_)
+* chore: revise issues info (`#90 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/90>`_)
+* fix: ignore crosswalks for some validators (`#89 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/89>`_)
+* feat: quit using boost::geometry::covered_by and see the coverage ratio instead (`#88 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/88>`_)
+* feat: remove issue-002 from buffer_zone_validity (`#87 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/87>`_)
+* feat(area): added validation for buffer zone overlap with road or road shoulder (`#83 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/83>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat: validate right of way without traffic lights (`#85 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/85>`_)
+  Co-authored-by: mraditya01 <mraditya01@yahoo.com>
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat: validate right of way with traffic lights (`#84 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/84>`_)
+  Co-authored-by: mraditya01 <mraditya01@yahoo.com>
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* chore: add vm-01-21 to all map requirements (`#81 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/81>`_)
+* chore: add recently made validators to map requirements (`#80 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/80>`_)
+* chore: remove unnecessary prerequisites from map requirements (`#79 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/79>`_)
+* feat(intersection): added validator for right of way with virtual traffic light (vm-03-17)  (`#74 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/74>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat(area): added validator for buffer zone area (vm-06-06) (`#77 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/77>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat(intersection): intersection area tagging configuration (VM-03-01) (`#78 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/78>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat(stop_line): added validator for traffic sign regulatory details (vm-02-02) (`#71 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/71>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
+* feat(lane): added validator for lateral connection lanelet subtypes (vm-01-20) (`#73 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/73>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
+* feat(area): added validator for bus_stop_area (vm-06-06) (`#72 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/72>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* feat(intersection): added validator for Lanelet's turn direction and virtual (vm-03-02) (`#70 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/70>`_)
+* feat: add GUI for autoware_lanelet2_map_validator (`#66 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/66>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
+* feat: check turn signal distance overlap (`#67 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/67>`_)
+  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+* docs: add information about issues_info to how_to_contribute.md (`#64 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/64>`_)
+* docs: remove the update version section from the how_to_contribute.md (`#63 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/63>`_)
+* feat: enable stand alone execution by removing dependency on ament_index_cpp (`#62 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/62>`_)
+* fix: do not count wrong polygon orientation as an issue (`#61 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/61>`_)
+* feat: check whether the custom centerline is sticking out the lanelet (`#60 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/60>`_)
+* feat: validate overlaps between paths of virtual_traffic_lights (`#53 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/53>`_)
+  Co-authored-by: Mamoru Sobue <hilo.soblin@gmail.com>
+* fix: remove debug line for `#58 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/58>`_ (`#59 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/59>`_)
+* ci: quit using autoware:latest-prebuilt (`#58 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/58>`_)
+* feat: make validators adaptable to different refers type of virtual traffic lights (`#57 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/57>`_)
+* refactor: add docstring, comment and disambiguate std::string/ValidatorName (`#47 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/47>`_)
+  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
+* Contributors: Giovanni Muhammad Raditya, Mamoru Sobue, Taiki Yamada
+
 1.4.1 (2025-06-04)
 ------------------
 * fix: fix english message in Crosswalk.RegulatoryElementDetails-003 (`#54 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/54>`_)

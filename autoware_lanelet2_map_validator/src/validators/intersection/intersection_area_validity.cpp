@@ -26,6 +26,8 @@
 #include <map>
 #include <string>
 
+namespace bg = boost::geometry;
+
 namespace lanelet::autoware::validation
 {
 namespace
@@ -57,11 +59,11 @@ lanelet::validation::Issues IntersectionAreaValidityValidator::check_intersectio
 
     lanelet::BasicPolygon2d basic_polygon2d = lanelet::traits::to2D(polygon3d.basicPolygon());
 
-    std::string reason;
-    bool polygon_is_valid = boost::geometry::is_valid(basic_polygon2d, reason);
-    if (!polygon_is_valid) {
+    bg::validity_failure_type failure_type;
+    bool polygon_is_valid = bg::is_valid(basic_polygon2d, failure_type);
+    if (!polygon_is_valid && failure_type != bg::validity_failure_type::failure_wrong_orientation) {
       std::map<std::string, std::string> reason_map;
-      reason_map["boost_geometry_message"] = reason;
+      reason_map["boost_geometry_message"] = bg::validity_failure_type_message(failure_type);
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 1), polygon3d.id(), reason_map));
     }

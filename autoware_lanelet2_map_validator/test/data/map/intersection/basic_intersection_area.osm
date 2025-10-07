@@ -2696,6 +2696,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="straight"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="50">
     <member type="way" role="left" ref="199"/>
@@ -2706,6 +2707,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="right"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="51">
     <member type="way" role="left" ref="201"/>
@@ -2716,6 +2718,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="52">
     <member type="way" role="left" ref="203"/>
@@ -2726,6 +2729,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="straight"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="53">
     <member type="way" role="left" ref="205"/>
@@ -2736,6 +2740,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="54">
     <member type="way" role="left" ref="207"/>
@@ -2746,6 +2751,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="right"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="55">
     <member type="way" role="left" ref="209"/>
@@ -2756,6 +2762,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="straight"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="56">
     <member type="way" role="left" ref="211"/>
@@ -2766,6 +2773,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="right"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="57">
     <member type="way" role="left" ref="213"/>
@@ -2776,6 +2784,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="58">
     <member type="way" role="left" ref="215"/>
@@ -2786,6 +2795,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="straight"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="59">
     <member type="way" role="left" ref="217"/>
@@ -2796,6 +2806,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="left"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="60">
     <member type="way" role="left" ref="219"/>
@@ -2806,6 +2817,7 @@
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="turn_direction" v="right"/>
+    <tag k="intersection_area" v="10803"/>
   </relation>
   <relation id="112">
     <member type="way" role="left" ref="35"/>

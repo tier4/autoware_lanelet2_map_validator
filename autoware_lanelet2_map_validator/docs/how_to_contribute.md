@@ -76,7 +76,22 @@ This section is aimed at contributors who want to add their own validators. If y
 
 Contributors are encouraged to make their validators by following the class structure shown in [`validator_template.cpp`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/validator_template.cpp) and [`validator_template.hpp`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/validator_template.hpp).
 
-#### `create_new_validator.py` may be useful
+Note that the main thing to do for a validator is to output a `lanelet::validation::Issues (a.k.a std::vector<lanelet::validation::Issue>)` object, and the details of the issue is defined in [`issues_info.json`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/config/issues_info.json). The title of a each JSON block is an _issue_code_ which is written in a rule like "Category.ValidatorNameInCamelCase-XXX". For the issue message, an English issue message is mandatory. You can also represent substitutions by using the brackets `{}` like the example below but do not forget to write the substitution in your implementation.
+
+```json
+"Intersection.IntersectionAreaValidity-001": {
+  "severity": "Error",
+  "primitive": "polygon",
+  "message": {
+    "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
+    "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
+  }
+}
+```
+
+The following `1-a` to `1-d` are tips that might help you.
+
+#### 1-a. `create_new_validator.py` may be useful
 
 You can use the script [`create_new_validator.py`](https://github.com/tier4/autoware_lanelet2_map_validator/blob/main/autoware_lanelet2_map_validator/template/create_new_validator.py) to generate the required files below.
 
@@ -114,20 +129,20 @@ All arguments are required.
 - `--category_name`: The category (like lanelet, traffic_light...) where your validator belongs to. Look [Design Concept](#design-concept) to see the list of categories.
 - `--code_name`: The name for the files. The source code names will be like `<code_name>.cpp` and `<code_name.hpp>`
 - `--class_name`: The base class name of your validator which will be defined in your new header file.
-- `--validator_name`: The name of the validator which will be displayed when `autoware_lanelet2_map_validator` is executed with a `--print` option. The naming rules are explained in [Restrictions for validator class implementation](#restrictions-for-validator-class-implementation).
+- `--validator_name`: The name of the validator which will be displayed when `autoware_lanelet2_map_validator` is executed with a `--print` option. The naming rules are explained in [Restrictions for validator class implementation](#1-c-restrictions-for-validator-class-implementation).
 - `--check_function_name`: The main function name of your validator which will be defined in your header file, and its implementation will be written in the cpp source file.
 
 It may be quicker to recognize what this script do by trying the command out.
 If you feel typing these arguments exhausting, you can overwrite the `default` value in the python script, but do not forget not to commit those changes.
 
-#### Restrictions for path structure
+#### 1-b. Restrictions for path structure
 
 - The source file (`.cpp`) must belong to `src/validators/\<CATEGORY\>/`
 - Avoid source file names that are the same as those in other categories.
 - The header file (`.hpp`) must belong to `src/include/lanelet2_map_validator/validators/\<CATEGORY\>/`
 - Currently, there are no naming rules for source and header files, but the pair of source and header files should have the same name.
 
-#### Restrictions for validator class implementation
+#### 1-c. Restrictions for validator class implementation
 
 - Define the name of the validator in the header file (`.hpp` file).
   - The name must follow the structure `aaa.bbb.ccc`
@@ -136,10 +151,7 @@ If you feel typing these arguments exhausting, you can overwrite the `default` v
     - The third part can be anything, as long as it is not hard to recognize the validator's feature.
   - The issue code of the validator will be generated from this name. It removes the first part of the name, converts it to upper camel case, and adds a number for classification. (e. g. `Bbb.Ccc-001`)
 - Write your implementation in the `operator()` function that outputs an [Issues (a.k.a vector\<Issue\>) object](https://github.com/fzi-forschungszentrum-informatik/Lanelet2/blob/master/lanelet2_validation/include/lanelet2_validation/Issue.h). Not all of the implementation has to be written in the operator; you can privately define and use functions in your validator class.
-- Since `autoware_lanelet2_map_validator` outputs issue codes, please add an issue code prefix with square brackets on top of your issue message.
-  - You may use the `append_issue_code_prefix` function to generate the issue code prefix.
-  - Even if the validator only detects a single type of issue, please include the number `001` to your issue code.
-  - The issue code must correspond to the issue message one-to-one.
+- You can use the `construct_issue_from_code` function to generate the Issue object from the `issues_info.json`. The first argument is the issue code which can be done by `issue_code(this->name(), n)`, the second argument is the ID of the primitive, and the third argument (optional) is a string-to-string map if your issue message requires it.
 - Currently, there are no rules to decide the severity of the issue. If you're not confident about your severity decisions please discuss them with your PR reviewers.
 - Other coding rules are mentioned in the [Autoware Documentation](https://autowarefoundation.github.io/autoware-documentation/main/contributing/). However, this coding rule doesn't hold if it conflicts with the Lanelet2 library.
 
@@ -210,16 +222,6 @@ The document must explain the following.
 
 In addition, add a link of the document to the table [Relationship between requirements and validators](https://github.com/tier4/autoware_lanelet2_map_validator/tree/main/map/autoware_lanelet2_map_validator#relationship-between-requirements-and-validators) in the main `README.md` to let the users know which map requirement your validator relates with.
 
-### 5. Increase version
-
-Contributors must increase the version of `autoware_lanelet2_map_validator`.
-See [Version Control](#version-control) for further information about how versioning is managed.
-Note that contributors should increase the version in `package.xml` and do **NOT** edit the one in `autoware_requirement_set.json` unless the map requirements in Autoware documentation got its version changed.
-Besides, contributors should update the `CHANGELOG.rst`. The following information should be included.
-
-- What kind of updates happened.
-- The according pull request which is the one you will soon create. Therefore you will need to update the `CHANGELOG.rst` after opening the pull request.
-
-### 6. Submit a pull request
+### 5. Submit a pull request
 
 Submit a pull request to the [tier4/autoware_lanelet2_map_validator](https://github.com/tier4/autoware_lanelet2_map_validator) repository.
