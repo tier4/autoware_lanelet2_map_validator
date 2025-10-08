@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm generator="VMB">
+  <MetaInfo format_version="1" map_version="2"/>
+  <node id="8" lat="35.90312398544" lon="139.93324675646">
+    <tag k="local_x" v="3736.8634"/>
+    <tag k="local_y" v="73729.1154"/>
+    <tag k="ele" v="19.3488"/>
+  </node>
+  <node id="9" lat="35.90313706429" lon="139.93327698894">
+    <tag k="local_x" v="3739.6075"/>
+    <tag k="local_y" v="73730.5363"/>
+    <tag k="ele" v="19.3413"/>
+  </node>
+  <node id="11" lat="35.90314993972" lon="139.93330675322">
+    <tag k="local_x" v="3742.3091"/>
+    <tag k="local_y" v="73731.9351"/>
+    <tag k="ele" v="19.3397"/>
+  </node>
+  <node id="16" lat="35.90310010653" lon="139.93326236239">
+    <tag k="local_x" v="3738.2428"/>
+    <tag k="local_y" v="73726.4514"/>
+    <tag k="ele" v="19.3488"/>
+  </node>
+  <node id="17" lat="35.90311318447" lon="139.93329259488">
+    <tag k="local_x" v="3740.9869"/>
+    <tag k="local_y" v="73727.8722"/>
+    <tag k="ele" v="19.3413"/>
+  </node>
+  <node id="19" lat="35.9031260608" lon="139.93332235914">
+    <tag k="local_x" v="3743.6885"/>
+    <tag k="local_y" v="73729.2709"/>
+    <tag k="ele" v="19.3397"/>
+  </node>
+  <way id="10">
+    <nd ref="8"/>
+    <nd ref="9"/>
+    <nd ref="11"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="18">
+    <nd ref="16"/>
+    <nd ref="17"/>
+    <nd ref="19"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <relation id="24">
+    <member type="way" role="left" ref="10"/>
+    <member type="way" role="right" ref="18"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="10"/>
+    <tag k="location" v="rural"/>
+    <tag k="one_way" v="yes"/>
+  </relation>
+</osm>
