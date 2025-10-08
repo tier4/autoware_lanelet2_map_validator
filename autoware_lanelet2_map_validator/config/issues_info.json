@@ -734,5 +734,29 @@
       "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
       "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
     }
+  },
+  "Lane.RoadShoulder-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder lanelet has no adjacent lanelets.",
+      "ja": "路肩レーンには隣接するレーンが存在しません。"
+    }
+  },
+  "Lane.RoadShoulder-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulders must be adjacent to at least one road subtype lanelet.",
+      "ja": "road_shoulder Lanelet は少なくとも一つの road subtype の Lanelet と隣接しなければいけません。"
+    }
+  },
+  "Lane.RoadShoulder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The empty side of the lanelet bound must be a road_border type linestring.",
+      "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
+    }
   }
 }
