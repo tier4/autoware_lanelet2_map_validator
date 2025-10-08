@@ -58,19 +58,28 @@ TEST_F(TestIntersectionAreaTaggingValidator, MissingIntersectionAreaTag)  // NOL
   lanelet::autoware::validation::IntersectionAreaTaggingValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_EQ(issues.size(), 1);
+  EXPECT_EQ(issues.size(), 2);
 
   const lanelet::Id expected_lanelet_id = 49;
   const lanelet::Id expected_area_id = 10803;
 
   std::map<std::string, std::string> area_id_map;
   area_id_map["area_id"] = std::to_string(expected_area_id);
-  const auto expected_issue =
+  const auto expected_issue1 =
     construct_issue_from_code(issue_code(test_target_, 1), expected_lanelet_id, area_id_map);
+  std::map<std::string, std::string> turn_direction_map;
+  turn_direction_map["turn_direction"] = "straight";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 4), expected_lanelet_id, turn_direction_map);
 
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
+  lanelet::validation::Issues expected_issues;
+  expected_issues.push_back(expected_issue1);
+  expected_issues.push_back(expected_issue2);
+
+  const auto differences = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(differences.empty()) << differences;
   EXPECT_EQ(issues[0].id, expected_lanelet_id);
+  EXPECT_EQ(issues[1].id, expected_lanelet_id);
 }
 
 TEST_F(TestIntersectionAreaTaggingValidator, IncorrectIntersectionAreaTag)  // NOLINT for gtest

@@ -183,6 +183,14 @@
       "ja": "この lanelet は intersection_area タグに {area_id} が設定されていますが、その intersection area に完全にカバーされていません。"
     }
   },
+  "Intersection.IntersectionAreaTagging-004": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet has turn_direction tag '{turn_direction}' but is missing intersection_area tag.",
+      "ja": "この lanelet は turn_direction タグに '{turn_direction}' が設定されていますが、intersection_area タグがありません。"
+    }
+  },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -709,6 +717,22 @@
     "message": {
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban' or 'private'.",
+      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' または 'private' に設定されていません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
+      "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
     }
   }
 }
