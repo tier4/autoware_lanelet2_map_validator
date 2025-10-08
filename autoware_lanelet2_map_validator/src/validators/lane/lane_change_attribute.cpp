@@ -25,6 +25,7 @@
 #include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_core/primitives/Polygon.h>
+#include <lanelet2_routing/RoutingGraph.h>
 
 #include <map>
 #include <string>
@@ -52,6 +53,13 @@ lanelet::validation::Issues LaneChangeAttributeValidator::check_lane_change_attr
 {
   lanelet::validation::Issues issues;
 
+  // Create routing graph for checking lanelet adjacency and direction
+  lanelet::traffic_rules::TrafficRulesPtr traffic_rules =
+    lanelet::traffic_rules::TrafficRulesFactory::create(
+      lanelet::Locations::Germany, lanelet::Participants::Vehicle);
+  lanelet::routing::RoutingGraphPtr routing_graph =
+    lanelet::routing::RoutingGraph::build(map, *traffic_rules);
+
   std::unordered_set<Id> checked_bounds;
 
   auto check_bound = [&](
@@ -63,8 +71,7 @@ lanelet::validation::Issues LaneChangeAttributeValidator::check_lane_change_attr
 
     checked_bounds.insert(bound.id());
 
-    lanelet::BoundingBox2d bbox = lanelet::geometry::boundingBox2d(bound);
-    lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox);
+    const auto nearby_lanelets = map.laneletLayer.findUsages(bound);
 
     bool is_shared = false;
     for (const auto & nearby : nearby_lanelets) {
@@ -75,8 +82,9 @@ lanelet::validation::Issues LaneChangeAttributeValidator::check_lane_change_attr
           lanelet::AttributeValueString::Road) {
         continue;
       }
-
-      if (bound.id() == nearby.leftBound().id() || bound.id() == nearby.rightBound().id()) {
+      if (
+        (bound_type == "left" && bound == nearby.rightBound()) ||
+        (bound_type == "right" && bound == nearby.leftBound())) {
         is_shared = true;
         break;
       }
