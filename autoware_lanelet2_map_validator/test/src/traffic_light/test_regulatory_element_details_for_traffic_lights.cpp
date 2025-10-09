@@ -211,3 +211,19 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, SampleMap)  // NOLINT for g
 
   EXPECT_EQ(issues.size(), 0);
 }
+
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficLights, BoundingBoxExceedsThreshold)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/traffic_light_out_of_bound.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 8), 1025);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}

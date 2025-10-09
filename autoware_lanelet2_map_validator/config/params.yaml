@@ -4,6 +4,8 @@ mapping.lane.centerline_geometry:
   height_threshold: 0.1
 mapping.lane.border_sharing:
   iou_threshold: 0.05
+mapping.traffic_light.regulatory_element_details:
+  max_bounding_box_size: 20.0
 mapping.intersection.regulatory_element_details_for_virtual_traffic_lights:
   supported_refers_type: [intersection_coordination]
 mapping.intersection.virtual_traffic_light_line_order:
