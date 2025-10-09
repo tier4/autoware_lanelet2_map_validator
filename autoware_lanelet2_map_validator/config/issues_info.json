@@ -679,6 +679,14 @@
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
   },
+  "Crosswalk.RegulatoryElementDetails-012": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This crosswalk regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この crosswalk regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
+    }
+  },
   "Lane.LateralSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",

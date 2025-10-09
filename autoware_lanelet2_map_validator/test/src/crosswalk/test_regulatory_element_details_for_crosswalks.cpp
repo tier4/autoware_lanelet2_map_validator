@@ -161,6 +161,21 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongParticipantPedestrian)  
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
+TEST_F(TestRegulatoryElementsDetailsForCrosswalks, BoundingBoxExceedsThreshold)  // NOLINT for gtest
+{
+  load_target_map("crosswalk/crosswalk_out_of_bound.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
+  const auto & issues = checker(*map_);
+
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 12), 31);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
 TEST_F(TestRegulatoryElementsDetailsForCrosswalks, CorrectDetails)  // NOLINT for gtest
 {
   load_target_map("crosswalk/crosswalk_with_regulatory_element.osm");
