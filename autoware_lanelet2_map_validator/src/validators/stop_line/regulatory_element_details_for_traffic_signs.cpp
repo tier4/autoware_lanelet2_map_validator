@@ -19,8 +19,11 @@
 #include <range/v3/view/filter.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
+#include <lanelet2_core/geometry/LineString.h>
 
 #include <algorithm>
+#include <cmath>
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -45,6 +48,9 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
   check_regulatory_element_details_for_traffic_signs(const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
+
+  const auto max_bounding_box_size =
+    get_param_value<double>(this->name(), "max_bounding_box_size", 20.0);
 
   auto traffic_sign_elements =
     map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
@@ -91,6 +97,26 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
         // Issue-004: RefLine linestring does not have stop_line subtype
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), ref_line.id()));
       }
+    }
+
+    lanelet::BoundingBox2d bbox2d;
+
+    for (const auto & refer : refers) {
+      bbox2d.extend(lanelet::geometry::boundingBox2d(refer));
+    }
+
+    for (const auto & ref_line : ref_lines) {
+      bbox2d.extend(lanelet::geometry::boundingBox2d(ref_line));
+    }
+
+    double dx = bbox2d.max().x() - bbox2d.min().x();
+    double dy = bbox2d.max().y() - bbox2d.min().y();
+    double bounding_box_size = std::sqrt(dx * dx + dy * dy);
+
+    if (bounding_box_size > max_bounding_box_size) {
+      // Issue-005: Traffic sign regulatory element bounding box exceeds threshold
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 5), regulatory_element->id()));
     }
   }
 
