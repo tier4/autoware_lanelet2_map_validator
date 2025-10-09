@@ -8,7 +8,7 @@ mapping.crosswalk.regulatory_element_details
 
 This validator checks whether the details in the `crosswalk` subtype regulatory elements are valid.
 Required information for a crosswalk is written in the [Autoware documentation](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_crosswalk/#vm-05-01-crosswalks-across-the-road).
-This validator checks eight types of issues.
+This validator checks nine types of issues.
 
 The output issue marks "lanelet", "linestring" or "regulatory_element" as the **primitive**, and the regulatory element ID is written together as **ID**.
 
@@ -22,6 +22,7 @@ The output issue marks "lanelet", "linestring" or "regulatory_element" as the **
 | Crosswalk.RegulatoryElementDetails-007 | "ref_line of crosswalk regulatory element must have type of stopline."             | Error    | linestring         | There is a `crosswalk` subtype regulatory element whose `ref_line` is not a `stop_line` type linestring.          | Check that the `ref_line` is a `stop_line` type linestring                                                                      |
 | Crosswalk.RegulatoryElementDetails-010 | "Attribute participant:pedestrian not found from refers."                          | Error    | lanelet            | The `refers` lanelet (crosswalk lanelet) doesn't have an attribute `participant:pedestrian`.                      | Add the attribute `participant:pedestrian` to the lanelet and set the value to `yes` or `true`.                                 |
 | Crosswalk.RegulatoryElementDetails-011 | "Attribute participant:pedestrian of refers is not set to "yes" or "true"."        | Error    | lanelet            | The attribute `participant:pedestrian` of the `refers` lanelet (crosswalk lanelet) is not set to `yes` or `true`. | Set the attribute `participant:pedestrian` of the crosswalk lanelet to `yes` or `true`.                                         |
+| Crosswalk.RegulatoryElementDetails-012 | "This crosswalk regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives." | Warning  | regulatory element | The bounding box of all primitives in the regulatory element exceeds the configured threshold, indicating possible unrelated primitives. | Review the regulatory element to ensure all referenced primitives (refers, ref_lines, crosswalk_polygons) are actually related to this crosswalk. Remove any unrelated primitives. |
 
 ## Related source codes
 
