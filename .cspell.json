@@ -1,3 +1,4 @@
 {
-  "words": ["gsub", "githubcli", "pinentry"]
+  "words": ["gsub", "githubcli", "pinentry"],
+  "ignorePaths": ["docker/Dockerfile"]
 }
