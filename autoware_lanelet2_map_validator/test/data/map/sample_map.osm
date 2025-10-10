@@ -6527,14 +6527,14 @@
     <nd ref="10277"/>
     <nd ref="10284"/>
     <nd ref="10286"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
   <way id="10289">
     <nd ref="10286"/>
     <nd ref="10288"/>
     <nd ref="10290"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
   <way id="10293">
@@ -6543,7 +6543,7 @@
     <nd ref="10294"/>
     <nd ref="10295"/>
     <nd ref="10296"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
   <way id="10298">
@@ -6552,7 +6552,7 @@
     <nd ref="10299"/>
     <nd ref="10300"/>
     <nd ref="10301"/>
-    <tag k="type" v="line_thin"/>
+    <tag k="type" v="road_border"/>
     <tag k="subtype" v="solid"/>
   </way>
   <way id="10312">
