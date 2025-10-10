@@ -148,6 +148,8 @@ def run_lanelet2_validator(
     if validator_filter:
         cmd += ["-v", validator_filter]
 
+    print(f"Debug: Running command: {' '.join(cmd)}")
+
     result = subprocess.run(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False
     )
