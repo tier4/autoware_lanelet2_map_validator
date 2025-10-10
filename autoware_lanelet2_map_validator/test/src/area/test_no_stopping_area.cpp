@@ -139,6 +139,23 @@ TEST_F(TestNoStoppingAreaValidator, NoStoppingAreaWithInvalidPolygonRefer)  // N
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
+TEST_F(TestNoStoppingAreaValidator, NoStoppingAreaWithDifferentRoadRef)  // NOLINT for gtest
+{
+  load_target_map("area/no_stopping_area_with_different_road_ref.osm");
+
+  lanelet::autoware::validation::NoStoppingAreaValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const lanelet::Id expected_reg_elem_id = 4050;
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 7), expected_reg_elem_id);
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+  EXPECT_EQ(issues[0].id, expected_reg_elem_id);
+}
+
 TEST_F(TestNoStoppingAreaValidator, SampleMap)  // NOLINT for gtest
 {
   load_target_map("sample_map.osm");
