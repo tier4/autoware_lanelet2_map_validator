@@ -79,6 +79,22 @@
       "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
     }
   },
+  "Lane.LaneChangeAttribute-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring of a road type lanelet is missing a lane_change attribute.",
+      "ja": "この road type lanelet の {bound_type} bound linestring に lane_change タグがありません。"
+    }
+  },
+  "Lane.LaneChangeAttribute-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring has an invalid lane_change attribute value '{invalid_value}'. Valid values are 'yes' or 'no'.",
+      "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
+    }
+  },
   "StopLine.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -181,6 +197,22 @@
     "message": {
       "en": "This lanelet has intersection_area tag {area_id} but is not completely covered by that intersection area.",
       "ja": "この lanelet は intersection_area タグに {area_id} が設定されていますが、その intersection area に完全にカバーされていません。"
+    }
+  },
+  "Intersection.IntersectionAreaTagging-004": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet has turn_direction tag '{turn_direction}' but is missing intersection_area tag.",
+      "ja": "この lanelet は turn_direction タグに '{turn_direction}' が設定されていますが、intersection_area タグがありません。"
+    }
+  },
+  "Intersection.LaneletDivision-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area {intersection_area_id}.",
+      "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area {intersection_area_id} 内で一つの lanelet として統合する必要があります。"
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
@@ -575,6 +607,22 @@
       "ja": "light bulb に設定できる arrow は up, right, left, up_right, up_left のいずれかです。"
     }
   },
+  "TrafficLight.BodyHeight-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This traffic_light linestring is missing required 'height' attribute.",
+      "ja": "traffic_light linestring に 'height' タグがありません。"
+    }
+  },
+  "TrafficLight.BodyHeight-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "Traffic light height value ({actual_height}) is outside the valid range defined by the parameter file (min: {min_height}, max: {max_height}).",
+      "ja": "traffic_light の高さの値 ({actual_height}) がパラメータファイルで設定された有効範囲の外です (最小: {min_height}, 最大: {max_height})。"
+    }
+  },
   "Crosswalk.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "lanelet",
@@ -709,6 +757,46 @@
     "message": {
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}).",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban' or 'private'.",
+      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' または 'private' に設定されていません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
+      "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
+    }
+  },
+  "Lane.RoadShoulder-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder lanelet has no adjacent lanelets.",
+      "ja": "路肩レーンには隣接するレーンが存在しません。"
+    }
+  },
+  "Lane.RoadShoulder-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulders must be adjacent to at least one road subtype lanelet.",
+      "ja": "road_shoulder Lanelet は少なくとも一つの road subtype の Lanelet と隣接しなければいけません。"
+    }
+  },
+  "Lane.RoadShoulder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The empty side of the lanelet bound must be a road_border type linestring.",
+      "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
     }
   }
 }

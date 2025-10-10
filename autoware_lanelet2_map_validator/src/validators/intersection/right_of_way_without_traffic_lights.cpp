@@ -71,6 +71,21 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       continue;
     }
 
+    // track intersections for Issue-005
+    lanelet::Id intersection_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
+    if (intersection_area_id != lanelet::InvalId) {
+      if (
+        intersection_has_right_of_way.find(intersection_area_id) ==
+        intersection_has_right_of_way.end()) {
+        intersection_has_right_of_way[intersection_area_id] = false;
+      }
+    }
+
+    const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
+    if (intersection_area_id != lanelet::InvalId && !right_of_way_elems.empty()) {
+      intersection_has_right_of_way[intersection_area_id] = true;
+    }
+
     auto traffic_light_elems = lanelet.regulatoryElementsAs<lanelet::TrafficLight>();
     if (!traffic_light_elems.empty()) {
       continue;
@@ -80,20 +95,6 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
       lanelet.regulatoryElementsAs<lanelet::autoware::VirtualTrafficLight>();
     if (!virtual_traffic_light_elems.empty()) {
       continue;
-    }
-
-    const auto right_of_way_elems = lanelet.regulatoryElementsAs<lanelet::RightOfWay>();
-    // track intersections for Issue-005
-    lanelet::Id intersection_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
-    if (intersection_area_id != lanelet::InvalId) {
-      if (
-        intersection_has_right_of_way.find(intersection_area_id) ==
-        intersection_has_right_of_way.end()) {
-        intersection_has_right_of_way[intersection_area_id] = false;
-      }
-      if (!right_of_way_elems.empty()) {
-        intersection_has_right_of_way[intersection_area_id] = true;
-      }
     }
 
     for (const auto & right_of_way_elem : right_of_way_elems) {
