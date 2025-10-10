@@ -207,6 +207,14 @@
       "ja": "この lanelet は turn_direction タグに '{turn_direction}' が設定されていますが、intersection_area タグがありません。"
     }
   },
+  "Intersection.LaneletDivision-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area {intersection_area_id}.",
+      "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area {intersection_area_id} 内で一つの lanelet として統合する必要があります。"
+    }
+  },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
     "severity": "Error",
     "primitive": "linestring",
