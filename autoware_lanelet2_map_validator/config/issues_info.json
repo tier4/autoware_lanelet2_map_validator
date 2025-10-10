@@ -798,5 +798,37 @@
       "en": "The empty side of the lanelet bound must be a road_border type linestring.",
       "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
     }
+  },
+  "Area.NoParkingArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This no_parking_area polygon is not referred by any regulatory element.",
+      "ja": "この no_parking_area ポリゴンはどの regulatory element からも参照されていません。"
+    }
+  },
+  "Area.NoParkingArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element should refer to exactly one no_parking_area polygon.",
+      "ja": "regulatory element は正確に1つの no_parking_area ポリゴンを参照する必要があります。"
+    }
+  },
+  "Area.NoParkingArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The referred polygon should be a no_parking_area type.",
+      "ja": "参照されるポリゴンは no_parking_area タイプである必要があります。"
+    }
+  },
+  "Area.NoParkingArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element is not referred by any road subtype lanelet.",
+      "ja": "この regulatory element はどの road サブタイプの lanelet からも参照されていません。"
+    }
   }
 }
