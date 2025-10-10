@@ -587,16 +587,16 @@
     "severity": "Error",
     "primitive": "linestring",
     "message": {
-      "en": "Traffic light linestring is missing required 'height' attribute.",
-      "ja": "交通信号の linestring に必須の 'height' 属性がありません。"
+      "en": "This traffic_light linestring is missing required 'height' attribute.",
+      "ja": "traffic_light linestring に 'height' タグがありません。"
     }
   },
   "TrafficLight.BodyHeight-002": {
     "severity": "Error",
     "primitive": "linestring",
     "message": {
-      "en": "Traffic light height value ({actual_height}) is outside the valid range (min: {min_height}, max: {max_height}).",
-      "ja": "交通信号の高さの値 ({actual_height}) が有効な範囲外です (最小: {min_height}, 最大: {max_height})。"
+      "en": "Traffic light height value ({actual_height}) is outside the valid range defined by the parameter file (min: {min_height}, max: {max_height}).",
+      "ja": "traffic_light の高さの値 ({actual_height}) がパラメータファイルで設定された有効範囲の外です (最小: {min_height}, 最大: {max_height})。"
     }
   },
   "Crosswalk.MissingRegulatoryElements-001": {
