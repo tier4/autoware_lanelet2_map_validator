@@ -719,6 +719,14 @@
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
   },
+  "Crosswalk.RegulatoryElementDetails-012": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The lanelet (subtype:road) referred by this crosswalk regulatory element does not intersect with the crosswalk lanelet (ID: {crosswalk_id}). Road lanelet ID: {road_lanelet_id}.",
+      "ja": "この crosswalk regulatory element が参照している lanelet (subtype:road) が crosswalk lanelet (ID: {crosswalk_id}) と交差していません。Road lanelet ID: {road_lanelet_id}。"
+    }
+  },
   "Lane.LateralSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",
