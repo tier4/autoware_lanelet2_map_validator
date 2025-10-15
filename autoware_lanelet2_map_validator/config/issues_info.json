@@ -798,5 +798,21 @@
       "en": "The empty side of the lanelet bound must be a road_border type linestring.",
       "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
     }
+  },
+  "Lane.WalkwayIntersection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet should only exist when intersecting with road lanelets. No conflicts found with any road lanelets.",
+      "ja": "walkway lanelet は road lanelet と交差する場合にのみ存在すべきです。いかなる road lanelet との競合も見つかりません。"
+    }
+  },
+  "Lane.WalkwayIntersection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road lanelet {road_lanelet_id}. Current extension: {extension} meters.",
+      "ja": "walkway lanelet は road lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長: {extension} メートル。"
+    }
   }
 }
