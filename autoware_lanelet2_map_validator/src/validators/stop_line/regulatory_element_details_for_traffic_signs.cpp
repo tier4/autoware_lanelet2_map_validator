@@ -49,9 +49,6 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
 {
   lanelet::validation::Issues issues;
 
-  const auto max_bounding_box_size =
-    get_param_value<double>(this->name(), "max_bounding_box_size", 20.0);
-
   auto traffic_sign_elements =
     map.regulatoryElementLayer | ranges::views::filter([](auto && elem) {
       return elem->hasAttribute(lanelet::AttributeName::Subtype) &&
@@ -111,7 +108,7 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
 
     double dx = bbox2d.max().x() - bbox2d.min().x();
     double dy = bbox2d.max().y() - bbox2d.min().y();
-    double bounding_box_size = std::sqrt(dx * dx + dy * dy);
+    double bounding_box_size = std::hypot(dx, dy);
 
     if (bounding_box_size > max_bounding_box_size) {
       // Issue-005: Traffic sign regulatory element bounding box exceeds threshold
