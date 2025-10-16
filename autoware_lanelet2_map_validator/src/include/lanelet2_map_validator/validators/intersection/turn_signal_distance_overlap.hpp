@@ -50,6 +50,7 @@ private:
     const ConstLanelet & intersection_lane,
     const lanelet::routing::RoutingGraphPtr & routing_graph_ptr, double distance_threshold);
   std::string set_to_string(std::unordered_set<lanelet::Id> & id_set);
+  double calc_lanelet_length(const lanelet::ConstLanelet & lane);
 
   inline constexpr static const char turn_direction_tag_[] = "turn_direction";
   inline constexpr static const char turn_signal_distance_tag_[] = "turn_signal_distance";
