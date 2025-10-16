@@ -207,7 +207,6 @@
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="lane_change" v="no"/>
   </relation>
   <relation id="24">
     <member type="way" role="left" ref="20"/>
@@ -217,7 +216,6 @@
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="lane_change" v="no"/>
   </relation>
   <relation id="37">
     <member type="way" role="left" ref="35"/>
@@ -227,16 +225,14 @@
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="lane_change" v="no"/>
   </relation>
   <relation id="49">
     <member type="way" role="left" ref="47"/>
     <member type="way" role="right" ref="48"/>
     <tag k="type" v="lanelet"/>
-    <tag k="subtype" v="road"/>
+    <tag k="subtype" v="private"/>
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="lane_change" v="no"/>
   </relation>
 </osm>
