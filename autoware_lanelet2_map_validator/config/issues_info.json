@@ -812,7 +812,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "This no_stopping_area regulatory element must refer to exactly one polygon.",
-      "ja": "この no_stopping_area regulatory element はちょうど1つの polyogn を参照する必要があります。"
+      "ja": "この no_stopping_area regulatory element はちょうど1つの polygon を参照する必要があります。"
     }
   },
   "Area.NoStoppingArea-003": {
