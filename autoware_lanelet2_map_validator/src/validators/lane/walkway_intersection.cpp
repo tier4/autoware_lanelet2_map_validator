@@ -53,7 +53,6 @@ lanelet::validation::Issues WalkwayIntersectionValidator::check_walkway_intersec
 {
   lanelet::validation::Issues issues;
 
-  // Create routing graph for checking lanelet relationships
   lanelet::traffic_rules::TrafficRulesPtr traffic_rules =
     lanelet::traffic_rules::TrafficRulesFactory::create(
       "validator", lanelet::Participants::Vehicle);
