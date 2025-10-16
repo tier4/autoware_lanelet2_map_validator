@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 Autoware Foundation
+# Copyright 2025 TIER IV, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -685,9 +685,9 @@ language (-l arg)           Language to display the issue messages. Available
             # Use selected validators from multi-select picker
             selected_items = self.validator_list.selectedItems()
             if selected_items:
-                # Join selected validator names with pipe (|) for regex OR operation
+                # Join selected validator names with comma for exact matching
                 selected_validators = [item.text() for item in selected_items]
-                validator_filter = "|".join(selected_validators)
+                validator_filter = ",".join(selected_validators)
             else:
                 validator_filter = ""
 
