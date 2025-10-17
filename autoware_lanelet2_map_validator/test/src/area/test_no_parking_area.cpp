@@ -117,3 +117,21 @@ TEST_F(TestNoParkingAreaValidator, RegulatoryElementWithMultiplePolygons)  // NO
   EXPECT_TRUE(difference.empty()) << difference;
   EXPECT_EQ(issues[0].id, expected_regulatory_element_id);
 }
+
+TEST_F(TestNoParkingAreaValidator, RegulatoryElementReferredByNonRoadLanelet)  // NOLINT for gtest
+{
+  load_target_map("area/no_parking_area_non_road_refer.osm");
+
+  lanelet::autoware::validation::NoParkingAreaValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const lanelet::Id expected_regulatory_element_id = 4050;
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 5), expected_regulatory_element_id);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+  EXPECT_EQ(issues[0].id, expected_regulatory_element_id);
+}
