@@ -20,7 +20,6 @@
 
 #include <algorithm>
 #include <set>
-#include <unordered_set>
 
 namespace lanelet::autoware::validation
 {
@@ -53,18 +52,6 @@ lanelet::validation::Issues DetectionAreaValidator::check_detection_area(
   }
 
   std::set<lanelet::Id> referenced_detection_area_polygon_ids;
-
-  std::unordered_set<lanelet::Id> regulatory_elements_used_by_road_lanelets;
-  for (const auto & lanelet : map.laneletLayer) {
-    if (
-      lanelet.hasAttribute(lanelet::AttributeName::Subtype) &&
-      lanelet.attribute(lanelet::AttributeName::Subtype) == "road") {
-      const auto & regulatory_elements = lanelet.regulatoryElements();
-      for (const auto & lane_reg_elem : regulatory_elements) {
-        regulatory_elements_used_by_road_lanelets.insert(lane_reg_elem->id());
-      }
-    }
-  }
 
   for (const auto & reg_elem : map.regulatoryElementLayer) {
     if (
@@ -107,9 +94,21 @@ lanelet::validation::Issues DetectionAreaValidator::check_detection_area(
         continue;
       }
 
-      // Issue-005: Regulatory element should be referred by at least one road subtype lanelet
-      if (regulatory_elements_used_by_road_lanelets.count(reg_elem->id()) == 0) {
+      // Issue-005: Regulatory element should be referred by at least one lanelet
+      const auto referrers = map.laneletLayer.findUsages(reg_elem);
+      if (referrers.empty()) {
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
+      }
+
+      // Issue-006: Check if there are non-road referrers (should only be referred by road lanelets)
+      if (
+        !referrers.empty() &&
+        std::any_of(referrers.begin(), referrers.end(), [](lanelet::ConstLanelet lane) {
+          return !lane.hasAttribute(lanelet::AttributeName::Subtype) ||
+                 lane.attribute(lanelet::AttributeName::Subtype) !=
+                   lanelet::AttributeValueString::Road;
+        })) {
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id()));
       }
     }
   }

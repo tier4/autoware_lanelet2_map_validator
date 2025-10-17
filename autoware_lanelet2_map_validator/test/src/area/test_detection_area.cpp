@@ -134,3 +134,21 @@ TEST_F(TestDetectionAreaValidator, DetectionAreaWithInvalidPolygonRefer)  // NOL
   const auto difference = compare_issues(expected_issues, issues);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestDetectionAreaValidator, DetectionAreaWithNonRoadRefer)  // NOLINT for gtest
+{
+  load_target_map("area/detection_area_with_non_road_refer.osm");
+
+  lanelet::autoware::validation::DetectionAreaValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const lanelet::Id expected_reg_elem_id = 2102;
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 6), expected_reg_elem_id);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+  EXPECT_EQ(issues[0].id, expected_reg_elem_id);
+}

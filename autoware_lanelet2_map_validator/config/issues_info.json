@@ -804,7 +804,7 @@
     "primitive": "polygon",
     "message": {
       "en": "Detection area polygon is not being referred to by any regulatory element.",
-      "ja": "検知エリア polygon は regulatory element から参照されていません。"
+      "ja": "この detection_area polygon は regulatory element から参照されていません。"
     }
   },
   "Area.DetectionArea-002": {
@@ -820,7 +820,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "Polygon referred by detection area regulatory element must have type 'detection_area'.",
-      "ja": "検知エリアの regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
+      "ja": "detection_area regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
     }
   },
   "Area.DetectionArea-004": {
@@ -828,7 +828,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "Detection area regulatory element must refer to exactly one stop_line type ref_line.",
-      "ja": "検知エリアの regulatory element は単一の stop_line type の ref_line のみを参照する必要があります。"
+      "ja": "detection_area regulatory element はちょうど1つの stop_line type の ref_line を参照する必要があります。"
     }
   },
   "Area.DetectionArea-005": {
@@ -836,7 +836,15 @@
     "primitive": "regulatory element",
     "message": {
       "en": "Detection area regulatory element must be referred by at least one road subtype lanelet.",
-      "ja": "検知エリアの regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
+      "ja": "detection_area regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
+    }
+  },
+  "Area.DetectionArea-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must only be referred by road subtype lanelets.",
+      "ja": "detection_area regulatory element は road subtype の lanelet のみから参照される必要があります。"
     }
   }
 }
