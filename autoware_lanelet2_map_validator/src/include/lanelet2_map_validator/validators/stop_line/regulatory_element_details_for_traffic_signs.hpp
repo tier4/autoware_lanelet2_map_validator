@@ -15,6 +15,8 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_  // NOLINT
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__STOP_LINE__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_SIGNS_HPP_  // NOLINT
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
@@ -31,9 +33,16 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  RegulatoryElementDetailsForTrafficSignsValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    max_bounding_box_size = get_parameter_or<double>(parameters, "max_bounding_box_size", 20.0);
+  }
+
 private:
   lanelet::validation::Issues check_regulatory_element_details_for_traffic_signs(
     const lanelet::LaneletMap & map);
+  double max_bounding_box_size;
 };
 }  // namespace lanelet::autoware::validation
 
