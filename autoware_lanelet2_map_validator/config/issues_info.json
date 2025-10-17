@@ -723,8 +723,8 @@
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "The lanelet (subtype:road) referred by this crosswalk regulatory element does not intersect with the crosswalk lanelet (ID: {crosswalk_id}). Road lanelet ID: {road_lanelet_id}.",
-      "ja": "この crosswalk regulatory element が参照している lanelet (subtype:road) が crosswalk lanelet (ID: {crosswalk_id}) と交差していません。Road lanelet ID: {road_lanelet_id}。"
+      "en": "The crosswalk lanelet (ID: {crosswalk_id}) has to intersect with the referrer road lanelet (ID: {road_lanelet_id}).",
+      "ja": "Crosswalk lanelet (ID: {crosswalk_id}) は road lanelet (ID: {road_lanelet_id}) と交差している必要があります。"
     }
   },
   "Lane.LateralSubtypeConnection-001": {

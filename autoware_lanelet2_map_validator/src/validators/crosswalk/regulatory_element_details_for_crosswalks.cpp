@@ -18,6 +18,7 @@
 
 #include <autoware_lanelet2_extension/regulatory_elements/crosswalk.hpp>
 #include <range/v3/view/filter.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <boost/geometry/algorithms/correct.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
@@ -91,6 +92,8 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
     // The refers must have an attribute participant:pedestrian and set to "yes" or "true"
     // Also check intersection between crosswalk lanelet and road lanelets referenced by the
     // regulatory element
+    const lanelet::ConstLanelets refers_elem = map.laneletLayer.findUsages(elem);
+
     for (const lanelet::ConstLanelet & lane : refers) {
       if (!lane.hasAttribute(lanelet::AttributeName::ParticipantPedestrian)) {
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 10), lane.id()));
@@ -102,28 +105,24 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
 
       // Issue-012: check intersection between crosswalk lanelet and road lanelets that reference
       // this regulatory element
-      for (const auto & map_lane : map.laneletLayer) {
-        if (
-          map_lane.hasAttribute(lanelet::AttributeName::Subtype) &&
-          map_lane.attribute(lanelet::AttributeName::Subtype).value() ==
-            lanelet::AttributeValueString::Road) {
-          auto reg_elems = map_lane.regulatoryElements();
-          for (const auto & reg_elem : reg_elems) {
-            if (reg_elem->id() == elem->id()) {
-              lanelet::BasicPolygon2d crosswalk_polygon = lane.polygon2d().basicPolygon();
-              lanelet::BasicPolygon2d road_polygon = map_lane.polygon2d().basicPolygon();
+      if (!refers_elem.empty()) {
+        for (const auto & refer_elem : refers_elem) {
+          if (
+            refer_elem.hasAttribute(lanelet::AttributeName::Subtype) &&
+            refer_elem.attribute(lanelet::AttributeName::Subtype).value() ==
+              lanelet::AttributeValueString::Road) {
+            lanelet::BasicPolygon2d crosswalk_polygon = lane.polygon2d().basicPolygon();
+            lanelet::BasicPolygon2d road_polygon = refer_elem.polygon2d().basicPolygon();
 
-              boost::geometry::correct(crosswalk_polygon);
-              boost::geometry::correct(road_polygon);
+            boost::geometry::correct(crosswalk_polygon);
+            boost::geometry::correct(road_polygon);
 
-              if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
-                std::map<std::string, std::string> substitutions;
-                substitutions["crosswalk_id"] = std::to_string(lane.id());
-                substitutions["road_lanelet_id"] = std::to_string(map_lane.id());
-                issues.emplace_back(construct_issue_from_code(
-                  issue_code(this->name(), 12), elem->id(), substitutions));
-              }
-              break;
+            if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
+              std::map<std::string, std::string> substitutions;
+              substitutions["crosswalk_id"] = std::to_string(lane.id());
+              substitutions["road_lanelet_id"] = std::to_string(refer_elem.id());
+              issues.emplace_back(
+                construct_issue_from_code(issue_code(this->name(), 12), elem->id(), substitutions));
             }
           }
         }
