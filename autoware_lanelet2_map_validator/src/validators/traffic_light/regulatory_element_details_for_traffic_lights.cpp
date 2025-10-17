@@ -174,7 +174,7 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
 
     double dx = bbox2d.max().x() - bbox2d.min().x();
     double dy = bbox2d.max().y() - bbox2d.min().y();
-    double bounding_box_size = std::sqrt(dx * dx + dy * dy);
+    double bounding_box_size = std::hypot(dx, dy);
 
     if (bounding_box_size > max_bounding_box_size_) {
       // Issue-008: Traffic light regulatory element bounding box exceeds threshold
