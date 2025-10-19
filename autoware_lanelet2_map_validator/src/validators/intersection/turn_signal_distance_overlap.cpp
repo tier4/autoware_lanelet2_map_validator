@@ -19,6 +19,7 @@
 #include <boost/geometry.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/LineString.h>
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
@@ -136,9 +137,8 @@ std::string TurnSignalDistanceOverlapValidator::set_to_string(
   return result;
 }
 
-double TurnSignalDistanceOverlapValidator::calc_lanelet_length(const lanelet::ConstLanelet & lane)
-{
-  return static_cast<double>(boost::geometry::length(lanelet.centerline().basicLineString()));
+double TurnSignalDistanceOverlapValidator::calc_lanelet_length(const lanelet::ConstLanelet & lane) {
+  return static_cast<double>(boost::geometry::length(lane.centerline().basicLineString()));
 }
 
 }  // namespace lanelet::autoware::validation
