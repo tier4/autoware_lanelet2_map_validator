@@ -7,10 +7,6 @@ set(BUILD_SHARED_LIBS OFF)
 
 # Dependencies
 find_package(ament_cmake REQUIRED)
-find_package(tf2 REQUIRED)
-find_package(tf2_geometry_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(visualization_msgs REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 # Extract package version
@@ -57,13 +53,6 @@ target_include_directories(map_validator_includes INTERFACE
 add_library(autoware_lanelet2_map_validator_obj OBJECT ${MAP_VALIDATOR_SRC})
 target_link_libraries(autoware_lanelet2_map_validator_obj map_validator_includes)
 
-#ament_target_dependencies(autoware_lanelet2_map_validator_obj
-#  tf2
-#  tf2_geometry_msgs
-#  geometry_msgs
-#  visualization_msgs
-#)
-
 # ========= Executable =============
 
 add_executable(autoware_lanelet2_map_validator
@@ -76,13 +65,6 @@ add_executable(autoware_lanelet2_map_validator
 # ========= Link Libraries =========
 
 target_link_libraries(autoware_lanelet2_map_validator map_validator_includes)
-
-#ament_target_dependencies(autoware_lanelet2_map_validator
-#  tf2
-#  tf2_geometry_msgs
-#  geometry_msgs
-#  visualization_msgs
-#)
 
 target_link_options(autoware_lanelet2_map_validator PRIVATE -Wl,--start-group)
 
