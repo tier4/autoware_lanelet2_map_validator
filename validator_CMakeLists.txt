@@ -113,6 +113,10 @@ target_link_libraries(autoware_lanelet2_map_validator
 target_link_options(autoware_lanelet2_map_validator PRIVATE -Wl,--end-group)
 
 # ========= Install =========
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "Install prefix" FORCE)
+endif()
+
 install(TARGETS autoware_lanelet2_map_validator DESTINATION lib/${PROJECT_NAME})
 install(PROGRAMS template/create_new_validator.py DESTINATION lib/${PROJECT_NAME})
 

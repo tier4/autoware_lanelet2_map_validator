@@ -127,18 +127,18 @@ jobs:
           source /opt/ros/humble/setup.bash
           cp validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
           cd autoware_lanelet2_map_validator
-          mkdir -p build
+          mkdir -p build install
           cd build
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
           cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_INSTALL_PREFIX=../install \
             -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
-            -DFMT_INSTALL_DIR="$GITHUB_WORKSPACE/fmt/temp_install" \
-            -DAUTOWARE_LANELET2_EXTENSION_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension"
+            -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
           make -j$(nproc)
           make install
-          BIN=install/lib/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator
+          BIN=../install/lib/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
