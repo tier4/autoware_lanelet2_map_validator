@@ -47,7 +47,7 @@ target_include_directories(map_validator_includes INTERFACE
   ${CMAKE_CURRENT_BINARY_DIR}/include
   $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/include
   $ENV{GITHUB_WORKSPACE}/lanelet2/install/include
-  ${EIGEN3_INCLUDE_DIR}
+  /usr/include/eigen3
 )
 
 add_library(autoware_lanelet2_map_validator_obj OBJECT ${MAP_VALIDATOR_SRC})
