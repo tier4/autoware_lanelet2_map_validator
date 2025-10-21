@@ -79,7 +79,12 @@ add_executable(autoware_lanelet2_map_validator
 
 target_link_libraries(autoware_lanelet2_map_validator map_validator_includes)
 
-target_link_options(autoware_lanelet2_map_validator PRIVATE -Wl,--start-group)
+# Force static linking by specifying -static-libgcc and -static-libstdc++
+target_link_options(autoware_lanelet2_map_validator PRIVATE 
+  -Wl,--start-group
+  -static-libgcc
+  -static-libstdc++
+)
 
 target_link_libraries(autoware_lanelet2_map_validator
   $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/build/libautoware_lanelet2_extension_lib.a
@@ -105,8 +110,11 @@ target_link_libraries(autoware_lanelet2_map_validator
   /usr/lib/x86_64-linux-gnu/libGeographic.a
   /usr/lib/x86_64-linux-gnu/libpugixml.a
 
-  ${rclcpp_LIBRARIES}
-
+  -Wl,-Bstatic
+  pthread
+  -Wl,-Bdynamic
+  
+  dl
   stdc++fs
 )
 
