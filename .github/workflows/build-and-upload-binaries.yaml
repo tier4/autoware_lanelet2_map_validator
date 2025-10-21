@@ -125,6 +125,7 @@ jobs:
         run: |
           set -e
           source /opt/ros/humble/setup.bash
+          cp validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
           cd autoware_lanelet2_map_validator
           mkdir -p build
           cd build
