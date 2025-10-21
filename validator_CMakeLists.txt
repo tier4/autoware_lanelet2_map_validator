@@ -8,10 +8,6 @@ set(BUILD_SHARED_LIBS OFF)
 # Dependencies
 find_package(ament_cmake_auto REQUIRED)
 find_package(nlohmann_json REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(visualization_msgs REQUIRED)
-find_package(autoware_map_msgs REQUIRED)
-find_package(rclcpp REQUIRED)
 
 # Extract package version
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/package.xml" PACKAGE_XML_CONTENT)
@@ -53,14 +49,6 @@ target_include_directories(map_validator_includes INTERFACE
   $ENV{GITHUB_WORKSPACE}/lanelet2/install/include
   $ENV{GITHUB_WORKSPACE}/fmt/temp_install/include
   /usr/include/eigen3
-)
-
-# Add ROS message include directories (header-only)
-target_include_directories(map_validator_includes INTERFACE
-  ${geometry_msgs_INCLUDE_DIRS}
-  ${visualization_msgs_INCLUDE_DIRS}
-  ${autoware_map_msgs_INCLUDE_DIRS}
-  ${rclcpp_INCLUDE_DIRS}
 )
 
 add_library(autoware_lanelet2_map_validator_obj OBJECT ${MAP_VALIDATOR_SRC})

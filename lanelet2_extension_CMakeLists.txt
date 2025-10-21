@@ -48,6 +48,8 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
   ${visualization_msgs_INCLUDE_DIRS}
   ${autoware_map_msgs_INCLUDE_DIRS}
   ${autoware_planning_msgs_INCLUDE_DIRS}
+  ${tf2_INCLUDE_DIRS}
+  ${tf2_geometry_msgs_INCLUDE_DIRS}
   /usr/include/eigen3
 )
 
