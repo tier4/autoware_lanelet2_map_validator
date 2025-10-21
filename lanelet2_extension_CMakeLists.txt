@@ -18,6 +18,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(autoware_map_msgs REQUIRED)
 find_package(autoware_planning_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
 
 add_library(${PROJECT_NAME}_lib STATIC
   lib/autoware_osm_parser.cpp
@@ -50,6 +51,7 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
   ${autoware_planning_msgs_INCLUDE_DIRS}
   ${tf2_INCLUDE_DIRS}
   ${tf2_geometry_msgs_INCLUDE_DIRS}
+  ${rclcpp_INCLUDE_DIRS}
   /usr/include/eigen3
 )
 
