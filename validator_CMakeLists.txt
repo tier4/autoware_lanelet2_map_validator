@@ -5,13 +5,20 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS OFF)
 
+set(FMT_INSTALL_DIR "" CACHE PATH "fmt install dir")
+
 # Dependencies
 find_package(ament_cmake_auto REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(autoware_map_msgs REQUIRED)
-
+find_package(rclcpp REQUIRED)
+if(FMT_INSTALL_DIR)
+  find_package(fmt REQUIRED PATHS "${FMT_INSTALL_DIR}" NO_DEFAULT_PATH)
+else()
+  find_package(fmt REQUIRED)
+endif()
 
 # Extract package version
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/package.xml" PACKAGE_XML_CONTENT)
@@ -59,6 +66,7 @@ target_include_directories(map_validator_includes INTERFACE
   ${geometry_msgs_INCLUDE_DIRS}
   ${visualization_msgs_INCLUDE_DIRS}
   ${autoware_map_msgs_INCLUDE_DIRS}
+  ${rclcpp_INCLUDE_DIRS}
 )
 
 add_library(autoware_lanelet2_map_validator_obj OBJECT ${MAP_VALIDATOR_SRC})
@@ -101,6 +109,9 @@ target_link_libraries(autoware_lanelet2_map_validator
 
   /usr/lib/x86_64-linux-gnu/libGeographic.a
   /usr/lib/x86_64-linux-gnu/libpugixml.a
+
+  fmt::fmt
+  ${rclcpp_LIBRARIES}
 
   stdc++fs
 )
