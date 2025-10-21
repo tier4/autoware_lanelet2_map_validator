@@ -112,11 +112,11 @@ jobs:
           mkdir -p build
           cd build
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
-          cmake .. -C "$GITHUB_WORKSPACE/lanelet2_extension_CMakeLists.txt" \
+          cmake .. \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
-            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
-            -DFMT_INSTALL_DIR="$GITHUB_WORKSPACE/fmt/temp_install"
+            -DCMAKE_INSTALL_PREFIX=../install \
+            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           make -j$(nproc)
           make install
 
