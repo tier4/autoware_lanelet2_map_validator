@@ -75,7 +75,7 @@ jobs:
             cd ..
           done
 
-      - name: Build autoware_map_msgs only
+      - name: Build autoware_map_msgs
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -83,7 +83,7 @@ jobs:
           cd autoware_ws/src
           git clone https://github.com/autowarefoundation/autoware_msgs.git
           cd ..
-          colcon build --cmake-args -DBUILD_TESTING=OFF --packages-select autoware_map_msgs
+          colcon build --cmake-args -DBUILD_TESTING=OFF
 
       - name: Build fmt (static)
         run: |
