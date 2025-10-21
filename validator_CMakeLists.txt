@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS OFF)
 
-set(FMT_INSTALL_DIR "" CACHE PATH "fmt install dir")
-
 # Dependencies
 find_package(ament_cmake_auto REQUIRED)
 find_package(nlohmann_json REQUIRED)
@@ -14,11 +12,6 @@ find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(autoware_map_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
-if(FMT_INSTALL_DIR)
-  find_package(fmt REQUIRED PATHS "${FMT_INSTALL_DIR}" NO_DEFAULT_PATH)
-else()
-  find_package(fmt REQUIRED)
-endif()
 
 # Extract package version
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/package.xml" PACKAGE_XML_CONTENT)
@@ -58,6 +51,7 @@ target_include_directories(map_validator_includes INTERFACE
   ${CMAKE_CURRENT_BINARY_DIR}/include
   $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/include
   $ENV{GITHUB_WORKSPACE}/lanelet2/install/include
+  $ENV{GITHUB_WORKSPACE}/fmt/temp_install/include
   /usr/include/eigen3
 )
 
