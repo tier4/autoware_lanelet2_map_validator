@@ -71,7 +71,9 @@ lanelet::validation::Issues WalkwayIntersectionValidator::check_walkway_intersec
     const auto subtype = lanelet.attribute(lanelet::AttributeName::Subtype).value();
     if (subtype == "walkway") {
       walkway_lanelets.push_back(lanelet);
-    } else if (subtype == lanelet::AttributeValueString::Road) {
+    } else if (
+      subtype == lanelet::AttributeValueString::Road ||
+      subtype == lanelet::AttributeValueString::Private) {
       road_lanelets.push_back(lanelet);
     }
   }
@@ -81,46 +83,38 @@ lanelet::validation::Issues WalkwayIntersectionValidator::check_walkway_intersec
 
     // Issue-001: Check if walkway has conflicting relationship with any road lanelet
     // Issue-002: Check if walkway extends at least 3 meters from intersection
-    const auto conflicting_lanelets = routing_graph_ptr->conflicting(walkway);
     bool has_road_conflict = false;
 
     for (const auto & road : road_lanelets) {
       const auto road_polygon = road.polygon2d().basicPolygon();
 
-      // Check if this specific road is in the conflicting list
-      auto it = std::find_if(
-        conflicting_lanelets.begin(), conflicting_lanelets.end(),
-        [&road](const auto & conflicting) { return conflicting.id() == road.id(); });
+      std::vector<lanelet::BasicPolygon2d> intersection_polygons;
+      boost::geometry::intersection(walkway_polygon, road_polygon, intersection_polygons);
 
-      if (it != conflicting_lanelets.end()) {
+      if (!intersection_polygons.empty()) {
         has_road_conflict = true;
-        std::vector<lanelet::BasicPolygon2d> intersection_polygons;
-        boost::geometry::intersection(walkway_polygon, road_polygon, intersection_polygons);
+        const auto & intersection_polygon = intersection_polygons[0];
 
-        if (!intersection_polygons.empty()) {
-          const auto & intersection_polygon = intersection_polygons[0];
+        const lanelet::BasicLineString2d starting_edge = {
+          walkway.leftBound2d().front().basicPoint2d(),
+          walkway.rightBound2d().front().basicPoint2d()};
+        const lanelet::BasicLineString2d ending_edge = {
+          walkway.leftBound2d().back().basicPoint2d(),
+          walkway.rightBound2d().back().basicPoint2d()};
 
-          const lanelet::BasicLineString2d starting_edge = {
-            walkway.leftBound2d().front().basicPoint2d(),
-            walkway.rightBound2d().front().basicPoint2d()};
-          const lanelet::BasicLineString2d ending_edge = {
-            walkway.leftBound2d().back().basicPoint2d(),
-            walkway.rightBound2d().back().basicPoint2d()};
+        const double start_extension =
+          boost::geometry::distance(intersection_polygon, starting_edge);
+        const double end_extension = boost::geometry::distance(intersection_polygon, ending_edge);
 
-          const double start_extension =
-            boost::geometry::distance(intersection_polygon, starting_edge);
-          const double end_extension = boost::geometry::distance(intersection_polygon, ending_edge);
+        const double min_extension_threshold = 3.0;  // 3 meters
+        const double actual_extension = std::min(start_extension, end_extension);
 
-          const double min_extension_threshold = 3.0;  // 3 meters
-          const double actual_extension = std::min(start_extension, end_extension);
-
-          if (actual_extension < min_extension_threshold) {
-            std::map<std::string, std::string> substitutions_ext;
-            substitutions_ext["road_lanelet_id"] = std::to_string(road.id());
-            substitutions_ext["extension"] = std::to_string(actual_extension);
-            issues.push_back(construct_issue_from_code(
-              issue_code(this->name(), 2), walkway.id(), substitutions_ext));
-          }
+        if (actual_extension < min_extension_threshold) {
+          std::map<std::string, std::string> substitutions_ext;
+          substitutions_ext["road_lanelet_id"] = std::to_string(road.id());
+          substitutions_ext["extension"] = std::to_string(actual_extension);
+          issues.push_back(construct_issue_from_code(
+            issue_code(this->name(), 2), walkway.id(), substitutions_ext));
         }
       }
     }
