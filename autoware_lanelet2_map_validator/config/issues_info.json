@@ -240,7 +240,7 @@
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-007": {
-    "severity": "Error",
+    "severity": "Warning",
     "primitive": "regulatory element",
     "message": {
       "en": "This virtual traffic light regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
