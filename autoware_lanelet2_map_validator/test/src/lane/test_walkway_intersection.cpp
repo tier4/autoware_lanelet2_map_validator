@@ -82,7 +82,10 @@ TEST_F(TestWalkwayIntersectionValidator, WalkwayWithShortExtension)  // NOLINT f
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 1);
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 37);
+  std::map<std::string, std::string> reason_map;
+  reason_map["road_lanelet_id"] = "49";
+  reason_map["extension"] = "0.270767";
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 37, reason_map);
 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
