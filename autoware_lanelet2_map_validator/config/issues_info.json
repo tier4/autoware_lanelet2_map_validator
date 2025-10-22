@@ -799,20 +799,28 @@
       "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
     }
   },
-  "Lane.WalkwayIntersection-001": {
+  "Lane.PedestrianLane-001": {
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Walkway lanelet should only exist when intersecting with road/private lanelets. No conflicts found with any road/private lanelets.",
-      "ja": "walkway lanelet は road/private lanelet と交差する場合にのみ必要です。他の road/private lanelet との重複が見つかりませんでした。"
+      "en": "Pedestrian lane must have at least one adjacent lanelet.",
+      "ja": "pedestrian_lane lanelet は少なくとも1つの隣接 lanelet を持つ必要があります。"
     }
   },
-  "Lane.WalkwayIntersection-002": {
+  "Lane.PedestrianLane-002": {
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
-      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road/private lanelet {road_lanelet_id}. Current extension: {extension} meters.",
-      "ja": "walkway lanelet は road/private lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長距離: {extension} メートル。"
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接する lanelet は road subtype の lanelet でなければなりません。"
+    }
+  },
+  "Lane.PedestrianLane-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線 linestring は road_border type でなければなりません。"
     }
   }
 }

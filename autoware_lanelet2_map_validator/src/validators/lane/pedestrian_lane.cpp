@@ -1,4 +1,4 @@
-// Copyright 2025 TIER IV, Inc.
+// Copyright 2025 Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lanelet2_map_validator/validators/lane/road_shoulder.hpp"
+#include "lanelet2_map_validator/validators/lane/pedestrian_lane.hpp"
 
 #include "lanelet2_map_validator/utils.hpp"
 
@@ -28,19 +28,19 @@ namespace lanelet::autoware::validation
 {
 namespace
 {
-lanelet::validation::RegisterMapValidator<RoadShoulderValidator> reg;
+lanelet::validation::RegisterMapValidator<PedestrianLaneValidator> reg;
 }
 
-lanelet::validation::Issues RoadShoulderValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues PedestrianLaneValidator::operator()(const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
-  lanelet::autoware::validation::appendIssues(issues, check_road_shoulder(map));
+  lanelet::autoware::validation::appendIssues(issues, check_pedestrian_lane(map));
 
   return issues;
 }
 
-lanelet::validation::Issues RoadShoulderValidator::check_road_shoulder(
+lanelet::validation::Issues PedestrianLaneValidator::check_pedestrian_lane(
   const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
@@ -59,7 +59,7 @@ lanelet::validation::Issues RoadShoulderValidator::check_road_shoulder(
 
     if (
       type_it == attrs.end() || subtype_it == attrs.end() || type_it->second != "lanelet" ||
-      subtype_it->second != "road_shoulder") {
+      subtype_it->second != "pedestrian_lane") {
       continue;
     }
 
@@ -68,7 +68,7 @@ lanelet::validation::Issues RoadShoulderValidator::check_road_shoulder(
     const bool has_left = left_lanelets.has_value();
     const bool has_right = right_lanelets.has_value();
 
-    // Issue-001: Road shoulder must have at least one adjacent lanelet
+    // Issue-001: Pedestrian lane must have at least one adjacent lanelet
     if (!has_left && !has_right) {
       issues.push_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
       continue;

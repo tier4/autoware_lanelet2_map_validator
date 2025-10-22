@@ -1,4 +1,4 @@
-// Copyright 2025 TIER IV, Inc.
+// Copyright 2025 Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,31 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_  // NOLINT
-#define LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_  // NOLINT
+#ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__PEDESTRIAN_LANE_HPP_
+#define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__PEDESTRIAN_LANE_HPP_
 
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
 namespace lanelet::autoware::validation
 {
-class RightOfWayWithoutTrafficLightsValidator : public lanelet::validation::MapValidator
+class PedestrianLaneValidator : public lanelet::validation::MapValidator
 {
 public:
   // Write the validator's name here
-  constexpr static const char * name()
-  {
-    return "mapping.intersection.right_of_way_without_traffic_lights";
-  }
+  constexpr static const char * name() { return "mapping.lane.pedestrian_lane"; }
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
-  lanelet::validation::Issues check_right_of_way_without_traffic_lights(
-    const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_pedestrian_lane(const lanelet::LaneletMap & map);
 };
 }  // namespace lanelet::autoware::validation
 
-// clang-format off
-#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__INTERSECTION__RIGHT_OF_WAY_WITHOUT_TRAFFIC_LIGHTS_HPP_  // NOLINT
-// clang-format on
+#endif  // LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__PEDESTRIAN_LANE_HPP_
