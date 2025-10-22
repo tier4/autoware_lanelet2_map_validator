@@ -110,7 +110,7 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
     double dy = bbox2d.max().y() - bbox2d.min().y();
     double bounding_box_size = std::hypot(dx, dy);
 
-    if (bounding_box_size > max_bounding_box_size) {
+    if (bounding_box_size > max_bounding_box_size_) {
       // Issue-005: Traffic sign regulatory element bounding box exceeds threshold
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 5), regulatory_element->id()));
