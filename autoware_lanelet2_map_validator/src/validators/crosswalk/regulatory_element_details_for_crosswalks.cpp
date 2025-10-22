@@ -105,26 +105,26 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
 
       // Issue-012: check intersection between crosswalk lanelet and road lanelets that reference
       // this regulatory element
-      if (!refers_elem.empty()) {
-        for (const auto & refer_elem : refers_elem) {
-          if (
-            refer_elem.hasAttribute(lanelet::AttributeName::Subtype) &&
-            refer_elem.attribute(lanelet::AttributeName::Subtype).value() ==
-              lanelet::AttributeValueString::Road) {
-            lanelet::BasicPolygon2d crosswalk_polygon = lane.polygon2d().basicPolygon();
-            lanelet::BasicPolygon2d road_polygon = refer_elem.polygon2d().basicPolygon();
+      for (const auto & refer_elem : refers_elem) {
+        if (
+          !refer_elem.hasAttribute(lanelet::AttributeName::Subtype) ||
+          refer_elem.attribute(lanelet::AttributeName::Subtype).value() !=
+            lanelet::AttributeValueString::Road) {
+          continue;
+        }
 
-            boost::geometry::correct(crosswalk_polygon);
-            boost::geometry::correct(road_polygon);
+        lanelet::BasicPolygon2d crosswalk_polygon = lane.polygon2d().basicPolygon();
+        lanelet::BasicPolygon2d road_polygon = refer_elem.polygon2d().basicPolygon();
 
-            if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
-              std::map<std::string, std::string> substitutions;
-              substitutions["crosswalk_id"] = std::to_string(lane.id());
-              substitutions["road_lanelet_id"] = std::to_string(refer_elem.id());
-              issues.emplace_back(
-                construct_issue_from_code(issue_code(this->name(), 12), elem->id(), substitutions));
-            }
-          }
+        boost::geometry::correct(crosswalk_polygon);
+        boost::geometry::correct(road_polygon);
+
+        if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
+          std::map<std::string, std::string> substitutions;
+          substitutions["crosswalk_id"] = std::to_string(lane.id());
+          substitutions["road_lanelet_id"] = std::to_string(refer_elem.id());
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 12), elem->id(), substitutions));
         }
       }
     }
