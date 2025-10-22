@@ -812,7 +812,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "Detection area regulatory element must refer to exactly one detection_area polygon.",
-      "ja": "検知エリアの regulatory element は単一の detection_area polygon のみを参照する必要があります。"
+      "ja": "detection_area regulatory element はちょうど1つの detection_area polygon のみを参照する必要があります。"
     }
   },
   "Area.DetectionArea-003": {
