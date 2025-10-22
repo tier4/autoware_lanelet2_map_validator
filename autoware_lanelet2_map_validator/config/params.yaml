@@ -14,3 +14,6 @@ mapping.intersection.virtual_traffic_light_section_overlap:
   validation_target_refers: [intersection_coordination]
 mapping.intersection.turn_signal_distance_overlap:
   default_turn_signal_distance: 15.0
+mapping.traffic_light.body_height:
+  min_height: 0.2
+  max_height: 2.0
