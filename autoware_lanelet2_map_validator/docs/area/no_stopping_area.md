@@ -18,6 +18,7 @@ Validates the relationship between no_stopping_area type polygons, their corresp
 | Area.NoStoppingArea-004 | This no_stopping_area regulatory element must refer to exactly one ref_line.                      | Error    | regulatory element | Regulatory element refers to wrong number of ref_lines | Count referenced ref_lines     |
 | Area.NoStoppingArea-005 | This no_stopping_area regulatory element refers to a linestring that is not a stop_line type.     | Error    | regulatory element | Referenced linestring has wrong type                   | Check linestring type          |
 | Area.NoStoppingArea-006 | This no_stopping_area regulatory element is not referred by any road subtype lanelet.             | Error    | regulatory element | Regulatory element not used by road lanelet            | Check lanelet references       |
+| Area.NoStoppingArea-007 | This no_stopping_area regulatory element should only be referred by road subtype lanelets.        | Error    | regulatory element | Regulatory element referred by non-road lanelets       | Check lanelet types            |
 
 ## Parameters
 
