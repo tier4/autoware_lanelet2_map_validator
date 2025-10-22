@@ -838,5 +838,85 @@
       "en": "This no_parking_area regulatory element should only be referred by road subtype lanelets.",
       "ja": "この no_parking_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
     }
+  },
+  "Lane.PedestrianLane-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Pedestrian lane must have at least one adjacent lanelet.",
+      "ja": "pedestrian_lane lanelet は少なくとも1つの隣接 lanelet を持つ必要があります。"
+    }
+  },
+  "Lane.PedestrianLane-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接する lanelet は road subtype の lanelet でなければなりません。"
+    }
+  },
+  "Lane.PedestrianLane-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線 linestring は road_border type でなければなりません。"
+    }
+  },
+  "Area.NoStoppingArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This no_stopping_area polygon is not referred by any regulatory element.",
+      "ja": "この no_stopping_area polygon はどの regulatory element からも参照されていません。"
+    }
+  },
+  "Area.NoStoppingArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element must refer to exactly one polygon.",
+      "ja": "この no_stopping_area regulatory element はちょうど1つの polygon を参照する必要があります。"
+    }
+  },
+  "Area.NoStoppingArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element refers to a polygon that is not a no_stopping_area type.",
+      "ja": "この no_stopping_area regulatory element は no_stopping_area type ではない polygon を参照しています。"
+    }
+  },
+  "Area.NoStoppingArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element must refer to exactly one ref_line.",
+      "ja": "この no_stopping_area regulatory element はちょうど1つの ref_line を参照する必要があります。"
+    }
+  },
+  "Area.NoStoppingArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element refers to a linestring that is not a stop_line type.",
+      "ja": "この no_stopping_area regulatory element は stop_line type ではない linestring を参照しています。"
+    }
+  },
+  "Area.NoStoppingArea-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element is not referred by any road subtype lanelet.",
+      "ja": "この no_stopping_area regulatory element は road subtype の lanelet から参照されていません。"
+    }
+  },
+  "Area.NoStoppingArea-007": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element should only be referred by road subtype lanelets.",
+      "ja": "この no_stopping_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
+    }
   }
 }
