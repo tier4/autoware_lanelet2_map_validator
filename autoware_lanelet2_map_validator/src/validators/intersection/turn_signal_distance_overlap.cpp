@@ -16,9 +16,10 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <autoware_lanelet2_extension/utility/utilities.hpp>
+#include <boost/geometry.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/LineString.h>
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
@@ -88,7 +89,7 @@ std::unordered_set<lanelet::Id> TurnSignalDistanceOverlapValidator::find_overlap
   std::deque<std::pair<lanelet::ConstLanelet, double>> queue;
 
   for (const auto & prev : routing_graph_ptr->previous(intersection_lane)) {
-    queue.emplace_back(prev, lanelet::utils::getLaneletLength3d(prev));
+    queue.emplace_back(prev, calc_lanelet_length(prev));
   }
 
   while (!queue.empty()) {
@@ -116,7 +117,7 @@ std::unordered_set<lanelet::Id> TurnSignalDistanceOverlapValidator::find_overlap
     }
 
     for (const auto & prev : routing_graph_ptr->previous(current)) {
-      queue.emplace_back(prev, cum_length + lanelet::utils::getLaneletLength3d(prev));
+      queue.emplace_back(prev, cum_length + calc_lanelet_length(prev));
     }
   }
 
@@ -134,6 +135,11 @@ std::string TurnSignalDistanceOverlapValidator::set_to_string(
     result += std::to_string(*it);
   }
   return result;
+}
+
+double TurnSignalDistanceOverlapValidator::calc_lanelet_length(const lanelet::ConstLanelet & lane)
+{
+  return static_cast<double>(boost::geometry::length(lane.centerline().basicLineString()));
 }
 
 }  // namespace lanelet::autoware::validation

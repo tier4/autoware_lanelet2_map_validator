@@ -14,10 +14,10 @@
 
 #include "lanelet2_map_validator/validators/traffic_light/traffic_light_facing.hpp"
 
-#include "autoware_lanelet2_extension/utility/query.hpp"
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <Eigen/Core>
+#include <autoware_lanelet2_extension/regulatory_elements/Forward.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
 
