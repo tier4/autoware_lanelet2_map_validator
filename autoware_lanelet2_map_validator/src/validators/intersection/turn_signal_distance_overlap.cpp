@@ -137,7 +137,8 @@ std::string TurnSignalDistanceOverlapValidator::set_to_string(
   return result;
 }
 
-double TurnSignalDistanceOverlapValidator::calc_lanelet_length(const lanelet::ConstLanelet & lane) {
+double TurnSignalDistanceOverlapValidator::calc_lanelet_length(const lanelet::ConstLanelet & lane)
+{
   return static_cast<double>(boost::geometry::length(lane.centerline().basicLineString()));
 }
 
