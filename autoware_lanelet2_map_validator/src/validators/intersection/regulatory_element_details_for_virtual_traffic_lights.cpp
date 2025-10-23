@@ -145,6 +145,17 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
       }
     }
 
+    auto referrer_lanelets = map.laneletLayer.findUsages(reg_elem);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
     double dx = bbox2d.max().x() - bbox2d.min().x();
     double dy = bbox2d.max().y() - bbox2d.min().y();
     double bounding_box_size = std::hypot(dx, dy);
