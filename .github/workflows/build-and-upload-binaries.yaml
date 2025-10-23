@@ -121,7 +121,7 @@ jobs:
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
-          cp lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
+          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
           cd autoware_lanelet2_extension/autoware_lanelet2_extension
           mkdir -p build
           cd build
@@ -139,7 +139,7 @@ jobs:
         run: |
           set -e
           source /opt/ros/humble/setup.bash
-          cp validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
+          cp $GITHUB_WORKSPACE/.github/cmake/validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
           cd autoware_lanelet2_map_validator
           mkdir -p build install
           cd build
