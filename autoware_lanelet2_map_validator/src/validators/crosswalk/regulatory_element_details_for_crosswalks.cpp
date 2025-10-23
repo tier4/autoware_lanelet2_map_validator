@@ -116,6 +116,17 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
       }
     }
 
+    auto referrer_lanelets = map.laneletLayer.findUsages(elem);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
     for (const auto & ref_line : ref_lines) {
       for (const auto & point : ref_line) {
         bbox2d.extend(point.basicPoint2d());
