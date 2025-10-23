@@ -45,15 +45,18 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   "${LANELET2_INSTALL_DIR}/include"
-  ${geometry_msgs_INCLUDE_DIRS}
-  ${visualization_msgs_INCLUDE_DIRS}
-  ${autoware_map_msgs_INCLUDE_DIRS}
-  ${autoware_planning_msgs_INCLUDE_DIRS}
-  ${tf2_INCLUDE_DIRS}
-  ${tf2_geometry_msgs_INCLUDE_DIRS}
-  ${rclcpp_INCLUDE_DIRS}
-  ${rcl_interfaces_INCLUDE_DIRS}
   /usr/include/eigen3
+)
+
+ament_target_dependencies(${PROJECT_NAME}_lib
+  rclcpp
+  rcl_interfaces
+  tf2
+  tf2_geometry_msgs
+  geometry_msgs
+  visualization_msgs
+  autoware_map_msgs
+  autoware_planning_msgs
 )
 
 target_link_libraries(${PROJECT_NAME}_lib
