@@ -29,8 +29,11 @@ jobs:
           REF_NAME="${{ github.event.inputs.tag-name }}"
           echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
       
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.get_version.outputs.version }}
 
       - name: Install Dependencies
         run: |
