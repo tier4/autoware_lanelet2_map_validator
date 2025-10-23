@@ -14,9 +14,21 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
 
     steps:
+      - name: Get Release Version
+        id: get_version
+        run: |
+          REF_NAME="${{ github.event.inputs.tag-name }}"
+          VERSION=${REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set tag name
+        id: set-tag-name
+        run: |
+          REF_NAME="${{ github.event.inputs.tag-name }}"
+          echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
+      
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -142,47 +154,43 @@ jobs:
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
-      - name: Package artifact
+      - name: Package artifacts
+        id: package
         run: |
-          mkdir -p dist
-          cp "${{ steps.build_validator.outputs.artifact }}" dist/
-          strip dist/autoware_lanelet2_map_validator || true
-          sha256sum dist/autoware_lanelet2_map_validator > dist/SHA256SUMS
-          cat dist/SHA256SUMS
+          VERSION=${{ steps.get_version.outputs.version }}
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
+          mkdir release_package
+          cp "${{ steps.build_validator.outputs.artifact }}" release_package/
+          cp -r autoware_lanelet2_map_validator/config release_package/
+          cp -r autoware_lanelet2_map_validator/map_requirements release_package/
+          strip release_package/autoware_lanelet2_map_validator || true
+          zip -r $ZIP_NAME release_package
+          sha256sum $ZIP_NAME > ${ZIP_NAME}.sha256
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: autoware-lanelet2-map-validator
-          path: dist
-          retention-days: 14
-
-      - name: Prepare tag
-        id: tag
+      - name: Sign the package with GPG
+        id: gpg-sign
         run: |
-          if [ -n "${{ github.event.inputs.tag_suffix }}" ]; then
-            TAG="validator-static-${{ github.event.inputs.tag_suffix }}"
-          else
-            TAG="validator-static-$(date -u +%Y%m%d%H%M)"
-          fi
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        if: ${{ github.event.inputs.release == 'true' }}
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          name: ${{ steps.tag.outputs.tag }}
-          draft: false
-          prerelease: false
-          files: |
-            dist/autoware_lanelet2_map_validator
-            dist/SHA256SUMS
+      - name: Install GitHub CLI
+        run: |
+          (type -p wget >/dev/null || (sudo apt-get update && sudo apt-get install wget -y))
+          sudo mkdir -p -m 755 /etc/apt/keyrings
+          wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee  > /dev/null
+          sudo apt-get update
+          sudo apt-get install gh -y
+
+      - name: Upload artifacts to GitHub Release
+        run: |
+          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+            "${{ steps.package.outputs.zip_name }}" \
+            "${{ steps.package.outputs.zip_name }}.sha256" \
+            "${{ steps.gpg-sign.outputs.signature_name }}" \
+            --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Summary
-        run: |
-          echo "Tag: ${{ steps.tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "Release: ${{ github.event.inputs.release }}" >> $GITHUB_STEP_SUMMARY
-          echo "Binary path (artifact): dist/autoware_lanelet2_map_validator" >> $GITHUB_STEP_SUMMARY
