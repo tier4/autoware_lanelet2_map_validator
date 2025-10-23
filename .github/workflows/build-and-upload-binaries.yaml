@@ -173,8 +173,8 @@ jobs:
       - name: Sign the package with GPG
         id: gpg-sign
         run: |
-          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
       - name: Install GitHub CLI
