@@ -16,6 +16,8 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <string>
+
 namespace lanelet::autoware::validation
 {
 namespace
