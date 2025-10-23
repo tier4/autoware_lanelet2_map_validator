@@ -36,7 +36,7 @@ public:
   RegulatoryElementDetailsForTrafficSignsValidator()
   {
     const auto parameters = ValidatorConfigStore::parameters()[name()];
-    max_bounding_box_size_ = get_parameter_or<double>(parameters, "max_bounding_box_size", 20.0);
+    max_bounding_box_size_ = get_parameter_or<double>(parameters, "max_bounding_box_size", 40.0);
   }
 
 private:

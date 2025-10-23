@@ -106,6 +106,17 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
       bbox2d.extend(lanelet::geometry::boundingBox2d(ref_line));
     }
 
+    auto referrer_lanelets = map.laneletLayer.findUsages(regulatory_element);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
     double dx = bbox2d.max().x() - bbox2d.min().x();
     double dy = bbox2d.max().y() - bbox2d.min().y();
     double bounding_box_size = std::hypot(dx, dy);

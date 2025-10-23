@@ -16,4 +16,4 @@ mapping.traffic_light.body_height:
   min_height: 0.2
   max_height: 2.0
 mapping.stop_line.regulatory_element_details_for_traffic_signs:
-  max_bounding_box_size: 20.0
+  max_bounding_box_size: 40.0
