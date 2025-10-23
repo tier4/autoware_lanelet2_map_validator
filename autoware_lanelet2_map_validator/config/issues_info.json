@@ -327,6 +327,22 @@
       "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
     }
   },
+  "Intersection.RoadMarkings-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This road_marking regulatory element must refer to exactly one stop_line linestring using the 'refers' role and must not have any 'ref_line'.",
+      "ja": "この road_marking regulatory element は 'refers' role を使用して、ちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
+    }
+  },
+  "Intersection.RoadMarkings-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This refers linestring must be of type 'stop_line'.",
+      "ja": "この refers linestring は type 'stop_line' である必要があります。"
+    }
+  },
   "Intersection.RightOfWayWithTrafficLights-001": {
     "severity": "Error",
     "primitive": "lanelet",
