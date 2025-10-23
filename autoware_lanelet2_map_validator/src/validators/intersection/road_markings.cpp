@@ -32,7 +32,8 @@ lanelet::validation::Issues RoadMarkingsValidator::operator()(const lanelet::Lan
   return issues;
 }
 
-lanelet::validation::Issues RoadMarkingsValidator::check_road_markings(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RoadMarkingsValidator::check_road_markings(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -57,8 +58,7 @@ lanelet::validation::Issues RoadMarkingsValidator::check_road_markings(const lan
         refer.attributeOr(lanelet::AttributeName::Type, "") !=
         std::string(lanelet::AttributeValueString::StopLine)) {
         // Issue-002: refers linestring must be of type stop_line
-        issues.emplace_back(
-          construct_issue_from_code(issue_code(this->name(), 2), refer.id()));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 2), refer.id()));
       }
     }
   }

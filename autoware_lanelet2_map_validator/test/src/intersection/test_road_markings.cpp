@@ -29,7 +29,8 @@ protected:
 
 TEST_F(TestRoadMarkingsValidator, ValidatorAvailability)  // NOLINT for gtest
 {
-  std::string expected_validator_name = lanelet::autoware::validation::RoadMarkingsValidator::name();
+  std::string expected_validator_name =
+    lanelet::autoware::validation::RoadMarkingsValidator::name();
 
   lanelet::validation::Strings validators =
     lanelet::validation::availabeChecks(expected_validator_name);  // cspell:disable-line
