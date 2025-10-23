@@ -1,4 +1,4 @@
-// Copyright 2024 Autoware Foundation
+// Copyright 2024-2025 TIER IV, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <Eigen/Core>
+#include <autoware_lanelet2_extension/regulatory_elements/Forward.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
 
