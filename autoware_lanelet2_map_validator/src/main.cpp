@@ -101,7 +101,6 @@ int main(int argc, char * argv[])
     parameters_file, issues_info_file, meta_config.language);
 
   // Validation against lanelet::LaneletMap object
-  std::cout << "Starting validation. This might take a while..." << std::endl;
   if (!lanelet_map_ptr) {
     throw std::invalid_argument("The map file was not possible to load!");
   } else if (!meta_config.requirements_file.empty()) {

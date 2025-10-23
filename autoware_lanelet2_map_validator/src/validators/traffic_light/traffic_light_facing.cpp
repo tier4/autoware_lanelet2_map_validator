@@ -21,8 +21,6 @@
 
 #include <lanelet2_core/LaneletMap.h>
 
-#include <autoware_lanelet2_extension/regulatory_elements/Forward.hpp>
-
 #include <algorithm>
 #include <cmath>
 #include <limits>

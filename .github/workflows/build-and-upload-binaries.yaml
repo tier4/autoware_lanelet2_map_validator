@@ -34,6 +34,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cherry-pick patch for static build
+        run: |
+          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
+
       - name: Install Dependencies
         run: |
           set -e
@@ -167,7 +171,6 @@ jobs:
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
           strip release_package/autoware_lanelet2_map_validator || true
           zip -r $ZIP_NAME release_package
-          sha256sum $ZIP_NAME > ${ZIP_NAME}.sha256
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
       - name: Sign the package with GPG
@@ -191,7 +194,6 @@ jobs:
         run: |
           gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
             "${{ steps.package.outputs.zip_name }}" \
-            "${{ steps.package.outputs.zip_name }}.sha256" \
             "${{ steps.gpg-sign.outputs.signature_name }}" \
             --clobber
         env:
