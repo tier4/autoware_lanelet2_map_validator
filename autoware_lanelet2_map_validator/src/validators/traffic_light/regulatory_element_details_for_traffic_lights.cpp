@@ -17,8 +17,10 @@
 #include "lanelet2_map_validator/utils.hpp"
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_validation/Validation.h>
 
+#include <cmath>
 #include <map>
 #include <string>
 #include <vector>
@@ -148,6 +150,46 @@ RegulatoryElementsDetailsForTrafficLightsValidator::checkRegulatoryElementOfTraf
       issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 6), elem->id()));
     } else if (!isOneByOne(refers, light_bulbs)) {
       issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 7), elem->id()));
+    }
+
+    lanelet::BoundingBox2d bbox2d;
+
+    for (const auto & refer : refers) {
+      for (const auto & point : refer) {
+        bbox2d.extend(lanelet::geometry::boundingBox2d(point));
+      }
+    }
+
+    for (const auto & ref_line : ref_lines) {
+      for (const auto & point : ref_line) {
+        bbox2d.extend(lanelet::geometry::boundingBox2d(point));
+      }
+    }
+
+    for (const auto & light_bulb : light_bulbs) {
+      for (const auto & point : light_bulb) {
+        bbox2d.extend(lanelet::geometry::boundingBox2d(point));
+      }
+    }
+
+    auto referrer_lanelets = map.laneletLayer.findUsages(elem);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    double dx = bbox2d.max().x() - bbox2d.min().x();
+    double dy = bbox2d.max().y() - bbox2d.min().y();
+    double bounding_box_size = std::hypot(dx, dy);
+
+    if (bounding_box_size > max_bounding_box_size_) {
+      // Issue-008: Traffic light regulatory element bounding box exceeds threshold
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 8), elem->id()));
     }
   }
   return issues;
