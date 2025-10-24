@@ -46,7 +46,8 @@ lanelet::validation::Issues CrosswalkSafetyAttributesValidator::check_crosswalk_
     const auto & attrs = ll.attributes();
     const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);
 
-    if (subtype_it == attrs.end() || subtype_it->second != lanelet::AttributeValueString::Crosswalk) {
+    if (
+      subtype_it == attrs.end() || subtype_it->second != lanelet::AttributeValueString::Crosswalk) {
       continue;
     }
 
