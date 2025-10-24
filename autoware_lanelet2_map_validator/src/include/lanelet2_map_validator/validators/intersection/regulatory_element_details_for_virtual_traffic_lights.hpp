@@ -42,12 +42,14 @@ public:
     const auto parameters = ValidatorConfigStore::parameters()[name()];
     supported_refers_type_ = get_parameter_or<std::vector<std::string>>(
       parameters, "supported_refers_type", {"intersection_coordination"});
+    max_bounding_box_size_ = get_parameter_or<double>(parameters, "max_bounding_box_size", 20.0);
   }
 
 private:
   lanelet::validation::Issues check_regulatory_element_details_for_virtual_traffic_lights(
     const lanelet::LaneletMap & map);
   std::vector<std::string> supported_refers_type_;
+  double max_bounding_box_size_;
 };
 }  // namespace lanelet::autoware::validation
 
