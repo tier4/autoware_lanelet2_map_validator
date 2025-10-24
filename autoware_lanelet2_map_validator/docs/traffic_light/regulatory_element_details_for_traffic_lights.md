@@ -23,6 +23,12 @@ The output issue marks "linestring" or "regulatory element" as the **primitive**
 | TrafficLight.RegulatoryElementDetails-007 | "refers and light_bulbs don't have one-to-one correspondence in this regulatory element."                                        | Error    | Regulatory Element | The `refers` and `light_bulbs` referred by a `traffic_light` regulatory element should be a group of one-to-one correspondence, while this regulatory element is not.                 | Check that all expected pairs of `traffic_light` and `light_bulbs` linestrings are referred by this regulatory element, and check that each `light_bulbs` linestring is referring to the correct `traffic_light` linestring ID. |
 | TrafficLight.RegulatoryElementDetails-008 | "This traffic light regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives." | Warning  | Regulatory Element | The traffic light regulatory element has a bounding box that is larger than expected, which may indicate that it contains unrelated primitives or covers an unnecessarily large area. | Review the regulatory element to ensure it only contains the necessary traffic light, light bulbs, and stop line primitives. Remove any unrelated primitives or split the regulatory element if it covers too large an area.    |
 
+## Parameters
+
+| Parameter Name        | Type   | Default Value | Description                                                                                                                    |
+| --------------------- | ------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| max_bounding_box_size | double | 40.0          | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives in a traffic light regulatory element. |
+
 ## Related source codes
 
 - regulatory_element_details_for_traffic_lights.hpp
