@@ -799,6 +799,46 @@
       "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
     }
   },
+  "Area.NoParkingArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This no_parking_area polygon is not referred by any regulatory element.",
+      "ja": "この no_parking_area polygon はどの regulatory element からも参照されていません。"
+    }
+  },
+  "Area.NoParkingArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element should refer to exactly one no_parking_area polygon.",
+      "ja": "regulatory element はちょうど1つの no_parking_area polygon を参照する必要があります。"
+    }
+  },
+  "Area.NoParkingArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The referred polygon should be a no_parking_area type.",
+      "ja": "参照する polygon は no_parking_area タイプである必要があります。"
+    }
+  },
+  "Area.NoParkingArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_parking_area regulatory element is not referred by any road subtype lanelet.",
+      "ja": "この no_parking_area regulatory element はどの road subtype の lanelet からも参照されていません。"
+    }
+  },
+  "Area.NoParkingArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_parking_area regulatory element should only be referred by road subtype lanelets.",
+      "ja": "この no_parking_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
+    }
+  },
   "Lane.PedestrianLane-001": {
     "severity": "Error",
     "primitive": "lanelet",
