@@ -24,6 +24,12 @@ The output issue marks "lanelet", "linestring" or "regulatory_element" as the **
 | Crosswalk.RegulatoryElementDetails-011 | "Attribute participant:pedestrian of refers is not set to "yes" or "true"."                                                  | Error    | lanelet            | The attribute `participant:pedestrian` of the `refers` lanelet (crosswalk lanelet) is not set to `yes` or `true`.                        | Set the attribute `participant:pedestrian` of the crosswalk lanelet to `yes` or `true`.                                                                                            |
 | Crosswalk.RegulatoryElementDetails-012 | "This crosswalk regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives." | Warning  | regulatory element | The bounding box of all primitives in the regulatory element exceeds the configured threshold, indicating possible unrelated primitives. | Review the regulatory element to ensure all referenced primitives (refers, ref_lines, crosswalk_polygons) are actually related to this crosswalk. Remove any unrelated primitives. |
 
+## Parameters
+
+| Parameter Name        | Type   | Default Value | Description                                                                                                                |
+| --------------------- | ------ | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| max_bounding_box_size | double | 40.0          | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives in a crosswalk regulatory element. |
+
 ## Related source codes
 
 - regulatory_element_details_for_crosswalks.hpp
