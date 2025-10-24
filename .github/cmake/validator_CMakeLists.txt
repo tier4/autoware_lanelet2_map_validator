@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
-project(autoware_lanelet2_map_validator)
+project(autoware_lanelet2_map_validator VERSION 1.5.2)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS OFF)
 
 # Dependencies
-find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 # Extract package version
@@ -45,9 +45,10 @@ add_library(map_validator_includes INTERFACE)
 target_include_directories(map_validator_includes INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}/src/include
   ${CMAKE_CURRENT_BINARY_DIR}/include
-  /home/autoware_lanelet2_extension/autoware_lanelet2_extension/include
-  /home/lanelet2/install/include
-  ${EIGEN3_INCLUDE_DIR}
+  $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/include
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/include
+  $ENV{GITHUB_WORKSPACE}/fmt/temp_install/include
+  /usr/include/eigen3
 )
 
 add_library(autoware_lanelet2_map_validator_obj OBJECT ${MAP_VALIDATOR_SRC})
@@ -58,28 +59,34 @@ target_link_libraries(autoware_lanelet2_map_validator_obj map_validator_includes
 add_executable(autoware_lanelet2_map_validator
   src/main.cpp
   $<TARGET_OBJECTS:autoware_lanelet2_map_validator_obj>
-  /home/autoware_lanelet2_extension/autoware_lanelet2_extension/include/autoware_lanelet2_extension/projection/transverse_mercator_projector.hpp
-  /home/autoware_lanelet2_extension/autoware_lanelet2_extension/include/autoware_lanelet2_extension/projection/mgrs_projector.hpp
+  $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/include/autoware_lanelet2_extension/projection/transverse_mercator_projector.hpp
+  $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/include/autoware_lanelet2_extension/projection/mgrs_projector.hpp
 )
 
 # ========= Link Libraries =========
 
 target_link_libraries(autoware_lanelet2_map_validator map_validator_includes)
 
-target_link_options(autoware_lanelet2_map_validator PRIVATE -Wl,--start-group)
+# Force static linking by specifying -static-libgcc and -static-libstdc++
+target_link_options(autoware_lanelet2_map_validator PRIVATE 
+  -Wl,--start-group
+  -static-libgcc
+  -static-libstdc++
+)
 
 target_link_libraries(autoware_lanelet2_map_validator
-  /home/autoware_lanelet2_extension/build/libautoware_lanelet2_extension_lib.a
+  $ENV{GITHUB_WORKSPACE}/autoware_lanelet2_extension/autoware_lanelet2_extension/build/libautoware_lanelet2_extension_lib.a
 
-  /home/lanelet2/install/lib/liblanelet2_validation.a
-  /home/lanelet2/install/lib/liblanelet2_routing.a
-  /home/lanelet2/install/lib/liblanelet2_traffic_rules.a
-  /home/lanelet2/install/lib/liblanelet2_io.a
-  /home/lanelet2/install/lib/liblanelet2_projection.a
-  /home/lanelet2/install/lib/liblanelet2_core.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_validation.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_routing.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_traffic_rules.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_io.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_projection.a
+  $ENV{GITHUB_WORKSPACE}/lanelet2/install/lib/liblanelet2_core.a
 
   /usr/lib/x86_64-linux-gnu/libyaml-cpp.a
-  /home/fmt/install/lib/libfmt.a
+  $ENV{GITHUB_WORKSPACE}/fmt/temp_install/lib/libfmt.a
+  
   nlohmann_json::nlohmann_json
   /usr/lib/x86_64-linux-gnu/libboost_program_options.a
   /usr/lib/x86_64-linux-gnu/libboost_filesystem.a
@@ -91,12 +98,21 @@ target_link_libraries(autoware_lanelet2_map_validator
   /usr/lib/x86_64-linux-gnu/libGeographic.a
   /usr/lib/x86_64-linux-gnu/libpugixml.a
 
+  -Wl,-Bstatic
+  pthread
+  -Wl,-Bdynamic
+  
+  dl
   stdc++fs
 )
 
 target_link_options(autoware_lanelet2_map_validator PRIVATE -Wl,--end-group)
 
 # ========= Install =========
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "Install prefix" FORCE)
+endif()
+
 install(TARGETS autoware_lanelet2_map_validator DESTINATION lib/${PROJECT_NAME})
 install(PROGRAMS template/create_new_validator.py DESTINATION lib/${PROJECT_NAME})
 
