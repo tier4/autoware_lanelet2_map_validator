@@ -719,6 +719,22 @@
       "ja": "refers lanelet のタグ participant:pedestrian が \"yes\" か \"true\" に設定されていません。"
     }
   },
+  "Crosswalk.SafetyAttributes-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "The safety_slow_down_speed attribute value '{attribute_value}' is not a positive numerical value.",
+      "ja": "safety_slow_down_speed 属性の値 '{attribute_value}' が正の数値ではありません。"
+    }
+  },
+  "Crosswalk.SafetyAttributes-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "The safety_slow_down_distance attribute value '{attribute_value}' is not a positive numerical value.",
+      "ja": "safety_slow_down_distance 属性の値 '{attribute_value}' が正の数値ではありません。"
+    }
+  },
   "Lane.LateralSubtypeConnection-001": {
     "severity": "Error",
     "primitive": "lanelet",
