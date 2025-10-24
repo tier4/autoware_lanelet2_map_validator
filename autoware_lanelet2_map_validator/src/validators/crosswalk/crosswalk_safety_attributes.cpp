@@ -46,46 +46,47 @@ lanelet::validation::Issues CrosswalkSafetyAttributesValidator::check_crosswalk_
     const auto & attrs = ll.attributes();
     const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);
 
-    if (
-      subtype_it != attrs.end() && subtype_it->second == lanelet::AttributeValueString::Crosswalk) {
-      // Issue-001: safety_slow_down_speed attribute
-      const auto & speed_it = attrs.find("safety_slow_down_speed");
-      if (speed_it != attrs.end()) {
-        const std::string & speed_value = speed_it->second.value();
-        try {
-          double speed = std::stod(speed_value);
-          if (speed <= 0.0) {
-            std::map<std::string, std::string> reason_map;
-            reason_map["attribute_value"] = speed_value;
-            issues.emplace_back(
-              construct_issue_from_code(issue_code(this->name(), 1), ll.id(), reason_map));
-          }
-        } catch (const std::exception &) {
+    if (subtype_it == attrs.end() || subtype_it->second != lanelet::AttributeValueString::Crosswalk) {
+      continue;
+    }
+
+    // Issue-001: safety_slow_down_speed attribute
+    const auto & speed_it = attrs.find("safety_slow_down_speed");
+    if (speed_it != attrs.end()) {
+      const std::string & speed_value = speed_it->second.value();
+      try {
+        double speed = std::stod(speed_value);
+        if (speed <= 0.0) {
           std::map<std::string, std::string> reason_map;
           reason_map["attribute_value"] = speed_value;
           issues.emplace_back(
             construct_issue_from_code(issue_code(this->name(), 1), ll.id(), reason_map));
         }
+      } catch (const std::exception &) {
+        std::map<std::string, std::string> reason_map;
+        reason_map["attribute_value"] = speed_value;
+        issues.emplace_back(
+          construct_issue_from_code(issue_code(this->name(), 1), ll.id(), reason_map));
       }
+    }
 
-      // Issue-002: safety_slow_down_distance attribute
-      const auto & distance_it = attrs.find("safety_slow_down_distance");
-      if (distance_it != attrs.end()) {
-        const std::string & distance_value = distance_it->second.value();
-        try {
-          double distance = std::stod(distance_value);
-          if (distance <= 0.0) {
-            std::map<std::string, std::string> reason_map;
-            reason_map["attribute_value"] = distance_value;
-            issues.emplace_back(
-              construct_issue_from_code(issue_code(this->name(), 2), ll.id(), reason_map));
-          }
-        } catch (const std::exception &) {
+    // Issue-002: safety_slow_down_distance attribute
+    const auto & distance_it = attrs.find("safety_slow_down_distance");
+    if (distance_it != attrs.end()) {
+      const std::string & distance_value = distance_it->second.value();
+      try {
+        double distance = std::stod(distance_value);
+        if (distance <= 0.0) {
           std::map<std::string, std::string> reason_map;
           reason_map["attribute_value"] = distance_value;
           issues.emplace_back(
             construct_issue_from_code(issue_code(this->name(), 2), ll.id(), reason_map));
         }
+      } catch (const std::exception &) {
+        std::map<std::string, std::string> reason_map;
+        reason_map["attribute_value"] = distance_value;
+        issues.emplace_back(
+          construct_issue_from_code(issue_code(this->name(), 2), ll.id(), reason_map));
       }
     }
   }
