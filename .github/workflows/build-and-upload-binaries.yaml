@@ -23,11 +23,30 @@ jobs:
           VERSION=${REF_NAME#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Set tag name
-        id: set-tag-name
-        run: |
-          REF_NAME="${{ github.event.inputs.tag-name }}"
-          echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
+          # Split into major, minor, patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          # Default values to 0 if missing
+          MAJOR=${MAJOR:-0}
+          MINOR=${MINOR:-0}
+          PATCH=${PATCH:-0}
+
+          # Reference version 1.5.2
+          REF_MAJOR=1
+          REF_MINOR=5
+          REF_PATCH=2
+
+          # Compare version parts
+          if (( MAJOR < REF_MAJOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR < REF_MINOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR == REF_MINOR && PATCH <= REF_PATCH )); then
+            CATEGORY="before_or_equal_1_5_2"
+          else
+            CATEGORY="after_1_5_2"
+          fi
+
+          echo "Category: $CATEGORY"
+          echo "category=$CATEGORY" >> "$GITHUB_OUTPUT"
 
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,11 +54,22 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.get_version.outputs.version }}
 
-      - name: Cherry-pick patch for static build
+      - name: Cherry-pick preparation
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin static_build_helper
+          git fetch origin main static_build_helper
+
+      - name: cherry-pick for version <= 1.5.2
+        if: steps.parse.outputs.category == 'before_or_equal_1_5_2'
+        run: |
+          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
+          git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
+          git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
+
+      - name: cherry-pick for version > 1.5.2
+        if: steps.parse.outputs.category == 'after_1_5_2'
+        run: |
           git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
 
       - name: Install Dependencies
@@ -196,7 +226,7 @@ jobs:
 
       - name: Upload artifacts to GitHub Release
         run: |
-          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+          gh release upload "${{ steps.get_version.outputs.version }}" \
             "${{ steps.package.outputs.zip_name }}" \
             "${{ steps.gpg-sign.outputs.signature_name }}" \
             --clobber
