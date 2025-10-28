@@ -68,7 +68,7 @@ add_executable(autoware_lanelet2_map_validator
 target_link_libraries(autoware_lanelet2_map_validator map_validator_includes)
 
 # Force static linking by specifying -static-libgcc and -static-libstdc++
-target_link_options(autoware_lanelet2_map_validator PRIVATE 
+target_link_options(autoware_lanelet2_map_validator PRIVATE
   -Wl,--start-group
   -static-libgcc
   -static-libstdc++
@@ -86,7 +86,7 @@ target_link_libraries(autoware_lanelet2_map_validator
 
   /usr/lib/x86_64-linux-gnu/libyaml-cpp.a
   $ENV{GITHUB_WORKSPACE}/fmt/temp_install/lib/libfmt.a
-  
+
   nlohmann_json::nlohmann_json
   /usr/lib/x86_64-linux-gnu/libboost_program_options.a
   /usr/lib/x86_64-linux-gnu/libboost_filesystem.a
@@ -101,7 +101,7 @@ target_link_libraries(autoware_lanelet2_map_validator
   -Wl,-Bstatic
   pthread
   -Wl,-Bdynamic
-  
+
   dl
   stdc++fs
 )

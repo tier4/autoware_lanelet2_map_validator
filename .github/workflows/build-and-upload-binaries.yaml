@@ -28,7 +28,7 @@ jobs:
         run: |
           REF_NAME="${{ github.event.inputs.tag-name }}"
           echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
-      
+
       - name: Check out repository
         uses: actions/checkout@v4
         with:
