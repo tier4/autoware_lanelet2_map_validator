@@ -1,4 +1,4 @@
-name: static-build-and-upload-binaries
+name: pre-build-and-upload-binaries
 
 on:
   workflow_dispatch:
@@ -199,7 +199,7 @@ jobs:
         id: package
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
-          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
