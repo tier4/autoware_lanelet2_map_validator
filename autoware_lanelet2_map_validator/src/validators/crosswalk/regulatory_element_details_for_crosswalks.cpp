@@ -18,7 +18,6 @@
 
 #include <autoware_lanelet2_extension/regulatory_elements/crosswalk.hpp>
 #include <range/v3/view/filter.hpp>
-#include <rclcpp/rclcpp.hpp>
 
 #include <boost/geometry/algorithms/correct.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
@@ -120,11 +119,11 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
         boost::geometry::correct(road_polygon);
 
         if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
-          std::map<std::string, std::string> substitutions;
-          substitutions["crosswalk_id"] = std::to_string(lane.id());
-          substitutions["road_lanelet_id"] = std::to_string(refer_elem.id());
+          std::map<std::string, std::string> reason_map;
+          reason_map["crosswalk_id"] = std::to_string(lane.id());
+          reason_map["road_lanelet_id"] = std::to_string(refer_elem.id());
           issues.emplace_back(
-            construct_issue_from_code(issue_code(this->name(), 12), elem->id(), substitutions));
+            construct_issue_from_code(issue_code(this->name(), 12), elem->id(), reason_map));
         }
       }
     }
