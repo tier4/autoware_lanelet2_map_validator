@@ -19,7 +19,9 @@
 #include <autoware_lanelet2_extension/regulatory_elements/virtual_traffic_light.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
 
+#include <cmath>
 #include <map>
 #include <string>
 
@@ -115,6 +117,51 @@ lanelet::validation::Issues RegulatoryElementDetailsForVirtualTrafficLightsValid
         issues.emplace_back(construct_issue_from_code(
           issue_code(this->name(), 6), refers_linestring.id(), supported_refers_map));
       }
+    }
+
+    lanelet::BoundingBox2d bbox2d;
+
+    for (const auto & start_line : start_lines) {
+      for (const auto & point : start_line) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    for (const auto & stop_line : stop_lines) {
+      for (const auto & point : stop_line) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    for (const auto & end_line : end_lines) {
+      for (const auto & point : end_line) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    for (const auto & refers_linestring : refers_linestrings) {
+      for (const auto & point : refers_linestring) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    auto referrer_lanelets = map.laneletLayer.findUsages(reg_elem);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    double dx = bbox2d.max().x() - bbox2d.min().x();
+    double dy = bbox2d.max().y() - bbox2d.min().y();
+    double bounding_box_size = std::hypot(dx, dy);
+
+    if (bounding_box_size > max_bounding_box_size_) {
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 7), reg_elem->id()));
     }
   }
 
