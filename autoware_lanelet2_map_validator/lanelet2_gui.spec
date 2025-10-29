@@ -33,9 +33,9 @@ if ext_python_path:
         rel_path = os.path.relpath(sofile, ext_python_path)
         binaries.append((sofile, os.path.join('autoware_lanelet2_extension_python', os.path.dirname(rel_path))))
 
-# Also add from autoware source if available
-autoware_ext_path = '/home/radityagiovanni/autoware_3/autoware/src/core/autoware_lanelet2_extension'
-if os.path.exists(autoware_ext_path):
+# Also add from autoware source if available via environment variable
+autoware_ext_path = os.environ.get('AUTOWARE_LANELET2_EXTENSION_PATH')
+if autoware_ext_path and os.path.exists(autoware_ext_path):
     for sofile in glob.glob(os.path.join(autoware_ext_path, '**/*.so'), recursive=True):
         rel_path = os.path.relpath(sofile, autoware_ext_path)
         binaries.append((sofile, os.path.join('autoware_lanelet2_extension', os.path.dirname(rel_path))))
