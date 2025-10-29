@@ -124,11 +124,15 @@ def run_lanelet2_validator(
     validator_filter: str = "",
 ) -> Tuple[int, List[str], List[str]]:
     """Run the Lanelet2 validator with the specified parameters."""
+    import sys
+    import os
+    if getattr(sys, 'frozen', False):
+        exe_dir = os.path.dirname(sys.executable)
+    else:
+        exe_dir = os.path.dirname(os.path.abspath(__file__))
+    validator_exe = os.path.join(exe_dir, "autoware_lanelet2_map_validator")
     cmd = [
-        "ros2",
-        "run",
-        "autoware_lanelet2_map_validator",
-        "autoware_lanelet2_map_validator",
+        validator_exe,
         "-p",
         projector,
         "-m",
@@ -157,3 +161,35 @@ def run_lanelet2_validator(
     out_lines = result.stdout.splitlines()
     err_lines = result.stderr.splitlines()
     return result.returncode, out_lines, err_lines
+
+
+def get_available_validators() -> list:
+    """Run the bundled validator executable with --print and return the list of available validators."""
+    import sys
+    import os
+    if getattr(sys, 'frozen', False):
+        exe_dir = os.path.dirname(sys.executable)
+    else:
+        exe_dir = os.path.dirname(os.path.abspath(__file__))
+    validator_exe = os.path.join(exe_dir, "autoware_lanelet2_map_validator")
+    cmd = [validator_exe, "--print"]
+    try:
+        result = subprocess.run(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, text=True, check=True)
+        out_lines = result.stdout.splitlines()
+        validators = []
+        for line in out_lines:
+            line = line.strip()
+            if not line:
+                continue
+            header = line.lower().rstrip(":")
+            if header == "The following checks are available":
+                continue
+            if (
+                "." in line or "_" in line or line.islower()
+            ):
+                validators.append(line)
+        return validators
+    except Exception as e:
+        print(f"Error fetching available validators: {e}")
+        return []
