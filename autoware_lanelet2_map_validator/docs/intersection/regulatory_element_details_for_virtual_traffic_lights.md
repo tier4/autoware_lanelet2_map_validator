@@ -28,7 +28,7 @@ The validator outputs the following issue with the corresponding ID of the primi
 | Parameter             | Default Value               | Description                                                                                                                                                                 |
 | --------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | supported_refers_type | [intersection_coordination] | A string array of possible `refers` type that are expected. If the type of `refers` is not the one from this array, this validator will output an error.                    |
-| max_bounding_box_size | 20.0                        | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives of a virtual traffic light regulatory element. Used to detect unrelated primitives. |
+| max_bounding_box_size | 40.0                        | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives of a virtual traffic light regulatory element. Used to detect unrelated primitives. |
 
 ## Related source codes
 
