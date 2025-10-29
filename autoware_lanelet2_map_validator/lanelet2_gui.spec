@@ -61,7 +61,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='lanelet2_gui',
+    name='autoware_lanelet2_map_validator_gui',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
