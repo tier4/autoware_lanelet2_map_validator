@@ -172,12 +172,14 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, NonIntersectingLanelet)  // N
   std::map<std::string, std::string> reason_map1;
   reason_map1["crosswalk_id"] = "18";
   reason_map1["road_lanelet_id"] = "11";
-  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 13), 32, reason_map1);
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 13), 32, reason_map1);
 
   std::map<std::string, std::string> reason_map2;
   reason_map2["crosswalk_id"] = "18";
   reason_map2["road_lanelet_id"] = "7";
-  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 13), 31, reason_map2);
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 13), 31, reason_map2);
 
   const auto expected_issues = {expected_issue1, expected_issue2};
 
