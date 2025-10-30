@@ -46,8 +46,8 @@ if autoware_ext_path and os.path.exists(autoware_ext_path):
         binaries.append((sofile, os.path.join('autoware_lanelet2_extension', os.path.dirname(rel_path))))
 
 a = Analysis(
-    ['gui/gui.py'],
-    pathex=['gui'],
+    ['gui.py'],
+    pathex=[''],
     binaries=binaries,
     datas=datas,
     hiddenimports=['lanelet2', 'lanelet2.io', 'autoware_lanelet2_extension_python', 'autoware_lanelet2_extension_python.projection'],
