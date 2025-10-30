@@ -21,7 +21,6 @@ from datetime import datetime
 import os
 from pathlib import Path
 import re
-import subprocess
 import sys
 
 import PySide6
