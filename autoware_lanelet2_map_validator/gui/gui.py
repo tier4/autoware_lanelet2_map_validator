@@ -34,7 +34,8 @@ else:
 if SCRIPT_DIR not in sys.path:
     sys.path.insert(0, SCRIPT_DIR)
 
-from gui_helper import DropLineEdit, run_lanelet2_validator
+from gui_helper import DropLineEdit
+from gui_helper import run_lanelet2_validator
 from map_visualizer import MapVisualizerWidget
 
 if not hasattr(PySide6, "__version__"):
@@ -603,6 +604,7 @@ language (-l arg)           Language to display the issue messages. Available
     def fetch_available_validators(self):
         """Fetch available validators using the helper from gui_helper."""
         from gui_helper import get_available_validators
+
         return get_available_validators()
 
     def toggle_manual_input(self, state):
