@@ -602,60 +602,10 @@ language (-l arg)           Language to display the issue messages. Available
             self.output_edit.setText(dir_path)
 
     def fetch_available_validators(self):
-        """Fetch available validators from the command line tool."""
-        try:
-            result = subprocess.run(
-                [
-                    "ros2",
-                    "run",
-                    "autoware_lanelet2_map_validator",
-                    "autoware_lanelet2_map_validator",
-                    "--print",
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                check=False,
-            )
-            output = result.stdout.strip()
+        """Fetch available validators using the helper from gui_helper."""
+        from gui_helper import get_available_validators
 
-            validators = []
-            if output:
-                lines = output.split("\n")
-                for line in lines:
-                    line = line.strip()
-                    if (
-                        line
-                        and not line.startswith("=")
-                        and not line.startswith("-")
-                        and not line.startswith("Available")
-                        and not line.startswith("The")
-                        and not line.lower().startswith("list")
-                        and not line.lower().startswith("following")
-                        and len(line.split()) > 0
-                    ):
-
-                        validator_name = line.split()[0] if line.split() else line
-
-                        if (
-                            validator_name
-                            and validator_name not in validators
-                            and validator_name
-                            not in ["The", "Available", "List", "Following", "validators:", "are:"]
-                            and validator_name.lower()
-                            not in ["the", "available", "list", "following", "validators", "are"]
-                            and (
-                                "." in validator_name
-                                or "_" in validator_name
-                                or validator_name.islower()
-                            )
-                        ):
-                            validators.append(validator_name)
-
-            return sorted(validators) if validators else []
-        except Exception as e:
-            print(f"Error fetching validators: {e}")
-            return []
+        return get_available_validators()
 
     def toggle_manual_input(self, state):
         """Toggle between multi-select picker and manual regex input."""
