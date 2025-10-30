@@ -67,11 +67,13 @@ jobs:
           git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
           git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
           git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
+          git cherry-pick 23b2b62eb72b261f540e1cda9a32087ae0c365ba
 
       - name: cherry-pick for version > 1.5.2
         if: steps.get_version.outputs.category == 'after_1_5_2'
         run: |
           git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
+          git cherry-pick 23b2b62eb72b261f540e1cda9a32087ae0c365ba
 
       - name: Install Dependencies
         run: |
