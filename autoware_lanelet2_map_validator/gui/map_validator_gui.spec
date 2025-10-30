@@ -1,59 +1,56 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_all
 import os
-import sys
 import glob
+import sys
 
-# Get the current directory where the spec file is located
-spec_dir = os.path.dirname(os.path.abspath(SPEC))
+# Add paths for lanelet2 and autoware_lanelet2_extension_python
+binaries = []
+datas = []
 
-# Dynamic path detection
-def find_lanelet2_binaries():
-    """Dynamically find lanelet2 shared libraries"""
-    python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    ros_distro = os.environ.get('ROS_DISTRO', 'humble')
+# Find and add lanelet2 .so files
+lanelet2_path = os.environ.get('LANELET2_INSTALL_DIR')
+if lanelet2_path:
+    # Adjust for typical CMake install layout
+    lanelet2_path = os.path.join(lanelet2_path, 'lib', 'python3.10', 'site-packages', 'lanelet2')
+if not lanelet2_path or not os.path.exists(lanelet2_path):
+    lanelet2_path = None
+    for path in sys.path:
+        potential_path = os.path.join(path, 'lanelet2')
+        if os.path.exists(potential_path):
+            lanelet2_path = potential_path
+            break
 
-    search_paths = [
-        f"/opt/ros/{ros_distro}/lib/python{python_version}/site-packages/lanelet2",
-        f"/opt/ros/*/lib/python{python_version}/site-packages/lanelet2",
-        f"/usr/lib/python{python_version}/site-packages/lanelet2",
-    ]
+if lanelet2_path:
+    for sofile in glob.glob(os.path.join(lanelet2_path, '**/*.so'), recursive=True):
+        rel_path = os.path.relpath(sofile, lanelet2_path)
+        binaries.append((sofile, os.path.join('lanelet2', os.path.dirname(rel_path))))
 
-    for path_pattern in search_paths:
-        for path in glob.glob(path_pattern):
-            if os.path.exists(path) and glob.glob(f"{path}/*.so"):
-                print(f"Found lanelet2 at: {path}")
-                return [(f"{path}/*.so", 'lanelet2')]
+# Find and add autoware_lanelet2_extension_python files
+ext_python_path = None
+for path in sys.path:
+    potential_path = os.path.join(path, 'autoware_lanelet2_extension_python')
+    if os.path.exists(potential_path):
+        ext_python_path = potential_path
+        break
 
-    print("Warning: lanelet2 binaries not found!")
-    return []
+if ext_python_path:
+    for sofile in glob.glob(os.path.join(ext_python_path, '**/*.so'), recursive=True):
+        rel_path = os.path.relpath(sofile, ext_python_path)
+        binaries.append((sofile, os.path.join('autoware_lanelet2_extension_python', os.path.dirname(rel_path))))
 
-datas = [
-    (os.path.join(spec_dir, 'gui_helper.py'), '.'),
-    (os.path.join(spec_dir, 'map_visualizer.py'), '.'),
-    (os.path.join(spec_dir, 'matplotlib_widget.py'), '.'),
-]
-
-# Use dynamic search instead of hardcoded path
-binaries = find_lanelet2_binaries()
-
-hiddenimports = [
-    'mpl_toolkits.mplot3d',
-    'gui_helper',
-    'map_visualizer',
-    'matplotlib_widget',
-    'lanelet2',
-    'autoware_lanelet2_extension_python.projection',
-]
-tmp_ret = collect_all('PySide6-essential')
-datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+# Also add from autoware source if available via environment variable
+autoware_ext_path = os.environ.get('AUTOWARE_LANELET2_EXTENSION_PATH')
+if autoware_ext_path and os.path.exists(autoware_ext_path):
+    for sofile in glob.glob(os.path.join(autoware_ext_path, '**/*.so'), recursive=True):
+        rel_path = os.path.relpath(sofile, autoware_ext_path)
+        binaries.append((sofile, os.path.join('autoware_lanelet2_extension', os.path.dirname(rel_path))))
 
 a = Analysis(
-    ['gui.py', 'gui_helper.py', 'map_visualizer.py', 'matplotlib_widget.py'],
-    pathex=[],
+    ['gui.py'],
+    pathex=[''],
     binaries=binaries,
     datas=datas,
-    hiddenimports=hiddenimports,
+    hiddenimports=['lanelet2', 'lanelet2.io', 'autoware_lanelet2_extension_python', 'autoware_lanelet2_extension_python.projection'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -69,14 +66,14 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='map_validator_gui',
+    name='autoware_lanelet2_map_validator_gui',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
