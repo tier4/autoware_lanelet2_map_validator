@@ -221,6 +221,7 @@ jobs:
           if [ -n "$GUI_BIN" ]; then
             echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
           fi
+          cd ../..
 
       - name: Package artifacts
         id: package
