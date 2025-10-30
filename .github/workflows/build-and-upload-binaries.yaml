@@ -1,4 +1,4 @@
-name: build-and-upload-binaries
+name: pre-build-and-upload-binaries
 
 on:
   workflow_dispatch:
@@ -8,10 +8,12 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: write
+
 jobs:
-  build-and-upload:
+  build:
     runs-on: ubuntu-22.04
-    container: ghcr.io/autowarefoundation/autoware:core-devel
 
     steps:
       - name: Get Release Version
@@ -21,11 +23,30 @@ jobs:
           VERSION=${REF_NAME#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Set tag name
-        id: set-tag-name
-        run: |
-          REF_NAME="${{ github.event.inputs.tag-name }}"
-          echo "tag-name=$REF_NAME" >> $GITHUB_OUTPUT
+          # Split into major, minor, patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          # Default values to 0 if missing
+          MAJOR=${MAJOR:-0}
+          MINOR=${MINOR:-0}
+          PATCH=${PATCH:-0}
+
+          # Reference version 1.5.2
+          REF_MAJOR=1
+          REF_MINOR=5
+          REF_PATCH=2
+
+          # Compare version parts
+          if (( MAJOR < REF_MAJOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR < REF_MINOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR == REF_MINOR && PATCH <= REF_PATCH )); then
+            CATEGORY="before_or_equal_1_5_2"
+          else
+            CATEGORY="after_1_5_2"
+          fi
+
+          echo "Category: $CATEGORY"
+          echo "category=$CATEGORY" >> "$GITHUB_OUTPUT"
 
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,44 +54,157 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.get_version.outputs.version }}
 
-      - name: Install Utilities
+      - name: Cherry-pick preparation
         run: |
-          apt-get update
-          apt-get install -y zip gnupg curl
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main static_build_helper
 
-      - name: Remove exec_depend
-        uses: autowarefoundation/autoware-github-actions/remove-exec-depend@v1
-
-      - name: Initialize and update rosdep
-        shell: bash
+      - name: cherry-pick for version <= 1.5.2
+        if: steps.get_version.outputs.category == 'before_or_equal_1_5_2'
         run: |
-          rosdep init || echo "rosdep has already been initialized."
-          rosdep update
+          git cherry-pick b92492bb2232f0c1d502cfc0c6aede2f3169116b
+          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
+          git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
+          git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
 
-      - name: Install package dependencies with rosdep
-        shell: bash
+      - name: cherry-pick for version > 1.5.2
+        if: steps.get_version.outputs.category == 'after_1_5_2'
         run: |
-          DEBIAN_FRONTEND=noninteractive rosdep install -yqq --from-paths . --ignore-src --rosdistro humble -r
+          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
 
-      - name: Build the package for Release
-        shell: bash
+      - name: Install Dependencies
         run: |
+          set -e
+          sudo apt-get update
+          sudo apt-get install -y curl gnupg lsb-release ca-certificates
+          sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list
+
+          sudo apt-get update
+          sudo apt-get install -y \
+            ros-humble-ros-base \
+            git build-essential cmake \
+            libboost-all-dev \
+            nlohmann-json3-dev libyaml-cpp-dev libgeographic-dev libpugixml-dev libeigen3-dev \
+            librange-v3-dev \
+            python3-colcon-common-extensions python3-ament-package \
+            ros-humble-mrt-cmake-modules \
+            ros-humble-geographic-msgs ros-humble-unique-identifier-msgs \
+            ros-humble-rosidl-typesupport-c ros-humble-rosidl-typesupport-cpp \
+            ros-humble-tf2 ros-humble-tf2-geometry-msgs ros-humble-visualization-msgs
+          sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Build Lanelet2 (static, loop style)
+        run: |
+          set -e
           source /opt/ros/humble/setup.bash
-          colcon build \
-            --packages-select autoware_lanelet2_map_validator \
-            --event-handlers console_cohesion+ \
-            --cmake-args "-DCMAKE_BUILD_TYPE=Release"
+          git clone https://github.com/fzi-forschungszentrum-informatik/lanelet2.git
+          cd lanelet2
+          git checkout 1.2.2
+          mkdir -p build install
+          cd build
+          for pkg in lanelet2_core lanelet2_io lanelet2_projection lanelet2_traffic_rules lanelet2_routing lanelet2_validation; do
+            echo "==== Building $pkg ===="
+            mkdir -p $pkg
+            cd $pkg
+            if [ -d ../../install/share/lanelet2_core ]; then
+              export CMAKE_PREFIX_PATH="$(realpath ../../install):/opt/ros/humble:${CMAKE_PREFIX_PATH}"
+              export AMENT_PREFIX_PATH="$(realpath ../../install):${AMENT_PREFIX_PATH}"
+            else
+              export CMAKE_PREFIX_PATH="/opt/ros/humble"
+            fi
+            cmake ../../$pkg \
+              -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
+              -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_CXX_STANDARD=17 \
+              -DCMAKE_CXX_FLAGS="-fPIC" \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DBUILD_TESTING=OFF \
+              -DCMAKE_INSTALL_PREFIX=../../install
+            make -j$(nproc)
+            make install
+            cd ..
+          done
+
+      - name: Build autoware_map_msgs
+        run: |
+          set -e
+          source /opt/ros/humble/setup.bash
+          mkdir -p autoware_ws/src
+          cd autoware_ws/src
+          git clone https://github.com/autowarefoundation/autoware_msgs.git
+          cd ..
+          colcon build --cmake-args -DBUILD_TESTING=OFF
+
+      - name: Build fmt (static)
+        run: |
+          set -e
+          git clone https://github.com/fmtlib/fmt.git
+          cd fmt
+          mkdir -p build temp_install
+          cd build
+          cmake .. \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_STANDARD=17 \
+            -DCMAKE_CXX_FLAGS="-fPIC" \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_INSTALL_PREFIX=../temp_install
+          make -j$(nproc)
+          make install
+
+      - name: Build autoware_lanelet2_extension (static lib)
+        run: |
+          set -e
+          source /opt/ros/humble/setup.bash
+          git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
+          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
+          cd autoware_lanelet2_extension/autoware_lanelet2_extension
+          mkdir -p build
+          cd build
+          export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_INSTALL_PREFIX=../install \
+            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
+          make -j$(nproc)
+          make install
+
+      - name: Build validator (static exe)
+        id: build_validator
+        run: |
+          set -e
+          source /opt/ros/humble/setup.bash
+          cp $GITHUB_WORKSPACE/.github/cmake/validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
+          cd autoware_lanelet2_map_validator
+          mkdir -p build install
+          cd build
+          export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_INSTALL_PREFIX=../install \
+            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
+            -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
+          make -j$(nproc)
+          make install
+          BIN=../install/lib/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator
+          ls -l $BIN
+          echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
       - name: Package artifacts
         id: package
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
-          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-ubuntu-22.04.zip"
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-x86_64.zip"
           mkdir release_package
-          cp build/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator release_package/
-          cp build/autoware_lanelet2_map_validator/libautoware_lanelet2_map_validator_lib.so release_package/
-          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/config release_package/
-          cp -r install/autoware_lanelet2_map_validator/share/autoware_lanelet2_map_validator/map_requirements release_package/
+          cp "${{ steps.build_validator.outputs.artifact }}" release_package/
+          cp -r autoware_lanelet2_map_validator/config release_package/
+          cp -r autoware_lanelet2_map_validator/map_requirements release_package/
+          strip release_package/autoware_lanelet2_map_validator || true
           zip -r $ZIP_NAME release_package
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
@@ -83,20 +217,17 @@ jobs:
 
       - name: Install GitHub CLI
         run: |
-          (type -p wget >/dev/null || (apt-get update && apt-get install wget -y))
-          mkdir -p -m 755 /etc/apt/keyrings
-          wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
-          chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          apt-get update
-          apt-get install gh -y
-
-      - name: Fix git ownership
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          (type -p wget >/dev/null || (sudo apt-get update && sudo apt-get install wget -y))
+          sudo mkdir -p -m 755 /etc/apt/keyrings
+          wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee  > /dev/null
+          sudo apt-get update
+          sudo apt-get install gh -y
 
       - name: Upload artifacts to GitHub Release
         run: |
-          gh release upload "${{ steps.set-tag-name.outputs.tag-name }}" \
+          gh release upload "${{ steps.get_version.outputs.version }}" \
             "${{ steps.package.outputs.zip_name }}" \
             "${{ steps.gpg-sign.outputs.signature_name }}" \
             --clobber
