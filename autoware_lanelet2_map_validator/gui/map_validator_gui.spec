@@ -43,7 +43,7 @@ if ext_python_path:
     for sofile in glob.glob(os.path.join(ext_python_path, '**/*.so'), recursive=True):
         rel_path = os.path.relpath(sofile, ext_python_path)
         binaries.append((sofile, os.path.join('autoware_lanelet2_extension_python', os.path.dirname(rel_path))))
-        
+
     # Add Python files
     for pyfile in glob.glob(os.path.join(ext_python_path, '**/*.py'), recursive=True):
         rel_path = os.path.relpath(pyfile, os.path.dirname(ext_python_path))
