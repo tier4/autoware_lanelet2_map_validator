@@ -10,8 +10,16 @@ datas = []
 # Find and add lanelet2 .so files
 lanelet2_path = os.environ.get('LANELET2_INSTALL_DIR')
 if lanelet2_path:
-    # Adjust for typical CMake install layout
-    lanelet2_path = os.path.join(lanelet2_path, 'lib', 'python3.10', 'site-packages', 'lanelet2')
+    # Add .so files
+    for sofile in glob.glob(os.path.join(lanelet2_path, '**/*.so'), recursive=True):
+        rel_path = os.path.relpath(sofile, lanelet2_path)
+        binaries.append((sofile, os.path.join('lanelet2', os.path.dirname(rel_path))))
+    
+    # Add Python files
+    for pyfile in glob.glob(os.path.join(lanelet2_path, '**/*.py'), recursive=True):
+        rel_path = os.path.relpath(pyfile, os.path.dirname(lanelet2_path))
+        datas.append((pyfile, os.path.dirname(rel_path)))
+
 if not lanelet2_path or not os.path.exists(lanelet2_path):
     lanelet2_path = None
     for path in sys.path:
@@ -34,9 +42,15 @@ for path in sys.path:
         break
 
 if ext_python_path:
+    # Add .so files
     for sofile in glob.glob(os.path.join(ext_python_path, '**/*.so'), recursive=True):
         rel_path = os.path.relpath(sofile, ext_python_path)
         binaries.append((sofile, os.path.join('autoware_lanelet2_extension_python', os.path.dirname(rel_path))))
+    
+    # Add Python files
+    for pyfile in glob.glob(os.path.join(ext_python_path, '**/*.py'), recursive=True):
+        rel_path = os.path.relpath(pyfile, os.path.dirname(ext_python_path))
+        datas.append((pyfile, os.path.dirname(rel_path)))
 
 # Also add from autoware source if available via environment variable
 autoware_ext_path = os.environ.get('AUTOWARE_LANELET2_EXTENSION_PATH')
