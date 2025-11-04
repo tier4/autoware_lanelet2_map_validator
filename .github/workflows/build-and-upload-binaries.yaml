@@ -195,7 +195,7 @@ jobs:
           BIN=../install/lib/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
-          tree -d $GITHUB_WORKSPACE
+          tree -d -L 3 $GITHUB_WORKSPACE
 
       - name: Build validator GUI
         id: build_gui
