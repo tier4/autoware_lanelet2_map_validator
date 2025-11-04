@@ -92,7 +92,8 @@ jobs:
             ros-humble-mrt-cmake-modules \
             ros-humble-geographic-msgs ros-humble-unique-identifier-msgs \
             ros-humble-rosidl-typesupport-c ros-humble-rosidl-typesupport-cpp \
-            ros-humble-tf2 ros-humble-tf2-geometry-msgs ros-humble-visualization-msgs
+            ros-humble-tf2 ros-humble-tf2-geometry-msgs ros-humble-visualization-msgs \
+            tree
           sudo rm -rf /var/lib/apt/lists/*
 
       - name: Build Lanelet2 (static, loop style)
@@ -194,6 +195,7 @@ jobs:
           BIN=../install/lib/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
+          tree $GITHUB_WORKSPACE)
 
       - name: Build validator GUI
         id: build_gui
