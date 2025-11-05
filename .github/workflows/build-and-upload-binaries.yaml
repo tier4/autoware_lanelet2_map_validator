@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ steps.get_version.outputs.version }}
+          # ref: ${{ steps.get_version.outputs.version }}
 
       - name: Cherry-pick preparation
         run: |
@@ -66,7 +66,7 @@ jobs:
           git cherry-pick b92492bb2232f0c1d502cfc0c6aede2f3169116b
           git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
           git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
-          # git cherry-pick c15da63bd1b11d0de0ed4ab0f9693ebaf0fdddc0
+          git cherry-pick c15da63bd1b11d0de0ed4ab0f9693ebaf0fdddc0
 
       - name: cherry-pick for version > 1.5.2
         if: steps.get_version.outputs.category == 'after_1_5_2'
@@ -177,7 +177,7 @@ jobs:
 
           mkdir -p autoware_lanelet2_extension_python_ws/src
           cd autoware_lanelet2_extension_python_ws/src
-          ln -s ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
+          cp -r ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
           ls -l $GITHUB_WORKSPACE
           ls -l $GITHUB_WORKSPACE/.github/cmake/
           ls -l $PWD
