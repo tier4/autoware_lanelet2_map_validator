@@ -8,7 +8,6 @@ find_package(ament_cmake_auto REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(Boost REQUIRED COMPONENTS python)
 find_package(Eigen3 REQUIRED)
-
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 ament_auto_find_build_dependencies()
@@ -16,6 +15,7 @@ ament_auto_find_build_dependencies()
 include_directories(
   ${Boost_INCLUDE_DIRS}
   ${Python3_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 # Add Lanelet2 include directories if specified
