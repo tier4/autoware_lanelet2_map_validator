@@ -178,8 +178,13 @@ jobs:
           mkdir -p autoware_lanelet2_extension_python_ws/src
           cd autoware_lanelet2_extension_python_ws/src
           ln -s ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
+          if [ ! -f ${GITHUB_WORKSPACE}/.github/cmake/lanelet2_extension_python_CMakeLists.txt ]; then
+            echo "Error: CMakeLists.txt for autoware_lanelet2_extension_python not found!"
+            exit 1
+          fi
           cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_python_CMakeLists.txt \
              autoware_lanelet2_extension_python/CMakeLists.txt
+          
           cd ..
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
           export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
