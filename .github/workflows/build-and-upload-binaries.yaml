@@ -178,21 +178,19 @@ jobs:
           mkdir -p autoware_lanelet2_extension_python_ws/src
           cd autoware_lanelet2_extension_python_ws/src
           cp -r ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
-          ls -l $GITHUB_WORKSPACE
-          ls -l $GITHUB_WORKSPACE/.github/cmake/
-          ls -l $PWD
           cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_python_CMakeLists.txt \
              autoware_lanelet2_extension_python/CMakeLists.txt
           
           cd ..
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
-          export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
+          export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/autoware_ws/install:/opt/ros/humble"
+          
           colcon build --symlink-install \
-          --packages-up-to autoware_lanelet2_extension_python \
-          --cmake-args \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
-            -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
+            --packages-up-to autoware_lanelet2_extension_python \
+            --cmake-args \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
+              -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
           cd ..
           
       - name: Build validator
