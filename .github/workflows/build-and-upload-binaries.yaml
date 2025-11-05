@@ -155,11 +155,12 @@ jobs:
           make -j$(nproc)
           make install
 
-      - name: Build autoware_lanelet2_extension (static lib)
+      - name: Build autoware_lanelet2_extension and autoware_lanelet2_extension_python
         run: |
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
+
           cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
           cd autoware_lanelet2_extension/autoware_lanelet2_extension
           mkdir -p build
@@ -172,8 +173,25 @@ jobs:
             -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           make -j$(nproc)
           make install
+          cd ../../..
 
-      - name: Build validator (static exe)
+          mkdir -p autoware_lanelet2_extension_python_ws/src
+          cd autoware_lanelet2_extension_python_ws/src
+          ln -s ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
+          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_python_CMakeLists.txt \
+             autoware_lanelet2_extension_python/CMakeLists.txt
+          cd ..
+          export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
+          export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
+          colcon build --symlink-install \
+          --packages-up-to autoware_lanelet2_extension_python \
+          --cmake-args \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
+            -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
+          cd ..
+          
+      - name: Build validator
         id: build_validator
         run: |
           set -e
@@ -239,8 +257,8 @@ jobs:
       - name: Sign the package with GPG
         id: gpg-sign
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
       - name: Install GitHub CLI

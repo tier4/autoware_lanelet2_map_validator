@@ -1,0 +1,76 @@
+cmake_minimum_required(VERSION 3.14)
+project(autoware_lanelet2_extension_python)
+
+set(LANELET2_INSTALL_DIR "" CACHE PATH "Path to the custom Lanelet2 install directory")
+set(AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR "" CACHE PATH "Path to autoware_lanelet2_extension install directory")
+
+find_package(ament_cmake_auto REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(Boost REQUIRED COMPONENTS python)
+
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+
+ament_auto_find_build_dependencies()
+
+include_directories(
+  ${Boost_INCLUDE_DIRS}
+  ${Python3_INCLUDE_DIRS}
+)
+
+# Add Lanelet2 include directories if specified
+if(LANELET2_INSTALL_DIR)
+  include_directories(${LANELET2_INSTALL_DIR}/include)
+  link_directories(${LANELET2_INSTALL_DIR}/lib)
+endif()
+
+# Add autoware_lanelet2_extension include directories if specified
+if(AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR)
+  include_directories(${AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR}/include)
+  link_directories(${AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR}/lib)
+endif()
+
+ament_python_install_package(${PROJECT_NAME})
+
+# Prevent 'lib' prefix on Python extension modules
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+
+# --- Utility module ---
+add_library(_${PROJECT_NAME}_boost_python_utility SHARED src/utility.cpp)
+target_link_libraries(_${PROJECT_NAME}_boost_python_utility 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_utility PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# --- Projection module ---
+add_library(_${PROJECT_NAME}_boost_python_projection SHARED src/projection.cpp)
+target_link_libraries(_${PROJECT_NAME}_boost_python_projection 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_projection PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# --- Regulatory elements module ---
+add_library(_${PROJECT_NAME}_boost_python_regulatory_elements SHARED src/regulatory_elements.cpp)
+target_link_libraries(_${PROJECT_NAME}_boost_python_regulatory_elements 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_regulatory_elements PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# Install compiled Python extension libraries into the package directory
+install(
+  TARGETS
+    _${PROJECT_NAME}_boost_python_utility
+    _${PROJECT_NAME}_boost_python_projection
+    _${PROJECT_NAME}_boost_python_regulatory_elements
+  DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}"
+)
+
+ament_package()
