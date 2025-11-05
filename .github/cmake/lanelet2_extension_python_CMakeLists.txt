@@ -7,6 +7,7 @@ set(AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR "" CACHE PATH "Path to autoware_lane
 find_package(ament_cmake_auto REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(Boost REQUIRED COMPONENTS python)
+find_package(autoware_map_msgs REQUIRED)
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 ament_auto_find_build_dependencies()
@@ -14,7 +15,6 @@ ament_auto_find_build_dependencies()
 include_directories(
   ${Boost_INCLUDE_DIRS}
   ${Python3_INCLUDE_DIRS}
-  /usr/include/eigen3
 )
 
 # Add Lanelet2 include directories if specified
@@ -41,7 +41,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_utility
   ${Python3_LIBRARIES}
 )
 target_include_directories(_${PROJECT_NAME}_boost_python_utility PRIVATE
-  ${EIGEN3_INCLUDE_DIR}
+  /usr/include/eigen3
 )
 set_target_properties(_${PROJECT_NAME}_boost_python_utility PROPERTIES 
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
@@ -54,7 +54,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_projection
   ${Python3_LIBRARIES}
 )
 target_include_directories(_${PROJECT_NAME}_boost_python_projection PRIVATE
-  ${EIGEN3_INCLUDE_DIR}
+  /usr/include/eigen3
 )
 set_target_properties(_${PROJECT_NAME}_boost_python_projection PROPERTIES 
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
@@ -67,7 +67,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_regulatory_elements
   ${Python3_LIBRARIES}
 )
 target_include_directories(_${PROJECT_NAME}_boost_python_regulatory_elements PRIVATE
-  ${EIGEN3_INCLUDE_DIR}
+  /usr/include/eigen3
 )
 set_target_properties(_${PROJECT_NAME}_boost_python_regulatory_elements PROPERTIES 
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
