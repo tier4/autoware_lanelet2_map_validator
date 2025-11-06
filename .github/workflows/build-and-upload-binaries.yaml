@@ -249,6 +249,7 @@ jobs:
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
+          cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
           strip release_package/autoware_lanelet2_map_validator || true
