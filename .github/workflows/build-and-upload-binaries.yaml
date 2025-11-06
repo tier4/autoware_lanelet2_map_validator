@@ -215,6 +215,33 @@ jobs:
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
+      - name: Build validator GUI
+        id: build_gui
+        run: |
+          set -e
+          source /opt/ros/humble/setup.bash
+          export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
+          export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
+
+          cd autoware_lanelet2_map_validator/gui
+
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install pyinstaller
+          SPEC_FILE=map_validator_gui.spec
+
+          pyinstaller "$SPEC_FILE"
+
+          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
+          if [ ! -f "$GUI_BIN" ]; then
+            GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
+          fi
+          ls -l "$GUI_BIN"
+          if [ -n "$GUI_BIN" ]; then
+            echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
+          fi
+          cd ../..
+
       - name: Package artifacts
         id: package
         run: |
@@ -231,8 +258,8 @@ jobs:
       - name: Sign the package with GPG
         id: gpg-sign
         run: |
-          echo "${{ secrets.TEST_GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.TEST_GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
       - name: Install GitHub CLI
