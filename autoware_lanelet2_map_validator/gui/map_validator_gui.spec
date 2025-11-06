@@ -28,6 +28,25 @@ def find_lanelet2_binaries():
     print("Warning: lanelet2 binaries not found!")
     return []
 
+def find_autoware_lanelet2_extension_python_binaries():
+    """Dynamically find autoware_lanelet2_extension_python shared libraries"""
+    search_paths = [
+        "/opt/ros/humble/lib/python3.10/site-packages/autoware_lanelet2_extension_python",
+        "/usr/lib/python3.10/site-packages/autoware_lanelet2_extension_python",
+    ]
+    # Also check environment variable
+    custom_path = os.environ.get('AUTOWARE_LANELET2_EXTENSION_PYTHON_PATH')
+    if custom_path:
+        search_paths.insert(0, custom_path)
+
+    for path in search_paths:
+        if os.path.exists(path) and glob.glob(f"{path}/*.so"):
+            print(f"Found autoware_lanelet2_extension_python at: {path}")
+            return [(f"{path}/*.so", 'autoware_lanelet2_extension_python')]
+
+    print("Warning: autoware_lanelet2_extension_python binaries not found!")
+    return []
+
 datas = [
     (os.path.join(spec_dir, 'gui_helper.py'), '.'),
     (os.path.join(spec_dir, 'map_visualizer.py'), '.'),
@@ -35,7 +54,7 @@ datas = [
 ]
 
 # Use dynamic search instead of hardcoded path
-binaries = find_lanelet2_binaries()
+binaries = find_lanelet2_binaries() + find_autoware_lanelet2_extension_python_binaries()
 
 hiddenimports = [
     'mpl_toolkits.mplot3d',
@@ -43,7 +62,10 @@ hiddenimports = [
     'map_visualizer',
     'matplotlib_widget',
     'lanelet2',
+    'autoware_lanelet2_extension_python',
     'autoware_lanelet2_extension_python.projection',
+    'autoware_lanelet2_extension_python.utility',
+    'autoware_lanelet2_extension_python.regulatory_elements',
 ]
 tmp_ret = collect_all('PySide6-essential')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]

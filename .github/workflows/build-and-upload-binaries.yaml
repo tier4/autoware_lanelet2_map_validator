@@ -238,6 +238,7 @@ jobs:
           source /opt/ros/humble/setup.bash
           export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
+          export PYTHONPATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension_python_ws/install/lib/python3.10/site-packages:$PYTHONPATH"
 
           cd autoware_lanelet2_map_validator/gui
 
@@ -268,6 +269,7 @@ jobs:
           cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
+          cp -r autoware_lanelet2_extension_python_ws/install/lib/python3.10/site-packages/autoware_lanelet2_extension_python release_package/
           strip release_package/autoware_lanelet2_map_validator || true
           zip -r $ZIP_NAME release_package
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
