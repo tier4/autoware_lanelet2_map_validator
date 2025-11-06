@@ -104,7 +104,7 @@ jobs:
           git checkout 1.2.2
           mkdir -p build install
           cd build
-          for pkg in lanelet2_core lanelet2_io lanelet2_projection lanelet2_traffic_rules lanelet2_routing lanelet2_validation lanelet2_python; do
+          for pkg in lanelet2_core lanelet2_io lanelet2_projection lanelet2_matching lanelet2_traffic_rules lanelet2_routing lanelet2_validation lanelet2_python; do
             echo "==== Building $pkg ===="
             mkdir -p $pkg
             cd $pkg
