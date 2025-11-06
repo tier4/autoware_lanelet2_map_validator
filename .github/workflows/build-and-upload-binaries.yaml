@@ -220,6 +220,7 @@ jobs:
         id: build_gui
         run: |
           set -e
+          tree -L 3 -d
           source /opt/ros/humble/setup.bash
           export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
