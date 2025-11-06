@@ -34,6 +34,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_utility
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_python.a"
 )
 ament_target_dependencies(_${PROJECT_NAME}_boost_python_utility
   rclcpp
@@ -62,6 +63,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_projection
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_python.a"
 )
 ament_target_dependencies(_${PROJECT_NAME}_boost_python_projection
   rclcpp
@@ -90,6 +92,7 @@ target_link_libraries(_${PROJECT_NAME}_boost_python_regulatory_elements
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
   "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_python.a"
 )
 ament_target_dependencies(_${PROJECT_NAME}_boost_python_regulatory_elements
   rclcpp
