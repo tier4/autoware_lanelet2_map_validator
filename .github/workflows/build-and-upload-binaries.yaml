@@ -95,19 +95,7 @@ jobs:
             ros-humble-tf2 ros-humble-tf2-geometry-msgs ros-humble-visualization-msgs
           sudo rm -rf /var/lib/apt/lists/*
 
-      - name: Cache Build Artifacts
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/lanelet2/install
-            ${{ github.workspace }}/autoware_ws/install
-            ${{ github.workspace }}/fmt/temp_install
-            ${{ github.workspace }}/autoware_lanelet2_extension/autoware_lanelet2_extension/install
-            ${{ github.workspace }}/autoware_lanelet2_extension_python_ws/install
-          key: dependencies-v1-${{ runner.os }}-${{ hashFiles('.github/workflows/build-and-upload-binaries.yaml') }}
-
       - name: Build Lanelet2 (static, loop style)
-        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -141,7 +129,6 @@ jobs:
           done
 
       - name: Build autoware_map_msgs
-        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -152,7 +139,6 @@ jobs:
           colcon build --cmake-args -DBUILD_TESTING=OFF
 
       - name: Build fmt (static)
-        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           git clone https://github.com/fmtlib/fmt.git
@@ -170,7 +156,6 @@ jobs:
           make install
 
       - name: Build autoware_lanelet2_extension and autoware_lanelet2_extension_python
-        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -206,11 +191,9 @@ jobs:
               -DCMAKE_BUILD_TYPE=Release \
               -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
               -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
-          tree install/
           cd ..
           
       - name: Build validator
-        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         id: build_validator
         run: |
           set -e
@@ -270,13 +253,33 @@ jobs:
           cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
-          EXT_PY_MODULE_PATH="autoware_lanelet2_extension_python_ws/install/lib/python3.10/site-packages/autoware_lanelet2_extension_python"
-          if [ -d "$EXT_PY_MODULE_PATH" ]; then
-            echo "Including autoware_lanelet2_extension_python from $EXT_PY_MODULE_PATH"
-            cp -r "$EXT_PY_MODULE_PATH" release_package/
+          
+          CANDIDATE_PATHS=(
+            "autoware_lanelet2_extension_python_ws/install/local/lib/python3.10/dist-packages/autoware_lanelet2_extension_python"
+            "autoware_lanelet2_extension_python_ws/install/lib/python3.10/site-packages/autoware_lanelet2_extension_python"
+            "autoware_lanelet2_extension_python_ws/install/lib/python3.10/dist-packages/autoware_lanelet2_extension_python"
+            "autoware_lanelet2_extension_ws/install/local/lib/python3.10/dist-packages/autoware_lanelet2_extension_python"
+          )
+          FOUND_EXT_PY=""
+          for p in "${CANDIDATE_PATHS[@]}"; do
+            if [ -d "$p" ]; then
+              FOUND_EXT_PY="$p"
+              break
+            fi
+          done
+
+          if [ -n "$FOUND_EXT_PY" ]; then
+            echo "Including autoware_lanelet2_extension_python from $FOUND_EXT_PY"
+            cp -r "$FOUND_EXT_PY" release_package/ || echo "Warning: failed to copy $FOUND_EXT_PY"
           else
-            echo "Warning: $EXT_PY_MODULE_PATH not found, skipping"
+            echo "Warning: autoware_lanelet2_extension_python not found in known locations, skipping"
           fi
+
+          SHARE_CAND="autoware_lanelet2_extension_python_ws/install/share/autoware_lanelet2_extension_python"
+          if [ -d "$SHARE_CAND" ]; then
+            cp -r "$SHARE_CAND" release_package/ || true
+          fi
+
           strip release_package/autoware_lanelet2_map_validator || true
           zip -r $ZIP_NAME release_package
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
