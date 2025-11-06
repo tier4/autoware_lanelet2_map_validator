@@ -95,7 +95,19 @@ jobs:
             ros-humble-tf2 ros-humble-tf2-geometry-msgs ros-humble-visualization-msgs
           sudo rm -rf /var/lib/apt/lists/*
 
+      - name: Cache Build Artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/lanelet2/install
+            ${{ github.workspace }}/autoware_ws/install
+            ${{ github.workspace }}/fmt/temp_install
+            ${{ github.workspace }}/autoware_lanelet2_extension/autoware_lanelet2_extension/install
+            ${{ github.workspace }}/autoware_lanelet2_extension_python_ws/install
+          key: dependencies-v1-${{ runner.os }}-${{ hashFiles('.github/workflows/build-and-upload-binaries.yaml') }}
+
       - name: Build Lanelet2 (static, loop style)
+        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -129,6 +141,7 @@ jobs:
           done
 
       - name: Build autoware_map_msgs
+        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -139,6 +152,7 @@ jobs:
           colcon build --cmake-args -DBUILD_TESTING=OFF
 
       - name: Build fmt (static)
+        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           git clone https://github.com/fmtlib/fmt.git
@@ -156,6 +170,7 @@ jobs:
           make install
 
       - name: Build autoware_lanelet2_extension and autoware_lanelet2_extension_python
+        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         run: |
           set -e
           source /opt/ros/humble/setup.bash
@@ -194,6 +209,7 @@ jobs:
           cd ..
           
       - name: Build validator
+        if: steps.cache-cpp-deps.outputs.cache-hit != 'true'
         id: build_validator
         run: |
           set -e
@@ -232,7 +248,7 @@ jobs:
 
           pyinstaller "$SPEC_FILE"
 
-          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
+          GUI_BIN=dist/map_validator_gui
           if [ ! -f "$GUI_BIN" ]; then
             GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
           fi
