@@ -66,6 +66,7 @@ jobs:
           git cherry-pick b92492bb2232f0c1d502cfc0c6aede2f3169116b
           git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
           git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
+          git cherry-pick ce2f799f7d21d266c08331173480c3fc19f0e89a
           git cherry-pick c15da63bd1b11d0de0ed4ab0f9693ebaf0fdddc0
 
       - name: cherry-pick for version > 1.5.2
@@ -180,11 +181,11 @@ jobs:
           cp -r ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
           cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_python_CMakeLists.txt \
              autoware_lanelet2_extension_python/CMakeLists.txt
-          
+
           cd ..
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
           export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/autoware_ws/install:/opt/ros/humble"
-          
+
           colcon build --symlink-install \
             --packages-up-to autoware_lanelet2_extension_python \
             --cmake-args \
@@ -192,7 +193,7 @@ jobs:
               -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
               -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
           cd ..
-          
+
       - name: Build validator
         id: build_validator
         run: |
