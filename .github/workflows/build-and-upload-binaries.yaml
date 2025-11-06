@@ -206,7 +206,7 @@ jobs:
               -DCMAKE_BUILD_TYPE=Release \
               -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
               -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
-          tree $GITHUB_WORKSPACE/autoware_lanelet2_extension_python_ws/install/lib/
+          tree install/
           cd ..
           
       - name: Build validator
