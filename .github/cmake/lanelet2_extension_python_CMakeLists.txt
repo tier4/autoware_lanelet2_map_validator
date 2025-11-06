@@ -1,0 +1,112 @@
+cmake_minimum_required(VERSION 3.14)
+project(autoware_lanelet2_extension_python)
+
+set(LANELET2_INSTALL_DIR "" CACHE PATH "Path to the custom Lanelet2 install directory")
+set(AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR "" CACHE PATH "Path to autoware_lanelet2_extension install directory")
+
+find_package(ament_cmake_auto REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(Boost REQUIRED COMPONENTS python)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(autoware_map_msgs REQUIRED)
+
+ament_auto_find_build_dependencies()
+
+ament_python_install_package(${PROJECT_NAME})
+
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+
+# --- Utility module ---
+add_library(_${PROJECT_NAME}_boost_python_utility SHARED src/utility.cpp)
+target_include_directories(_${PROJECT_NAME}_boost_python_utility PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  ${Python3_INCLUDE_DIRS}
+  /usr/include/eigen3
+  ${LANELET2_INSTALL_DIR}/include
+  ${AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR}/include
+)
+target_link_libraries(_${PROJECT_NAME}_boost_python_utility 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_core.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_io.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_projection.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+)
+ament_target_dependencies(_${PROJECT_NAME}_boost_python_utility
+  rclcpp
+  geometry_msgs
+  autoware_map_msgs
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_utility PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# --- Projection module ---
+add_library(_${PROJECT_NAME}_boost_python_projection SHARED src/projection.cpp)
+target_include_directories(_${PROJECT_NAME}_boost_python_projection PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  ${Python3_INCLUDE_DIRS}
+  /usr/include/eigen3
+  ${LANELET2_INSTALL_DIR}/include
+  ${AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR}/include
+)
+target_link_libraries(_${PROJECT_NAME}_boost_python_projection 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_core.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_io.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_projection.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+)
+ament_target_dependencies(_${PROJECT_NAME}_boost_python_projection
+  rclcpp
+  geometry_msgs
+  autoware_map_msgs
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_projection PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# --- Regulatory elements module ---
+add_library(_${PROJECT_NAME}_boost_python_regulatory_elements SHARED src/regulatory_elements.cpp)
+target_include_directories(_${PROJECT_NAME}_boost_python_regulatory_elements PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  ${Python3_INCLUDE_DIRS}
+  /usr/include/eigen3
+  ${LANELET2_INSTALL_DIR}/include
+  ${AUTOWARE_LANELET2_EXTENSION_INSTALL_DIR}/include
+)
+target_link_libraries(_${PROJECT_NAME}_boost_python_regulatory_elements 
+  ${Boost_LIBRARIES}
+  ${Python3_LIBRARIES}
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_core.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_io.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_projection.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_routing.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_traffic_rules.a"
+  "${LANELET2_INSTALL_DIR}/lib/liblanelet2_validation.a"
+)
+ament_target_dependencies(_${PROJECT_NAME}_boost_python_regulatory_elements
+  rclcpp
+  geometry_msgs
+  autoware_map_msgs
+)
+set_target_properties(_${PROJECT_NAME}_boost_python_regulatory_elements PROPERTIES 
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}"
+)
+
+# Install compiled Python extension libraries into the package directory
+install(
+  TARGETS
+    _${PROJECT_NAME}_boost_python_utility
+    _${PROJECT_NAME}_boost_python_projection
+    _${PROJECT_NAME}_boost_python_regulatory_elements
+  DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}"
+)
+
+ament_package()
