@@ -197,33 +197,6 @@ jobs:
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
           tree -d -L 3 $GITHUB_WORKSPACE
 
-      - name: Build validator GUI
-        id: build_gui
-        run: |
-          set -e
-          source /opt/ros/humble/setup.bash
-          export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
-          export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
-
-          cd autoware_lanelet2_map_validator/gui
-
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-          python3 -m pip install pyinstaller
-          SPEC_FILE=map_validator_gui.spec
-
-          pyinstaller "$SPEC_FILE"
-
-          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
-          if [ ! -f "$GUI_BIN" ]; then
-            GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
-          fi
-          ls -l "$GUI_BIN"
-          if [ -n "$GUI_BIN" ]; then
-            echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
-          fi
-          cd ../..
-
       - name: Package artifacts
         id: package
         run: |
@@ -231,7 +204,6 @@ jobs:
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
-          cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
           strip release_package/autoware_lanelet2_map_validator || true
