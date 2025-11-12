@@ -207,7 +207,6 @@ jobs:
 
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
-          python3 -m pip install pyinstaller
           SPEC_FILE=map_validator_gui.spec
 
           pyinstaller "$SPEC_FILE"
