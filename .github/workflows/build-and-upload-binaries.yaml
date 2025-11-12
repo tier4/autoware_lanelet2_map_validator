@@ -155,8 +155,7 @@ jobs:
           make -j$(nproc)
           make install
 
-      - name: Build autoware_lanelet2_extension (static lib)
-        run: |
+      - name: Build autoware_lanelet2_extension
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
@@ -166,14 +165,14 @@ jobs:
           cd build
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
           cmake .. \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DCMAKE_INSTALL_PREFIX=../install \
-            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DCMAKE_INSTALL_PREFIX=../install \
+          -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           make -j$(nproc)
           make install
 
-      - name: Build validator (static exe)
+      - name: Build validator (CLI)
         id: build_validator
         run: |
           set -e
@@ -199,7 +198,7 @@ jobs:
         id: package
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
-          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-x86_64.zip"
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
