@@ -156,6 +156,7 @@ jobs:
           make install
 
       - name: Build autoware_lanelet2_extension
+        run: |
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
