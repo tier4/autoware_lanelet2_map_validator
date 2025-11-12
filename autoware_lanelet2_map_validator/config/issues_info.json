@@ -332,7 +332,7 @@
     "primitive": "regulatory element",
     "message": {
       "en": "This road_marking regulatory element must refer to exactly one stop_line linestring using the 'refers' role and must not have any 'ref_line'.",
-      "ja": "この road_marking regulatory element は 'refers' role を使用して、ちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
+      "ja": "この road_marking regulatory element は 'refers' role としてちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
     }
   },
   "Intersection.RoadMarkings-002": {
