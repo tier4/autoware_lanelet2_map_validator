@@ -104,7 +104,7 @@ jobs:
           git checkout 1.2.2
           mkdir -p build install
           cd build
-          for pkg in lanelet2_core lanelet2_io lanelet2_projection lanelet2_traffic_rules lanelet2_routing lanelet2_validation lanelet2_matching lanelet2_python; do
+          for pkg in lanelet2_core lanelet2_io lanelet2_projection lanelet2_traffic_rules lanelet2_routing lanelet2_validation; do
             echo "==== Building $pkg ===="
             mkdir -p $pkg
             cd $pkg
@@ -155,45 +155,25 @@ jobs:
           make -j$(nproc)
           make install
 
-      - name: Build autoware_lanelet2_extension and autoware_lanelet2_extension_python
+      - name: Build autoware_lanelet2_extension
         run: |
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
-
           cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
           cd autoware_lanelet2_extension/autoware_lanelet2_extension
           mkdir -p build
           cd build
           export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/fmt/temp_install:/opt/ros/humble"
           cmake .. \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DCMAKE_INSTALL_PREFIX=../install \
-            -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DCMAKE_INSTALL_PREFIX=../install \
+          -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
           make -j$(nproc)
           make install
-          cd ../../..
 
-          mkdir -p autoware_lanelet2_extension_python_ws/src
-          cd autoware_lanelet2_extension_python_ws/src
-          cp -r ../../autoware_lanelet2_extension/autoware_lanelet2_extension_python .
-          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_python_CMakeLists.txt \
-             autoware_lanelet2_extension_python/CMakeLists.txt
-          
-          cd ..
-          export CMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/lanelet2/install:$GITHUB_WORKSPACE/autoware_ws/install:$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install:/opt/ros/humble"
-          export AMENT_PREFIX_PATH="$GITHUB_WORKSPACE/autoware_ws/install:/opt/ros/humble"
-          
-          colcon build --symlink-install \
-            --packages-up-to autoware_lanelet2_extension_python \
-            --cmake-args \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DLANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install" \
-              -DAUTOWARE_LANELET2_EXTENSION_INSTALL_DIR="$GITHUB_WORKSPACE/autoware_lanelet2_extension/autoware_lanelet2_extension/install"
-          cd ..
-          
-      - name: Build validator
+      - name: Build validator (CLI)
         id: build_validator
         run: |
           set -e
@@ -215,33 +195,6 @@ jobs:
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
-      - name: Build validator GUI
-        id: build_gui
-        run: |
-          set -e
-          source /opt/ros/humble/setup.bash
-          export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
-          export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
-
-          cd autoware_lanelet2_map_validator/gui
-
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-          python3 -m pip install pyinstaller
-          SPEC_FILE=map_validator_gui.spec
-
-          pyinstaller "$SPEC_FILE"
-
-          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
-          if [ ! -f "$GUI_BIN" ]; then
-            GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
-          fi
-          ls -l "$GUI_BIN"
-          if [ -n "$GUI_BIN" ]; then
-            echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
-          fi
-          cd ../..
-
       - name: Package artifacts
         id: package
         run: |
@@ -249,7 +202,6 @@ jobs:
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
-          cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
           strip release_package/autoware_lanelet2_map_validator || true
