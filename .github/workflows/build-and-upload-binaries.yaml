@@ -64,14 +64,14 @@ jobs:
         if: steps.get_version.outputs.category == 'before_or_equal_1_5_2'
         run: |
           git cherry-pick b92492bb2232f0c1d502cfc0c6aede2f3169116b
-          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
           git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
           git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
+          git cherry-pick c15da63bd1b11d0de0ed4ab0f9693ebaf0fdddc0
 
       - name: cherry-pick for version > 1.5.2
         if: steps.get_version.outputs.category == 'after_1_5_2'
         run: |
-          git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
+          git cherry-pick c15da63bd1b11d0de0ed4ab0f9693ebaf0fdddc0
 
       - name: Install Dependencies
         run: |
