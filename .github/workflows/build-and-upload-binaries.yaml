@@ -67,13 +67,11 @@ jobs:
           git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
           git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
           git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
-          git cherry-pick 23b2b62eb72b261f540e1cda9a32087ae0c365ba
 
       - name: cherry-pick for version > 1.5.2
         if: steps.get_version.outputs.category == 'after_1_5_2'
         run: |
           git cherry-pick 2f7266dd30e35d79870682eb6862febda60ec31a
-          git cherry-pick 23b2b62eb72b261f540e1cda9a32087ae0c365ba
 
       - name: Install Dependencies
         run: |
@@ -197,32 +195,6 @@ jobs:
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
-      - name: Build validator GUI
-        id: build_gui
-        run: |
-          set -e
-          source /opt/ros/humble/setup.bash
-          export LANELET2_INSTALL_DIR="$GITHUB_WORKSPACE/lanelet2/install"
-          export AUTOWARE_LANELET2_EXTENSION_PATH="$GITHUB_WORKSPACE/autoware_lanelet2_extension/"
-
-          cd autoware_lanelet2_map_validator/gui
-
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-          SPEC_FILE=map_validator_gui.spec
-
-          pyinstaller "$SPEC_FILE"
-
-          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
-          if [ ! -f "$GUI_BIN" ]; then
-            GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
-          fi
-          ls -l "$GUI_BIN"
-          if [ -n "$GUI_BIN" ]; then
-            echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
-          fi
-          cd ../..
-
       - name: Package artifacts
         id: package
         run: |
@@ -230,7 +202,6 @@ jobs:
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
-          cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
           strip release_package/autoware_lanelet2_map_validator || true
