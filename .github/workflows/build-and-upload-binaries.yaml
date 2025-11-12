@@ -226,7 +226,7 @@ jobs:
         id: package
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
-          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
+          ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-x86_64.zip"
           mkdir release_package
           cp "${{ steps.build_validator.outputs.artifact }}" release_package/
           cp "${{ steps.build_gui.outputs.gui_artifact }}" release_package/
