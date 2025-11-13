@@ -591,6 +591,14 @@
       "ja": "refers と light_bulbs が一対一対応していません。"
     }
   },
+  "TrafficLight.RegulatoryElementDetails-008": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic light regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この traffic light regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
+    }
+  },
   "TrafficLight.CorrectFacing-001": {
     "severity": "info",
     "primitive": "linestring",
