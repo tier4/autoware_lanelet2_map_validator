@@ -270,6 +270,7 @@ jobs:
 
           # Copy GUI binary
           cp ./gui-artifact/autoware_lanelet2_map_validator_gui release_package/autoware_lanelet2_map_validator_gui
+          chmod +x release_package/autoware_lanelet2_map_validator_gui
 
           # Copy config and requirements
           cp -r autoware_lanelet2_map_validator/config release_package/
