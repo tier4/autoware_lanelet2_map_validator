@@ -580,16 +580,24 @@ language (-l arg)           Language to display the issue messages. Available
 
     def browse_req(self):
         """Browse for input requirement JSON file."""
+        map_requirements_dir = os.path.join(SCRIPT_DIR, "map_requirements")
+        if not os.path.exists(map_requirements_dir):
+            map_requirements_dir = ""
+
         fn, _ = QFileDialog.getOpenFileName(
-            self, "Select input requirement JSON", "", "JSON Files (*.json)"
+            self, "Select input requirement JSON", map_requirements_dir, "JSON Files (*.json)"
         )
         if fn:
             self.req_edit.setText(fn)
 
     def browse_param(self):
         """Browse for parameters YAML file."""
+        config_dir = os.path.join(SCRIPT_DIR, "config")
+        if not os.path.exists(config_dir):
+            config_dir = ""
+
         fn, _ = QFileDialog.getOpenFileName(
-            self, "Select Parameters YAML", "", "YAML Files (*.yaml)"
+            self, "Select Parameters YAML", config_dir, "YAML Files (*.yaml)"
         )
         if fn:
             self.param_edit.setText(fn)
