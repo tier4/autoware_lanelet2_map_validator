@@ -79,6 +79,22 @@
       "ja": "進行方向に続く lanelet は同じ type を持つ必要があります。"
     }
   },
+  "Lane.LaneChangeAttribute-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring of a road type lanelet is missing a lane_change attribute.",
+      "ja": "この road type lanelet の {bound_type} bound linestring に lane_change タグがありません。"
+    }
+  },
+  "Lane.LaneChangeAttribute-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This {bound_type} bound linestring has an invalid lane_change attribute value '{invalid_value}'. Valid values are 'yes' or 'no'.",
+      "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
+    }
+  },
   "StopLine.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -117,6 +133,14 @@
     "message": {
       "en": "This ref_line linestring does not have stop_line subtype.",
       "ja": "この ref_line linestring は stop_line サブタイプではありません。"
+    }
+  },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-005": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic_sign regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この traffic_sign regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
     }
   },
   "Intersection.IntersectionAreaDanglingReference-001": {
@@ -191,6 +215,14 @@
       "ja": "この lanelet は turn_direction タグに '{turn_direction}' が設定されていますが、intersection_area タグがありません。"
     }
   },
+  "Intersection.LaneletDivision-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area {intersection_area_id}.",
+      "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area {intersection_area_id} 内で一つの lanelet として統合する必要があります。"
+    }
+  },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
     "severity": "Error",
     "primitive": "linestring",
@@ -237,6 +269,14 @@
     "message": {
       "en": "The refers of a virtual_traffic_light regulatory element must be any of [{supported_refers}] type.",
       "ja": "virtual_traffic_light subtype の regulatory element の refers は [{supported_refers}] のどれかの type を持つ必要があります。"
+    }
+  },
+  "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-007": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This virtual traffic light regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この virtual traffic light regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
     }
   },
   "Intersection.VirtualTrafficLightLineOrder-001": {
@@ -301,6 +341,22 @@
     "message": {
       "en": "A different lanelet with a \"turn_direction\" tag is found before turn_signal_distance meters. (previous lanelets with a turn direction: {prev_ids})",
       "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
+    }
+  },
+  "Intersection.RoadMarkings-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This road_marking regulatory element must refer to exactly one stop_line linestring using the 'refers' role and must not have any 'ref_line'.",
+      "ja": "この road_marking regulatory element は 'refers' role としてちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
+    }
+  },
+  "Intersection.RoadMarkings-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This refers linestring must be of type 'stop_line'.",
+      "ja": "この refers linestring は type 'stop_line' である必要があります。"
     }
   },
   "Intersection.RightOfWayWithTrafficLights-001": {
@@ -535,6 +591,14 @@
       "ja": "refers と light_bulbs が一対一対応していません。"
     }
   },
+  "TrafficLight.RegulatoryElementDetails-008": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic light regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この traffic light regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
+    }
+  },
   "TrafficLight.CorrectFacing-001": {
     "severity": "info",
     "primitive": "linestring",
@@ -581,6 +645,22 @@
     "message": {
       "en": "The arrow of a light bulb should be either up, right, left, up_right, or up_left.",
       "ja": "light bulb に設定できる arrow は up, right, left, up_right, up_left のいずれかです。"
+    }
+  },
+  "TrafficLight.BodyHeight-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This traffic_light linestring is missing required 'height' attribute.",
+      "ja": "traffic_light linestring に 'height' タグがありません。"
+    }
+  },
+  "TrafficLight.BodyHeight-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "Traffic light height value ({actual_height}) is outside the valid range defined by the parameter file (min: {min_height}, max: {max_height}).",
+      "ja": "traffic_light の高さの値 ({actual_height}) がパラメータファイルで設定された有効範囲の外です (最小: {min_height}, 最大: {max_height})。"
     }
   },
   "Crosswalk.MissingRegulatoryElements-001": {
@@ -680,11 +760,11 @@
     }
   },
   "Crosswalk.RegulatoryElementDetails-012": {
-    "severity": "Warning",
+    "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "This crosswalk regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
-      "ja": "この crosswalk regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
+      "en": "The crosswalk lanelet (ID: {crosswalk_id}) has to intersect with the referrer road lanelet (ID: {road_lanelet_id}).",
+      "ja": "Crosswalk lanelet (ID: {crosswalk_id}) は road lanelet (ID: {road_lanelet_id}) と交差している必要があります。"
     }
   },
   "Lane.LateralSubtypeConnection-001": {
@@ -741,6 +821,214 @@
     "message": {
       "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
       "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
+    }
+  },
+  "Lane.RoadShoulder-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder lanelet has no adjacent lanelets.",
+      "ja": "路肩レーンには隣接するレーンが存在しません。"
+    }
+  },
+  "Lane.RoadShoulder-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulders must be adjacent to at least one road subtype lanelet.",
+      "ja": "road_shoulder Lanelet は少なくとも一つの road subtype の Lanelet と隣接しなければいけません。"
+    }
+  },
+  "Lane.RoadShoulder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The empty side of the lanelet bound must be a road_border type linestring.",
+      "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
+    }
+  },
+  "Area.DetectionArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Detection area polygon is not being referred to by any regulatory element.",
+      "ja": "この detection_area polygon は regulatory element から参照されていません。"
+    }
+  },
+  "Area.DetectionArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must refer to exactly one detection_area polygon.",
+      "ja": "detection_area regulatory element はちょうど1つの detection_area polygon のみを参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Polygon referred by detection area regulatory element must have type 'detection_area'.",
+      "ja": "detection_area regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
+    }
+  },
+  "Area.DetectionArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must refer to exactly one stop_line type ref_line.",
+      "ja": "detection_area regulatory element はちょうど1つの stop_line type の ref_line を参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must be referred by at least one road subtype lanelet.",
+      "ja": "detection_area regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
+    }
+  },
+  "Area.DetectionArea-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must only be referred by road subtype lanelets.",
+      "ja": "detection_area regulatory element は road subtype の lanelet のみから参照される必要があります。"
+    }
+  },
+  "Area.NoParkingArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This no_parking_area polygon is not referred by any regulatory element.",
+      "ja": "この no_parking_area polygon はどの regulatory element からも参照されていません。"
+    }
+  },
+  "Area.NoParkingArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Regulatory element should refer to exactly one no_parking_area polygon.",
+      "ja": "regulatory element はちょうど1つの no_parking_area polygon を参照する必要があります。"
+    }
+  },
+  "Area.NoParkingArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The referred polygon should be a no_parking_area type.",
+      "ja": "参照する polygon は no_parking_area タイプである必要があります。"
+    }
+  },
+  "Area.NoParkingArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_parking_area regulatory element is not referred by any road subtype lanelet.",
+      "ja": "この no_parking_area regulatory element はどの road subtype の lanelet からも参照されていません。"
+    }
+  },
+  "Area.NoParkingArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_parking_area regulatory element should only be referred by road subtype lanelets.",
+      "ja": "この no_parking_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
+    }
+  },
+  "Lane.PedestrianLane-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Pedestrian lane must have at least one adjacent lanelet.",
+      "ja": "pedestrian_lane lanelet は少なくとも1つの隣接 lanelet を持つ必要があります。"
+    }
+  },
+  "Lane.PedestrianLane-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接する lanelet は road subtype の lanelet でなければなりません。"
+    }
+  },
+  "Lane.PedestrianLane-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線 linestring は road_border type でなければなりません。"
+    }
+  },
+  "Area.NoStoppingArea-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This no_stopping_area polygon is not referred by any regulatory element.",
+      "ja": "この no_stopping_area polygon はどの regulatory element からも参照されていません。"
+    }
+  },
+  "Area.NoStoppingArea-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element must refer to exactly one polygon.",
+      "ja": "この no_stopping_area regulatory element はちょうど1つの polygon を参照する必要があります。"
+    }
+  },
+  "Area.NoStoppingArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element refers to a polygon that is not a no_stopping_area type.",
+      "ja": "この no_stopping_area regulatory element は no_stopping_area type ではない polygon を参照しています。"
+    }
+  },
+  "Area.NoStoppingArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element must refer to exactly one ref_line.",
+      "ja": "この no_stopping_area regulatory element はちょうど1つの ref_line を参照する必要があります。"
+    }
+  },
+  "Area.NoStoppingArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element refers to a linestring that is not a stop_line type.",
+      "ja": "この no_stopping_area regulatory element は stop_line type ではない linestring を参照しています。"
+    }
+  },
+  "Area.NoStoppingArea-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element is not referred by any road subtype lanelet.",
+      "ja": "この no_stopping_area regulatory element は road subtype の lanelet から参照されていません。"
+    }
+  },
+  "Area.NoStoppingArea-007": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This no_stopping_area regulatory element should only be referred by road subtype lanelets.",
+      "ja": "この no_stopping_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
+    }
+  },
+  "Lane.WalkwayIntersection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet should only exist when intersecting with road/private lanelets. No conflicts found with any road/private lanelets.",
+      "ja": "walkway lanelet は road/private lanelet と交差する場合にのみ必要です。他の road/private lanelet との重複が見つかりませんでした。"
+    }
+  },
+  "Lane.WalkwayIntersection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road/private lanelet {road_lanelet_id}. Current extension: {extension} meters.",
+      "ja": "walkway lanelet は road/private lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長距離: {extension} メートル。"
     }
   }
 }

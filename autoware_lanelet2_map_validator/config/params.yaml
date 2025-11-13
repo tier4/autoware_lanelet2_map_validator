@@ -4,13 +4,19 @@ mapping.lane.centerline_geometry:
   height_threshold: 0.1
 mapping.lane.border_sharing:
   iou_threshold: 0.05
-mapping.crosswalk.regulatory_element_details:
+mapping.traffic_light.regulatory_element_details:
   max_bounding_box_size: 40.0
 mapping.intersection.regulatory_element_details_for_virtual_traffic_lights:
   supported_refers_type: [intersection_coordination]
+  max_bounding_box_size: 40.0
 mapping.intersection.virtual_traffic_light_line_order:
   validation_target_refers: [intersection_coordination]
 mapping.intersection.virtual_traffic_light_section_overlap:
   validation_target_refers: [intersection_coordination]
 mapping.intersection.turn_signal_distance_overlap:
   default_turn_signal_distance: 15.0
+mapping.traffic_light.body_height:
+  min_height: 0.2
+  max_height: 2.0
+mapping.stop_line.regulatory_element_details_for_traffic_signs:
+  max_bounding_box_size: 40.0

@@ -1,4 +1,4 @@
-// Copyright 2024 Autoware Foundation
+// Copyright 2024-2025 TIER IV, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -210,4 +210,20 @@ TEST_F(TestRegulatoryElementDetailsForTrafficLights, SampleMap)  // NOLINT for g
   const auto & issues = checker(*map_);
 
   EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(
+  TestRegulatoryElementDetailsForTrafficLights, BoundingBoxExceedsThreshold)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/traffic_light_out_of_bound.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForTrafficLightsValidator checker;
+  const auto & issues = checker(*map_);
+
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 8), 1025);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
 }

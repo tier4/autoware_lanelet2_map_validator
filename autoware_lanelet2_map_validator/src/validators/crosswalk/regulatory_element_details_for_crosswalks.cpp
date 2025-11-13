@@ -1,4 +1,4 @@
-// Copyright 2024 Autoware Foundation
+// Copyright 2024-2025 TIER IV, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 #include <autoware_lanelet2_extension/regulatory_elements/crosswalk.hpp>
 #include <range/v3/view/filter.hpp>
 
+#include <boost/geometry/algorithms/correct.hpp>
+#include <boost/geometry/algorithms/intersects.hpp>
+
 #include <lanelet2_core/LaneletMap.h>
-#include <lanelet2_core/geometry/BoundingBox.h>
+#include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_validation/Validation.h>
 
-#include <cmath>
 #include <map>
 #include <string>
 
@@ -87,6 +89,10 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
       issue_cw, issues);
 
     // The refers must have an attribute participant:pedestrian and set to "yes" or "true"
+    // Also check intersection between crosswalk lanelet and road lanelets referenced by the
+    // regulatory element
+    const lanelet::ConstLanelets refers_elem = map.laneletLayer.findUsages(elem);
+
     for (const lanelet::ConstLanelet & lane : refers) {
       if (!lane.hasAttribute(lanelet::AttributeName::ParticipantPedestrian)) {
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 10), lane.id()));
@@ -95,10 +101,33 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
                     .value_or(false)) {
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 11), lane.id()));
       }
+
+      // Issue-012: check intersection between crosswalk lanelet and road lanelets that reference
+      // this regulatory element
+      for (const auto & refer_elem : refers_elem) {
+        if (
+          !refer_elem.hasAttribute(lanelet::AttributeName::Subtype) ||
+          refer_elem.attribute(lanelet::AttributeName::Subtype).value() !=
+            lanelet::AttributeValueString::Road) {
+          continue;
+        }
+
+        lanelet::BasicPolygon2d crosswalk_polygon = lane.polygon2d().basicPolygon();
+        lanelet::BasicPolygon2d road_polygon = refer_elem.polygon2d().basicPolygon();
+
+        boost::geometry::correct(crosswalk_polygon);
+        boost::geometry::correct(road_polygon);
+
+        if (!boost::geometry::intersects(crosswalk_polygon, road_polygon)) {
+          std::map<std::string, std::string> reason_map;
+          reason_map["crosswalk_id"] = std::to_string(lane.id());
+          reason_map["road_lanelet_id"] = std::to_string(refer_elem.id());
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 12), elem->id(), reason_map));
+        }
+      }
     }
 
-    // If this is a crosswalk type regulatory element, the "ref_line" has to be a "stop_line" type
-    // linestring
     const auto & issue_sl =
       construct_issue_from_code(issue_code(this->name(), 7), lanelet::utils::getId());
     lanelet::autoware::validation::checkPrimitivesType(

@@ -1,4 +1,4 @@
-// Copyright 2025 Autoware Foundation
+// Copyright 2025 TIER IV, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,11 @@
 #include <range/v3/view/filter.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
+#include <lanelet2_core/geometry/LineString.h>
 
 #include <algorithm>
+#include <cmath>
 #include <string>
 
 namespace lanelet::autoware::validation
@@ -91,6 +94,37 @@ lanelet::validation::Issues RegulatoryElementDetailsForTrafficSignsValidator::
         // Issue-004: RefLine linestring does not have stop_line subtype
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), ref_line.id()));
       }
+    }
+
+    lanelet::BoundingBox2d bbox2d;
+
+    for (const auto & refer : refers) {
+      bbox2d.extend(lanelet::geometry::boundingBox2d(refer));
+    }
+
+    for (const auto & ref_line : ref_lines) {
+      bbox2d.extend(lanelet::geometry::boundingBox2d(ref_line));
+    }
+
+    auto referrer_lanelets = map.laneletLayer.findUsages(regulatory_element);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    double dx = bbox2d.max().x() - bbox2d.min().x();
+    double dy = bbox2d.max().y() - bbox2d.min().y();
+    double bounding_box_size = std::hypot(dx, dy);
+
+    if (bounding_box_size > max_bounding_box_size_) {
+      // Issue-005: Traffic sign regulatory element bounding box exceeds threshold
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 5), regulatory_element->id()));
     }
   }
 

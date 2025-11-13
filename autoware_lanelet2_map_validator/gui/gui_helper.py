@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 Autoware Foundation
+# Copyright 2025 TIER IV, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -147,6 +147,8 @@ def run_lanelet2_validator(
         cmd += ["--parameters", str(parameters_path)]
     if validator_filter:
         cmd += ["-v", validator_filter]
+
+    print(f"Debug: Running command: {' '.join(cmd)}")
 
     result = subprocess.run(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False
