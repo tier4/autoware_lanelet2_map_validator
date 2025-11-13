@@ -23,9 +23,11 @@
 #include <boost/geometry/algorithms/intersects.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_validation/Validation.h>
 
+#include <cmath>
 #include <map>
 #include <string>
 
@@ -132,6 +134,51 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
       construct_issue_from_code(issue_code(this->name(), 7), lanelet::utils::getId());
     lanelet::autoware::validation::checkPrimitivesType(
       ref_lines, lanelet::AttributeValueString::StopLine, issue_sl, issues);
+
+    lanelet::BoundingBox2d bbox2d;
+
+    for (const auto & refer : refers) {
+      for (const auto & point : refer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : refer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    auto referrer_lanelets = map.laneletLayer.findUsages(elem);
+    for (const auto & referrer : referrer_lanelets) {
+      for (const auto & point : referrer.leftBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+
+      for (const auto & point : referrer.rightBound()) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    for (const auto & ref_line : ref_lines) {
+      for (const auto & point : ref_line) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    auto polygons = elem->getParameters<lanelet::ConstPolygon3d>("crosswalk_polygon");
+    for (const auto & polygon : polygons) {
+      for (const auto & point : polygon) {
+        bbox2d.extend(point.basicPoint2d());
+      }
+    }
+
+    double dx = bbox2d.max().x() - bbox2d.min().x();
+    double dy = bbox2d.max().y() - bbox2d.min().y();
+    double bounding_box_size = std::hypot(dx, dy);
+
+    if (bounding_box_size > max_bounding_box_size_) {
+      std::map<std::string, std::string> threshold_map;
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 13), elem->id()));
+    }
   }
   return issues;
 }
