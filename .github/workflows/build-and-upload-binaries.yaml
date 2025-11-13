@@ -12,8 +12,65 @@ permissions:
   contents: write
 
 jobs:
+  build-gui:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/autowarefoundation/autoware:core-devel
+      options: --user root
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: static_build_helper
+
+      - name: Configure Git Safe Directory
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Build validator GUI
+        id: build_gui
+        shell: bash
+        run: |
+          set -e
+          source /etc/bash.bashrc
+          source /opt/ros/humble/setup.bash
+
+          if [ -d "/autoware" ]; then
+            echo "Found /autoware directory, sourcing it..."
+            cd /autoware
+            source install/setup.bash || true
+          fi
+
+          for setup_file in $(find /opt -name "setup.bash" | grep -i autoware 2>/dev/null); do
+            echo "Sourcing autoware setup: $setup_file"
+            source "$setup_file" || true
+          done
+
+          cd $GITHUB_WORKSPACE/autoware_lanelet2_map_validator/gui
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install pyinstaller
+          pyinstaller map_validator_gui.spec
+
+          GUI_BIN=dist/autoware_lanelet2_map_validator_gui
+          if [ ! -f "$GUI_BIN" ]; then
+            GUI_BIN=$(find dist -maxdepth 2 -type f -executable | head -n 1)
+          fi
+          ls -l "$GUI_BIN"
+          echo "gui_artifact=$(realpath $GUI_BIN)" >> $GITHUB_OUTPUT
+
+      - name: Upload GUI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-binary
+          path: ${{ steps.build_gui.outputs.gui_artifact }}
+          retention-days: 1
+
   build:
     runs-on: ubuntu-22.04
+    needs: [build-gui]
 
     steps:
       - name: Get Release Version
@@ -195,16 +252,34 @@ jobs:
           ls -l $BIN
           echo "artifact=$(realpath $BIN)" >> $GITHUB_OUTPUT
 
+      - name: Download GUI artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gui-binary
+          path: ./gui-artifact
+
       - name: Package artifacts
         id: package
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
-          cp "${{ steps.build_validator.outputs.artifact }}" release_package/
+
+          # Copy CLI binary
+          cp "${{ steps.build_validator.outputs.artifact }}" release_package/autoware_lanelet2_map_validator
+
+          # Copy GUI binary
+          cp ./gui-artifact/autoware_lanelet2_map_validator_gui release_package/autoware_lanelet2_map_validator_gui
+          chmod +x release_package/autoware_lanelet2_map_validator_gui
+
+          # Copy config and requirements
           cp -r autoware_lanelet2_map_validator/config release_package/
           cp -r autoware_lanelet2_map_validator/map_requirements release_package/
+
+          # Strip binaries to reduce size
           strip release_package/autoware_lanelet2_map_validator || true
+          strip release_package/autoware_lanelet2_map_validator_gui || true
+
           zip -r $ZIP_NAME release_package
           echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
