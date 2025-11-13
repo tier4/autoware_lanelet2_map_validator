@@ -135,6 +135,14 @@
       "ja": "この ref_line linestring は stop_line サブタイプではありません。"
     }
   },
+  "StopLine.RegulatoryElementDetailsForTrafficSigns-005": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This traffic_sign regulatory element has a bounding box that exceeds the threshold, possibly containing unrelated primitives.",
+      "ja": "この traffic_sign regulatory element の bounding box が閾値を超えており、関連のない primitive が含まれている可能性があります。"
+    }
+  },
   "Intersection.IntersectionAreaDanglingReference-001": {
     "severity": "Error",
     "primitive": "lanelet",
