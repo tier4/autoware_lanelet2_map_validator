@@ -942,5 +942,21 @@
       "en": "This no_stopping_area regulatory element should only be referred by road subtype lanelets.",
       "ja": "この no_stopping_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
     }
+  },
+  "Lane.WalkwayIntersection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet should only exist when intersecting with road/private lanelets. No conflicts found with any road/private lanelets.",
+      "ja": "walkway lanelet は road/private lanelet と交差する場合にのみ必要です。他の road/private lanelet との重複が見つかりませんでした。"
+    }
+  },
+  "Lane.WalkwayIntersection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road/private lanelet {road_lanelet_id}. Current extension: {extension} meters.",
+      "ja": "walkway lanelet は road/private lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長距離: {extension} メートル。"
+    }
   }
 }
