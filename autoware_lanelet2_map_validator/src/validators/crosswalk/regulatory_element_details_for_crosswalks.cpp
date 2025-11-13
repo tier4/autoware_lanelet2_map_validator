@@ -23,9 +23,11 @@
 #include <boost/geometry/algorithms/intersects.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
+#include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_validation/Validation.h>
 
+#include <cmath>
 #include <map>
 #include <string>
 
@@ -175,7 +177,7 @@ RegulatoryElementsDetailsForCrosswalksValidator::checkRegulatoryElementOfCrosswa
 
     if (bounding_box_size > max_bounding_box_size_) {
       std::map<std::string, std::string> threshold_map;
-      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 12), elem->id()));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 13), elem->id()));
     }
   }
   return issues;
