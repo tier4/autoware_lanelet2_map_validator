@@ -15,6 +15,8 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__TRAFFIC_LIGHT__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_LIGHTS_HPP_  // NOLINT
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__TRAFFIC_LIGHT__REGULATORY_ELEMENT_DETAILS_FOR_TRAFFIC_LIGHTS_HPP_  // NOLINT
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
@@ -31,6 +33,12 @@ public:
     return "mapping.traffic_light.regulatory_element_details";
   }
 
+  RegulatoryElementsDetailsForTrafficLightsValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    max_bounding_box_size_ = get_parameter_or<double>(parameters, "max_bounding_box_size", 40.0);
+  }
+
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
 private:
@@ -45,6 +53,8 @@ private:
     const lanelet::ConstLineStrings3d & light_bulbs);
   lanelet::validation::Issues checkRegulatoryElementOfTrafficLights(
     const lanelet::LaneletMap & map);
+
+  double max_bounding_box_size_;
 };
 }  // namespace lanelet::autoware::validation
 

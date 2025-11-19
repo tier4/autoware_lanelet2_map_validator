@@ -1,3 +1,4 @@
 {
-  "words": ["gsub", "githubcli", "pinentry"]
+  "words": ["gsub", "githubcli", "pinentry", "libeigen", "libyaml", "DLANELET", "DAUTOWARE"],
+  "ignorePaths": [".github/cmake"]
 }

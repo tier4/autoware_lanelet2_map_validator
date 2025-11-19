@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <lanelet2_core/LaneletMap.h>
 
+#include <map>
 #include <string>
 
 class TestRegulatoryElementsDetailsForCrosswalks : public MapValidationTester
@@ -158,6 +159,48 @@ TEST_F(TestRegulatoryElementsDetailsForCrosswalks, WrongParticipantPedestrian)  
   const auto expected_issues = {expected_issue1, expected_issue2};
 
   const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestRegulatoryElementsDetailsForCrosswalks, NonIntersectingLanelet)  // NOLINT for gtest
+{
+  load_target_map("crosswalk/crosswalk_non_intersecting_lanelet.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> reason_map1;
+  reason_map1["crosswalk_id"] = "18";
+  reason_map1["road_lanelet_id"] = "11";
+  const auto expected_issue1 =
+    construct_issue_from_code(issue_code(test_target_, 12), 32, reason_map1);
+
+  std::map<std::string, std::string> reason_map2;
+  reason_map2["crosswalk_id"] = "18";
+  reason_map2["road_lanelet_id"] = "7";
+  const auto expected_issue2 =
+    construct_issue_from_code(issue_code(test_target_, 12), 31, reason_map2);
+
+  const auto expected_issues = {expected_issue1, expected_issue2};
+
+  EXPECT_EQ(issues.size(), 2);
+
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestRegulatoryElementsDetailsForCrosswalks, BoundingBoxExceedsThreshold)  // NOLINT for gtest
+{
+  load_target_map("crosswalk/crosswalk_out_of_bound.osm");
+
+  lanelet::autoware::validation::RegulatoryElementsDetailsForCrosswalksValidator checker;
+  const auto & issues = checker(*map_);
+
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 13), 31);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
