@@ -90,36 +90,33 @@ lanelet::validation::Issues NoStoppingAreaValidator::check_no_stopping_area(
 
       referenced_no_stopping_area_polygon_ids.insert(polygon.id());
 
-      // Issue-004: Regulatory element should refer to exactly one stop_line
+      // Issue-004: If ref_line exists, it should be a stop_line type linestring
       const auto & ref_lines = reg_elem->getParameters<lanelet::ConstLineString3d>("ref_line");
-      if (ref_lines.size() != 1) {
-        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id()));
-        continue;
+      if (!ref_lines.empty()) {
+        const auto & stop_line = ref_lines[0];
+        if (
+          !stop_line.hasAttribute(lanelet::AttributeName::Type) ||
+          stop_line.attribute(lanelet::AttributeName::Type) != "stop_line") {
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id()));
+          continue;
+        }
       }
 
-      // Issue-005: The ref_line should be a stop_line type linestring
-      const auto & stop_line = ref_lines[0];
-      if (
-        !stop_line.hasAttribute(lanelet::AttributeName::Type) ||
-        stop_line.attribute(lanelet::AttributeName::Type) != "stop_line") {
-        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
-        continue;
-      }
-
-      // Issue-006: Regulatory element should be referred by at least one road subtype lanelet
+      // Issue-005: Regulatory element should be referred by at least one road subtype lanelet
       const auto referrers = map.laneletLayer.findUsages(reg_elem);
       if (referrers.empty()) {
-        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id()));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
       }
 
-      // Issue-007: Check if there are non-road referrers (should only be referred by road lanelets)
+      // Issue-006: Check if there are non-road referrers (should only be referred by road lanelets)
       if (
         !referrers.empty() &&
         std::any_of(referrers.begin(), referrers.end(), [](lanelet::ConstLanelet lane) {
           return !lane.hasAttribute(lanelet::AttributeName::Subtype) ||
                  lane.attribute(lanelet::AttributeName::Subtype) != "road";
         })) {
-        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 7), reg_elem->id()));
+        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 6), reg_elem->id()));
       }
     }
   }
