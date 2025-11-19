@@ -15,3 +15,6 @@ mapping.intersection.turn_signal_distance_overlap:
 mapping.traffic_light.body_height:
   min_height: 0.2
   max_height: 2.0
+mapping.lane.speed_limit_validity:
+  max_speed_limit: 50.0
+  min_speed_limit: 10.0

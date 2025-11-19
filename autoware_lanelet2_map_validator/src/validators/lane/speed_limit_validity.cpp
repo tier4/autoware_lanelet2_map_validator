@@ -56,14 +56,24 @@ lanelet::validation::Issues SpeedLimitValidityValidator::check_speed_limit_valid
       const std::string speed_limit_str = lanelet.attribute("speed_limit").value();
 
       try {
-        double speed_limit = std::stod(speed_limit_str);
-        if (speed_limit <= 0.0) {
-          // Issue-001: speed_limit is not positive
+        size_t idx = 0;
+        double speed_limit = std::stod(speed_limit_str, &idx);
+        if (idx != speed_limit_str.length() || speed_limit <= 0.0) {
+          // Issue-001: speed_limit is not a valid number
           std::map<std::string, std::string> substitution_map;
           substitution_map["speed_limit_value"] = speed_limit_str;
           substitution_map["subtype"] = subtype;
           issues.emplace_back(
             construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), substitution_map));
+        } else if (speed_limit < min_speed_limit_ || speed_limit > max_speed_limit_) {
+          // Issue-002: speed_limit is outside the configured range
+          std::map<std::string, std::string> substitution_map;
+          substitution_map["speed_limit_value"] = speed_limit_str;
+          substitution_map["subtype"] = subtype;
+          substitution_map["min_speed_limit"] = std::to_string(static_cast<int>(min_speed_limit_));
+          substitution_map["max_speed_limit"] = std::to_string(static_cast<int>(max_speed_limit_));
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 2), lanelet.id(), substitution_map));
         }
       } catch (const std::exception &) {
         // Issue-001: speed_limit is not a valid number

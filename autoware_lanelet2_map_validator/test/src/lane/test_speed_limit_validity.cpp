@@ -79,3 +79,43 @@ TEST_F(TestSpeedLimitValidityValidator, SpeedLimitWithNegativeValue)  // NOLINT 
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestSpeedLimitValidityValidator, SpeedLimitWithNonNumericalValue)  // NOLINT for gtest
+{
+  load_target_map("lane/speed_limit_with_non_numerical_value.osm");
+
+  lanelet::autoware::validation::SpeedLimitValidityValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> substitution_map;
+  substitution_map["speed_limit_value"] = "10 km/h";
+  substitution_map["subtype"] = "road";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 24, substitution_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestSpeedLimitValidityValidator, SpeedLimitWithOverTheLimitValue)  // NOLINT for gtest
+{
+  load_target_map("lane/speed_limit_with_over_the_limit_value.osm");
+
+  lanelet::autoware::validation::SpeedLimitValidityValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> substitution_map;
+  substitution_map["speed_limit_value"] = "100";
+  substitution_map["subtype"] = "road";
+  substitution_map["min_speed_limit"] = "10";
+  substitution_map["max_speed_limit"] = "50";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 2), 24, substitution_map);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}

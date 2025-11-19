@@ -15,6 +15,8 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__SPEED_LIMIT_VALIDITY_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__SPEED_LIMIT_VALIDITY_HPP_
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
@@ -28,8 +30,17 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  SpeedLimitValidityValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    max_speed_limit_ = get_parameter_or<double>(parameters, "max_speed_limit", 50.0);
+    min_speed_limit_ = get_parameter_or<double>(parameters, "min_speed_limit", 10.0);
+  }
+
 private:
   lanelet::validation::Issues check_speed_limit_validity(const lanelet::LaneletMap & map);
+  double max_speed_limit_;
+  double min_speed_limit_;
 };
 }  // namespace lanelet::autoware::validation
 
