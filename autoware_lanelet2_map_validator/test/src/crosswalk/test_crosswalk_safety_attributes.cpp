@@ -86,3 +86,26 @@ TEST_F(TestCrosswalkSafetyAttributesValidator, NegativeSlowDownDistance)  // NOL
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestCrosswalkSafetyAttributesValidator, NonNumericalValue)  // NOLINT for gtest
+{
+  load_target_map("crosswalk/crosswalk_with_non_numerical_distance_speed.osm");
+
+  lanelet::autoware::validation::CrosswalkSafetyAttributesValidator checker;
+  const auto & issues = checker(*map_);
+
+  std::map<std::string, std::string> reason_map_speed;
+  reason_map_speed["attribute_value"] = "5 km/h";
+  const auto expected_issue_speed =
+    construct_issue_from_code(issue_code(test_target_, 1), 18, reason_map_speed);
+
+  std::map<std::string, std::string> reason_map_distance;
+  reason_map_distance["attribute_value"] = "10 km";
+  const auto expected_issue_distance =
+    construct_issue_from_code(issue_code(test_target_, 2), 18, reason_map_distance);
+
+  const auto expected_issues = {expected_issue_speed, expected_issue_distance};
+
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}

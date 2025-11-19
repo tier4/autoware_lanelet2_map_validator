@@ -56,8 +56,9 @@ lanelet::validation::Issues CrosswalkSafetyAttributesValidator::check_crosswalk_
     if (speed_it != attrs.end()) {
       const std::string & speed_value = speed_it->second.value();
       try {
-        double speed = std::stod(speed_value);
-        if (speed <= 0.0) {
+        size_t idx = 0;
+        double speed = std::stod(speed_value, &idx);
+        if (idx != speed_value.length() || speed <= 0.0) {
           std::map<std::string, std::string> reason_map;
           reason_map["attribute_value"] = speed_value;
           issues.emplace_back(
@@ -76,8 +77,9 @@ lanelet::validation::Issues CrosswalkSafetyAttributesValidator::check_crosswalk_
     if (distance_it != attrs.end()) {
       const std::string & distance_value = distance_it->second.value();
       try {
-        double distance = std::stod(distance_value);
-        if (distance <= 0.0) {
+        size_t idx = 0;
+        double distance = std::stod(distance_value, &idx);
+        if (idx != distance_value.length() || distance <= 0.0) {
           std::map<std::string, std::string> reason_map;
           reason_map["attribute_value"] = distance_value;
           issues.emplace_back(
