@@ -16,7 +16,7 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <map>
+#include <algorithm>
 #include <set>
 #include <string>
 #include <vector>
@@ -43,33 +43,25 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(
   lanelet::validation::Issues issues;
 
   for (const auto & lanelet : map.laneletLayer) {
-    const auto & left_bound = lanelet.leftBound();
-    const auto & right_bound = lanelet.rightBound();
-
     std::set<lanelet::Id> left_point_ids;
     std::set<lanelet::Id> right_point_ids;
 
-    for (const auto & point : left_bound) {
+    for (const auto & point : lanelet.leftBound()) {
       left_point_ids.insert(point.id());
     }
 
-    for (const auto & point : right_bound) {
+    for (const auto & point : lanelet.rightBound()) {
       right_point_ids.insert(point.id());
     }
 
     std::vector<lanelet::Id> shared_point_ids;
-    for (const auto & left_id : left_point_ids) {
-      if (right_point_ids.count(left_id) > 0) {
-        shared_point_ids.push_back(left_id);
-      }
-    }
+    std::set_intersection(
+      left_point_ids.begin(), left_point_ids.end(), right_point_ids.begin(), right_point_ids.end(),
+      std::back_inserter(shared_point_ids));
 
     // Issue-001: lanelet has shared points between left and right bounds
     if (!shared_point_ids.empty()) {
-      std::map<std::string, std::string> substitution_map;
-
-      issues.emplace_back(
-        construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), substitution_map));
+      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
     }
   }
 

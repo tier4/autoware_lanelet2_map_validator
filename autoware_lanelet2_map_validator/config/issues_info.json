@@ -100,7 +100,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "This lanelet has shared points between left and right bounds.",
-      "ja": "この lanelet の左右の境界が共有している点があります。"
+      "ja": "この lanelet の左右の境界が同じ点を共有してしまっています。"
     }
   },
   "StopLine.MissingRegulatoryElements-001": {
