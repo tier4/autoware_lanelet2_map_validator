@@ -14,9 +14,9 @@ The validator specifically focuses on:
 - Ensuring adjacent lanelets have vehicle-suitable subtypes
 - Preventing adjacency between vehicle lanes and non-vehicle-suitable lane types
 
-| Issue Code                        | Message                                                                             | Severity | Primitive | Description                                                                                                                                              | Approach                                                                                                                                    |
-| --------------------------------- | ----------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lane.LateralSubtypeConnection-001 | Adjacent lanelet {adjacent_lanelet_id} has incompatible subtype for vehicle traffic | Error    | lanelet   | A lanelet is adjacent to another lanelet with an incompatible subtype. Vehicle-suitable subtypes include "road", "road_shoulder", and "pedestrian_lane". | Verify that adjacent lanelets have compatible subtypes. If one lanelet is not suitable for vehicles, they should not be laterally adjacent. |
+| Issue Code                        | Message                                                                             | Severity | Primitive | Description                                                                                                                                                             | Approach                                                                                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lane.LateralSubtypeConnection-001 | Adjacent lanelet {adjacent_lanelet_id} has incompatible subtype for vehicle traffic | Error    | lanelet   | A lanelet is adjacent to another lanelet with an incompatible subtype. Vehicle-suitable subtypes include "road", "road_shoulder", "pedestrian_lane" and "bicycle_lane". | Verify that adjacent lanelets have compatible subtypes. If one lanelet is not suitable for vehicles, they should not be laterally adjacent. |
 
 ## Parameters
 
@@ -38,6 +38,7 @@ The validator considers the following subtypes as vehicle-suitable:
 - `road` (default when no subtype is specified)
 - `road_shoulder`
 - `pedestrian_lane`
+- `bicycle_lane`
 
 ### Error Detection
 

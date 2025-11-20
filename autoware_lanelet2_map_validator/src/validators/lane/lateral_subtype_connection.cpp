@@ -51,7 +51,8 @@ void check_adjacent_subtype_compatibility(
   std::string norm_current = current_subtype;
   std::string norm_adjacent = adjacent_subtype;
 
-  std::set<std::string> vehicle_suitable = {"road", "road_shoulder", "pedestrian_lane"};
+  std::set<std::string> vehicle_suitable = {
+    "road", "road_shoulder", "pedestrian_lane", "bicycle_lane"};
 
   bool current_vehicle = vehicle_suitable.count(norm_current) > 0;
   bool adjacent_vehicle = vehicle_suitable.count(norm_adjacent) > 0;
