@@ -995,11 +995,19 @@
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
+      "en": "This no_stopping_area regulatory element must refer to at most one stop_line.",
+      "ja": "この no_stopping_area regulatory element は最大でも1つの stop_line を参照する必要があります。"
+    }
+  },
+  "Area.NoStoppingArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
       "en": "This no_stopping_area regulatory element refers to a linestring that is not a stop_line type.",
       "ja": "この no_stopping_area regulatory element は stop_line type ではない linestring を参照しています。"
     }
   },
-  "Area.NoStoppingArea-005": {
+  "Area.NoStoppingArea-006": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
@@ -1007,7 +1015,7 @@
       "ja": "この no_stopping_area regulatory element は road subtype の lanelet から参照されていません。"
     }
   },
-  "Area.NoStoppingArea-006": {
+  "Area.NoStoppingArea-007": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
