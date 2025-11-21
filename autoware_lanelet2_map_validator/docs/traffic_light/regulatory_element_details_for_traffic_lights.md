@@ -27,7 +27,7 @@ The output issue marks "linestring" or "regulatory element" as the **primitive**
 
 | Parameter Name        | Type   | Default Value | Description                                                                                                                    |
 | --------------------- | ------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| max_bounding_box_size | double | 40.0          | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives in a traffic light regulatory element. |
+| max_bounding_box_size | double | 200.0         | Maximum allowed diagonal size (in meters) of the bounding box containing all primitives in a traffic light regulatory element. |
 
 ## Related source codes
 
