@@ -109,7 +109,7 @@ TEST_F(TestSpeedLimitValidityValidator, SpeedLimitWithOverTheLimitValue)  // NOL
   std::map<std::string, std::string> substitution_map;
   substitution_map["speed_limit_value"] = "100";
   substitution_map["subtype"] = "road";
-  substitution_map["min_speed_limit"] = "10";
+  substitution_map["min_speed_limit"] = "1";
   substitution_map["max_speed_limit"] = "50";
   const auto expected_issue =
     construct_issue_from_code(issue_code(test_target_, 2), 24, substitution_map);
