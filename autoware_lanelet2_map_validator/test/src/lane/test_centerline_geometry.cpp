@@ -84,7 +84,8 @@ TEST_F(TestCenterlineGeometryValidator, CenterlineOverpassing)  // NOLINT for gt
 
 //   std::map<std::string, std::string> ids_map;
 //   ids_map["point_ids"] = "120";
-//   const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 129, ids_map);
+//   const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 3), 129,
+//   ids_map);
 
 //   EXPECT_EQ(issues.size(), 1);
 
