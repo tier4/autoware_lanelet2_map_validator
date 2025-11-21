@@ -108,7 +108,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "This {subtype} lanelet has a speed_limit attribute value '{speed_limit_value}' that is outside the configured range [{min_speed_limit}, {max_speed_limit}].",
-      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' は設定済み範囲 [{min_speed_limit}, {max_speed_limit}] の外にあります。"
+      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' はパラメータで設定した範囲 [{min_speed_limit}, {max_speed_limit}] の外にあります。"
     }
   },
   "StopLine.MissingRegulatoryElements-001": {
