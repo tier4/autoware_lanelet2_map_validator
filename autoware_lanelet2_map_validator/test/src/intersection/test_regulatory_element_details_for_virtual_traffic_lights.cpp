@@ -25,9 +25,9 @@
 class TestRegulatoryElementDetailsForVirtualTrafficLightsValidator : public MapValidationTester
 {
 protected:
-  const std::string test_target_ =
-    std::string(lanelet::autoware::validation::
-                  RegulatoryElementDetailsForVirtualTrafficLightsValidator::name());
+  const std::string test_target_ = std::string(
+    lanelet::autoware::validation::RegulatoryElementDetailsForVirtualTrafficLightsValidator::
+      name());
 };
 
 TEST_F(
