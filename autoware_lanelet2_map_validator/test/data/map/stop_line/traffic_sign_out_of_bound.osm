@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="3" validation_version="1"/>
+  <MetaInfo format_version="1" map_version="4" validation_version="1"/>
   <node id="2147" lat="35.90323618744" lon="139.93342671934">
     <tag k="local_x" v="3753.2396"/>
     <tag k="local_y" v="73741.3834"/>
@@ -21,14 +21,14 @@
     <tag k="local_y" v="73729.5959"/>
     <tag k="ele" v="19.3717"/>
   </node>
-  <node id="2162" lat="35.90373366179" lon="139.93277986141">
-    <tag k="local_x" v="3695.4683"/>
-    <tag k="local_y" v="73797.2002"/>
+  <node id="2162" lat="35.90555024285" lon="139.93125050228">
+    <tag k="local_x" v="3559.6603"/>
+    <tag k="local_y" v="74000.2022"/>
     <tag k="ele" v="21.2544"/>
   </node>
-  <node id="2163" lat="35.90372761532" lon="139.93278405377">
-    <tag k="local_x" v="3695.8393"/>
-    <tag k="local_y" v="73796.5254"/>
+  <node id="2163" lat="35.90554419645" lon="139.93125469485">
+    <tag k="local_x" v="3560.0313"/>
+    <tag k="local_y" v="73999.5274"/>
     <tag k="ele" v="21.2544"/>
   </node>
   <way id="2149">
