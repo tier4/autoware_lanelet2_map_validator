@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="1" map_version="5" validation_version="1"/>
+  <MetaInfo format_version="1" map_version="3" validation_version="1"/>
   <node id="1" lat="35.90311164941" lon="139.93321316748">
     <tag k="local_x" v="3733.8173"/>
     <tag k="local_y" v="73727.7802"/>
@@ -51,14 +51,14 @@
     <tag k="local_y" v="73737.2225"/>
     <tag k="ele" v="19.3342"/>
   </node>
-  <node id="25" lat="35.90505974797" lon="139.93085475983">
-    <tag k="local_x" v="3523.3531"/>
-    <tag k="local_y" v="73946.1878"/>
+  <node id="25" lat="35.90317105575" lon="139.93328165228">
+    <tag k="local_x" v="3740.0695"/>
+    <tag k="local_y" v="73734.302"/>
     <tag k="ele" v="19.3035"/>
   </node>
-  <node id="26" lat="35.90503773979" lon="139.93086992394">
-    <tag k="local_x" v="3524.6948"/>
-    <tag k="local_y" v="73943.7317"/>
+  <node id="26" lat="35.90314904724" lon="139.93329681535">
+    <tag k="local_x" v="3741.4112"/>
+    <tag k="local_y" v="73731.8459"/>
     <tag k="ele" v="19.3757"/>
   </node>
   <node id="28" lat="35.90314757165" lon="139.9333705265">
@@ -139,6 +139,8 @@
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="crosswalk"/>
     <tag k="speed_limit" v="10"/>
+    <tag k="safety_slow_down_speed" v="-5"/>
+    <tag k="safety_slow_down_distance" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
     <tag k="participant:pedestrian" v="yes"/>
