@@ -95,6 +95,22 @@
       "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
     }
   },
+  "Lane.SpeedLimitValidity-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This {subtype} lanelet has an invalid speed_limit attribute value '{speed_limit_value}'. The value must be a positive numerical value.",
+      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' は無効です。正の数値である必要があります。"
+    }
+  },
+  "Lane.SpeedLimitValidity-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This {subtype} lanelet has a speed_limit attribute value '{speed_limit_value}' that is outside the configured range [{min_speed_limit}, {max_speed_limit}].",
+      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' はパラメータで設定した範囲 [{min_speed_limit}, {max_speed_limit}] の外にあります。"
+    }
+  },
   "StopLine.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
