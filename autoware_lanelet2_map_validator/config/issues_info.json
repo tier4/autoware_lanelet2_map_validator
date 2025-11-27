@@ -103,6 +103,14 @@
       "ja": "この lanelet の左右の境界が同じ点を共有してしまっています。"
     }
   },
+  "Lane.LaneletGeometry-002": {
+    "severity": "Warning",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is detected as not smooth by Isolation Forest detector (score: {anomaly_score}, threshold: {threshold}).",
+      "ja": "この lanelet は Isolation Forest 検出器により非スムーズとして検出されました (スコア: {anomaly_score}, 閾値: {threshold})。"
+    }
+  },
   "Lane.SpeedLimitValidity-001": {
     "severity": "Error",
     "primitive": "lanelet",
