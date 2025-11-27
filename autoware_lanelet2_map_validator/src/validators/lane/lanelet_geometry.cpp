@@ -16,6 +16,7 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -88,11 +89,11 @@ struct LaneletStats
 {
   double mean_angle = 0.0;
   double angle_diff = 0.0;
-  double log_nenergy_L = 0.0;
-  double log_nenergy_R = 0.0;
+  double log_norm_energy_L = 0.0;
+  double log_norm_energy_R = 0.0;
 };
 
-static std::vector<AngleLength> computeAnglesLengths(const lanelet::ConstLineString3d & line)
+static std::vector<AngleLength> compute_angles_lengths(const lanelet::ConstLineString3d & line)
 {
   std::vector<AngleLength> result;
   for (size_t i = 1; i + 1 < line.size(); ++i) {
@@ -119,7 +120,7 @@ static std::vector<AngleLength> computeAnglesLengths(const lanelet::ConstLineStr
   return result;
 }
 
-static double computeEntranceExitAngleDiff(const lanelet::ConstLineString3d & line)
+static double compute_entrance_exit_angle_diff(const lanelet::ConstLineString3d & line)
 {
   if (line.size() < 3) {
     return 0.0;
@@ -155,9 +156,9 @@ static double computeEntranceExitAngleDiff(const lanelet::ConstLineString3d & li
   return angle_diff;
 }
 
-static double computeNormalizedCurvatureEnergy(const lanelet::ConstLineString3d & bound)
+static double compute_normalized_curvature_energy(const lanelet::ConstLineString3d & bound)
 {
-  auto angle_lengths = computeAnglesLengths(bound);
+  auto angle_lengths = compute_angles_lengths(bound);
 
   if (angle_lengths.empty()) {
     return 0.0;
@@ -182,19 +183,19 @@ static double computeNormalizedCurvatureEnergy(const lanelet::ConstLineString3d 
   return sum_bending / total_len;
 }
 
-static LaneletStats computeLaneletStats(const lanelet::ConstLanelet & lanelet)
+static LaneletStats compute_lanelet_stats(const lanelet::ConstLanelet & lanelet)
 {
   LaneletStats stats;
 
   const auto & left_bound = lanelet.leftBound();
   const auto & right_bound = lanelet.rightBound();
 
-  double angle_diff_L = computeEntranceExitAngleDiff(left_bound);
-  double angle_diff_R = computeEntranceExitAngleDiff(right_bound);
+  double angle_diff_L = compute_entrance_exit_angle_diff(left_bound);
+  double angle_diff_R = compute_entrance_exit_angle_diff(right_bound);
   stats.angle_diff = (angle_diff_L + angle_diff_R) / 2.0;
   {
-    auto angle_lengths_L = computeAnglesLengths(left_bound);
-    auto angle_lengths_R = computeAnglesLengths(right_bound);
+    auto angle_lengths_L = compute_angles_lengths(left_bound);
+    auto angle_lengths_R = compute_angles_lengths(right_bound);
 
     double sum_theta2_L = 0.0;
     for (const auto & al : angle_lengths_L) {
@@ -213,19 +214,19 @@ static LaneletStats computeLaneletStats(const lanelet::ConstLanelet & lanelet)
     stats.mean_angle = (mean_angle_L + mean_angle_R) / 2.0;
   }
 
-  double energy_L = computeNormalizedCurvatureEnergy(left_bound);
-  double energy_R = computeNormalizedCurvatureEnergy(right_bound);
+  double energy_L = compute_normalized_curvature_energy(left_bound);
+  double energy_R = compute_normalized_curvature_energy(right_bound);
 
   const double eps = 1e-8;
-  stats.log_nenergy_L = std::log(energy_L + eps);
-  stats.log_nenergy_R = std::log(energy_R + eps);
+  stats.log_norm_energy_L = std::log(energy_L + eps);
+  stats.log_norm_energy_R = std::log(energy_R + eps);
 
   return stats;
 }
 
-static std::vector<double> buildFeatures(const LaneletStats & stats)
+static std::vector<double> build_features(const LaneletStats & stats)
 {
-  return {stats.log_nenergy_L, stats.log_nenergy_R, stats.mean_angle, stats.angle_diff};
+  return {stats.log_norm_energy_L, stats.log_norm_energy_R, stats.mean_angle, stats.angle_diff};
 }
 
 bool IsolationForestPredictor::load_model(const std::string & path)
@@ -344,12 +345,13 @@ lanelet::validation::Issues LaneletGeometryValidator::operator()(const lanelet::
   lanelet::validation::Issues issues;
 
   lanelet::autoware::validation::appendIssues(issues, check_lanelet_geometry(map));
+
+  std::string package_share_directory =
+    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+  std::string model_path = package_share_directory + "/config/isolation_forest_model.json";
+
   lanelet::autoware::validation::appendIssues(
-    issues, check_lanelet_anomaly_if(
-              map,
-              "/home/radityagiovanni/autoware_3/autoware/src/autoware_lanelet2_map_validator/"
-              "autoware_lanelet2_map_validator/config/iforest_model.json",
-              isolation_forest_threshold_));
+    issues, check_lanelet_anomaly_if(map, model_path, isolation_forest_threshold_));
 
   return issues;
 }
@@ -360,17 +362,14 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(
   lanelet::validation::Issues issues;
 
   for (const auto & lanelet : map.laneletLayer) {
-    const auto & left_bound = lanelet.leftBound();
-    const auto & right_bound = lanelet.rightBound();
-
     std::set<lanelet::Id> left_point_ids;
     std::set<lanelet::Id> right_point_ids;
 
-    for (const auto & point : left_bound) {
+    for (const auto & point : lanelet.leftBound()) {
       left_point_ids.insert(point.id());
     }
 
-    for (const auto & point : right_bound) {
+    for (const auto & point : lanelet.rightBound()) {
       right_point_ids.insert(point.id());
     }
 
@@ -398,7 +397,6 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_anomaly_if(
 {
   lanelet::validation::Issues issues;
   if (!if_model_loaded_) {
-    // Create the model in the anonymous namespace
     auto * model = new IsolationForestPredictor();
     if (!model->load_model(model_path)) {
       delete model;
@@ -408,12 +406,11 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_anomaly_if(
     if_model_loaded_ = true;
   }
 
-  // Cast back to use the model
   auto * model = static_cast<IsolationForestPredictor *>(if_model_);
 
   for (const auto & lanelet : map.laneletLayer) {
-    LaneletStats stats = computeLaneletStats(lanelet);
-    std::vector<double> x = buildFeatures(stats);
+    LaneletStats stats = compute_lanelet_stats(lanelet);
+    std::vector<double> x = build_features(stats);
     double score_sk = model->score_samples(x);
     bool is_outlier = (score_sk > anomaly_threshold);
 

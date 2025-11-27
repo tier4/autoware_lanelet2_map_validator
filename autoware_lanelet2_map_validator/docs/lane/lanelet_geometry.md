@@ -29,20 +29,20 @@ The Isolation Forest algorithm is used to detect lanelets with irregular or non-
 
 The validator extracts four geometric features from each lanelet:
 
-1. **`log_nenergy_L`** - Logarithm of normalized curvature energy of the left bound
-2. **`log_nenergy_R`** - Logarithm of normalized curvature energy of the right bound
+1. **`log_norm_energy_L`** - Logarithm of normalized curvature energy of the left bound
+2. **`log_norm_energy_R`** - Logarithm of normalized curvature energy of the right bound
 3. **`mean_angle`** - Average of squared turning angles across both bounds
 4. **`angle_diff`** - Average entrance-exit angle difference for both bounds
 
 #### Detailed Feature Calculations
 
-**Normalized Curvature Energy (`log_nenergy_L/R`)**:
+**Normalized Curvature Energy (`log_norm_energy_L/R`)**:
 
 - For each segment in the bound, calculate the turning angle θ between consecutive line segments
 - Compute curvature κ = θ / average_segment_length
 - Sum up κ² × segment_length for all segments
 - Normalize by total path length: `energy = Σ(κ² × length) / total_length`
-- Apply logarithm with small epsilon: `log_nenergy = log(energy + 1e-8)`
+- Apply logarithm with small epsilon: `log_norm_energy = log(energy + 1e-8)`
 
 **Mean Angle (`mean_angle`)**:
 
@@ -58,7 +58,7 @@ The validator extracts four geometric features from each lanelet:
 
 ### Model Training
 
-The Isolation Forest model (`iforest_model.json`) is pre-trained on a dataset of typical lanelet geometries. To retrain the model with additional map data:
+The Isolation Forest model (`isolation_forest_model.json`) is pre-trained on a dataset of typical lanelet geometries. To retrain the model with additional map data:
 
 #### 1. Data Collection
 
@@ -69,7 +69,7 @@ from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 
 # Collect features from all lanelets in your training maps
-features = []  # List of [log_nenergy_L, log_nenergy_R, mean_angle, angle_diff]
+features = []  # List of [log_norm_energy_L, log_norm_energy_R, mean_angle, angle_diff]
 
 # Load your training data
 X = np.array(features)
@@ -99,14 +99,14 @@ import json
 # Export model parameters to JSON format
 model_data = {
     "psi": len(X),  # Training sample size
-    "feature_names": ["log_nenergy_L", "log_nenergy_R", "mean_angle", "angle_diff"],
+    "feature_names": ["log_norm_energy_L", "log_norm_energy_R", "mean_angle", "angle_diff"],
     "scaler_mean": scaler.mean_.tolist(),
     "scaler_scale": scaler.scale_.tolist(),
     "trees": []  # Export decision trees (implementation specific)
 }
 
 # Save to iforest_model.json
-with open("iforest_model.json", "w") as f:
+with open("isolation_forest_model.json", "w") as f:
     json.dump(model_data, f, indent=2)
 ```
 
