@@ -8,16 +8,16 @@ mapping.lane.lanelet_geometry
 
 This validator checks the geometric properties of lanelets. It ensures that the left bound and right bound of each lanelet do not share any points, which is a fundamental requirement for lanelet geometry validity.
 
-| Issue Code               | Message                                                       | Severity | Primitive | Description                                                                                                                            | Approach                                                                                                     |
-| ------------------------ | ------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Lane.LaneletGeometry-001 | This lanelet has shared points between left and right bounds. | Error    | lanelet   | The left and right bounds of a lanelet should not share any points. Shared points indicate a degenerate or malformed lanelet geometry. | Verify that the left and right bounds are defined with distinct points and do not intersect at any vertices. |
+| Issue Code               | Message                                                                                                               | Severity | Primitive | Description                                                                                                                                                                                                          | Approach                                                                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lane.LaneletGeometry-001 | This lanelet has shared points between left and right bounds.                                                         | Error    | lanelet   | The left and right bounds of a lanelet should not share any points. Shared points indicate a degenerate or malformed lanelet geometry.                                                                               | Verify that the left and right bounds are defined with distinct points and do not intersect at any vertices.                                              |
 | Lane.LaneletGeometry-002 | This lanelet is detected as not smooth by Isolation Forest detector (score: {anomaly_score}, threshold: {threshold}). | Warning  | lanelet   | The lanelet geometry appears to have irregular or non-smooth characteristics based on curvature and angle analysis. This may indicate mapping errors, abrupt changes in road geometry, or other geometric anomalies. | Review the lanelet geometry for smoothness issues, check for mapping artifacts, or verify if the geometry accurately represents the real road conditions. |
 
 ## Parameters
 
-| Parameter Name             | Type   | Default Value | Description                                                                                                                    |
-| -------------------------- | ------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `isolation_forest_threshold` | double | 0.62         | Threshold for the Isolation Forest anomaly detection. Lanelets with scores above this threshold are flagged as non-smooth. |
+| Parameter Name               | Type   | Default Value | Description                                                                                                                |
+| ---------------------------- | ------ | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `isolation_forest_threshold` | double | 0.62          | Threshold for the Isolation Forest anomaly detection. Lanelets with scores above this threshold are flagged as non-smooth. |
 
 ## Isolation Forest Anomaly Detection
 
@@ -30,13 +30,14 @@ The Isolation Forest algorithm is used to detect lanelets with irregular or non-
 The validator extracts four geometric features from each lanelet:
 
 1. **`log_nenergy_L`** - Logarithm of normalized curvature energy of the left bound
-2. **`log_nenergy_R`** - Logarithm of normalized curvature energy of the right bound  
+2. **`log_nenergy_R`** - Logarithm of normalized curvature energy of the right bound
 3. **`mean_angle`** - Average of squared turning angles across both bounds
 4. **`angle_diff`** - Average entrance-exit angle difference for both bounds
 
-#### Detailed Feature Calculations:
+#### Detailed Feature Calculations
 
 **Normalized Curvature Energy (`log_nenergy_L/R`)**:
+
 - For each segment in the bound, calculate the turning angle θ between consecutive line segments
 - Compute curvature κ = θ / average_segment_length
 - Sum up κ² × segment_length for all segments
@@ -44,12 +45,14 @@ The validator extracts four geometric features from each lanelet:
 - Apply logarithm with small epsilon: `log_nenergy = log(energy + 1e-8)`
 
 **Mean Angle (`mean_angle`)**:
+
 - Calculate squared turning angles (θ²) at each vertex of both left and right bounds
 - Average across all vertices: `mean_angle = Σ(θ²) / number_of_vertices`
 
 **Angle Difference (`angle_diff`)**:
+
 - Calculate entrance direction vector (first two points)
-- Calculate exit direction vector (last two points)  
+- Calculate exit direction vector (last two points)
 - Compute angle between entrance and exit vectors using dot product
 - Average the angle differences from left and right bounds
 
@@ -58,6 +61,7 @@ The validator extracts four geometric features from each lanelet:
 The Isolation Forest model (`iforest_model.json`) is pre-trained on a dataset of typical lanelet geometries. To retrain the model with additional map data:
 
 #### 1. Data Collection
+
 ```python
 # Extract features from your map dataset
 import numpy as np
@@ -72,6 +76,7 @@ X = np.array(features)
 ```
 
 #### 2. Model Training
+
 ```python
 # Standardize features
 scaler = StandardScaler()
@@ -87,6 +92,7 @@ isolation_forest.fit(X_scaled)
 ```
 
 #### 3. Model Export
+
 ```python
 import json
 
@@ -105,10 +111,12 @@ with open("iforest_model.json", "w") as f:
 ```
 
 #### 4. Model Validation
+
 - Test the model on known good and problematic lanelets
 - Typical threshold values range from 0.5 to 0.8 depending on desired sensitivity
 
 ### Usage Notes
+
 - Model files should be placed in the `config/` directory of the package
 
 ## Related source codes

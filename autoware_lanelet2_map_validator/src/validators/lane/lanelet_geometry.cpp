@@ -15,15 +15,20 @@
 #include "lanelet2_map_validator/validators/lane/lanelet_geometry.hpp"
 
 #include "lanelet2_map_validator/utils.hpp"
-#include <set>
-#include <cmath>
+
+#include <nlohmann/json.hpp>
+
 #include <algorithm>
-#include <map>
+#include <cmath>
 #include <cstdlib>
 #include <filesystem>
-#include <sstream>
 #include <fstream>
-#include <nlohmann/json.hpp>
+#include <map>
+#include <set>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 using nlohmann::json;
 
@@ -33,19 +38,59 @@ namespace
 {
 lanelet::validation::RegisterMapValidator<LaneletGeometryValidator> reg;
 
-struct AngleLength {
+struct IFNode
+{
+  bool is_leaf;
+  int feature;
+  double threshold;
+  int left;
+  int right;
+  int n_samples;
+};
+
+struct IFTree
+{
+  std::vector<IFNode> nodes;
+};
+
+class IsolationForestPredictor
+{
+public:
+  bool load_model(const std::string & path);
+  double score_samples(const std::vector<double> & x) const;
+  int n_features() const { return n_features_; }
+  const std::vector<std::string> & feature_names() const { return feature_names_; }
+
+private:
+  int n_features_ = 0;
+  int psi_ = 256;
+  double offset_ = 0.0;
+  std::vector<std::string> feature_names_;
+  std::vector<double> scaler_mean_;
+  std::vector<double> scaler_scale_;
+  std::vector<IFTree> trees_;
+
+  double anomaly_score_paper(const std::vector<double> & x) const;
+  double average_path_length(const std::vector<double> & x) const;
+  double path_length(
+    const IFTree & tree, const std::vector<double> & x, int node_idx, double depth) const;
+  static double c_factor(int n);
+};
+
+struct AngleLength
+{
   double theta = 0.0;
   double seg_length_before = 0.0;
   double seg_length_after = 0.0;
 };
 
-struct LaneletStats {
+struct LaneletStats
+{
   double mean_angle = 0.0;
   double angle_diff = 0.0;
   double log_nenergy_L = 0.0;
   double log_nenergy_R = 0.0;
 };
-
 
 static std::vector<AngleLength> computeAnglesLengths(const lanelet::ConstLineString3d & line)
 {
@@ -150,23 +195,21 @@ static LaneletStats computeLaneletStats(const lanelet::ConstLanelet & lanelet)
   {
     auto angle_lengths_L = computeAnglesLengths(left_bound);
     auto angle_lengths_R = computeAnglesLengths(right_bound);
-    
+
     double sum_theta2_L = 0.0;
     for (const auto & al : angle_lengths_L) {
       sum_theta2_L += al.theta * al.theta;
     }
-    double mean_angle_L = !angle_lengths_L.empty() 
-      ? sum_theta2_L / static_cast<double>(angle_lengths_L.size()) 
-      : 0.0;
-    
+    double mean_angle_L =
+      !angle_lengths_L.empty() ? sum_theta2_L / static_cast<double>(angle_lengths_L.size()) : 0.0;
+
     double sum_theta2_R = 0.0;
     for (const auto & al : angle_lengths_R) {
       sum_theta2_R += al.theta * al.theta;
     }
-    double mean_angle_R = !angle_lengths_R.empty() 
-      ? sum_theta2_R / static_cast<double>(angle_lengths_R.size()) 
-      : 0.0;
-    
+    double mean_angle_R =
+      !angle_lengths_R.empty() ? sum_theta2_R / static_cast<double>(angle_lengths_R.size()) : 0.0;
+
     stats.mean_angle = (mean_angle_L + mean_angle_R) / 2.0;
   }
 
@@ -182,29 +225,137 @@ static LaneletStats computeLaneletStats(const lanelet::ConstLanelet & lanelet)
 
 static std::vector<double> buildFeatures(const LaneletStats & stats)
 {
-  return {
-    stats.log_nenergy_L,
-    stats.log_nenergy_R,
-    stats.mean_angle,
-    stats.angle_diff
-  };
+  return {stats.log_nenergy_L, stats.log_nenergy_R, stats.mean_angle, stats.angle_diff};
+}
+
+bool IsolationForestPredictor::load_model(const std::string & path)
+{
+  std::ifstream in(path);
+  if (!in) {
+    return false;
+  }
+  json j;
+  in >> j;
+
+  n_features_ = j.at("n_features").get<int>();
+  psi_ = j.at("psi").get<int>();
+  offset_ = j.at("offset").get<double>();
+  feature_names_ = j.at("feature_names").get<std::vector<std::string>>();
+
+  if (j.contains("scaler_mean") && j.contains("scaler_scale")) {
+    scaler_mean_ = j.at("scaler_mean").get<std::vector<double>>();
+    scaler_scale_ = j.at("scaler_scale").get<std::vector<double>>();
+  }
+
+  trees_.clear();
+  for (const auto & tjson : j.at("trees")) {
+    IFTree t;
+    for (const auto & njson : tjson.at("nodes")) {
+      IFNode n;
+      n.is_leaf = njson.at("is_leaf").get<bool>();
+      n.feature = njson.at("feature").get<int>();
+      n.threshold = njson.at("threshold").get<double>();
+      n.left = njson.at("left").get<int>();
+      n.right = njson.at("right").get<int>();
+      n.n_samples = njson.at("n_samples").get<int>();
+      t.nodes.push_back(n);
+    }
+    trees_.push_back(std::move(t));
+  }
+  return true;
+}
+
+double IsolationForestPredictor::anomaly_score_paper(const std::vector<double> & x) const
+{
+  const double h = average_path_length(x);
+  const double cn = c_factor(psi_);
+  if (cn <= 0.0) {
+    return 1.0;
+  }
+  return std::pow(2.0, -h / cn);
+}
+
+double IsolationForestPredictor::score_samples(const std::vector<double> & x) const
+{
+  std::vector<double> x_scaled = x;
+  if (!scaler_mean_.empty() && !scaler_scale_.empty()) {
+    for (size_t i = 0; i < x.size() && i < scaler_mean_.size(); ++i) {
+      if (scaler_scale_[i] > 1e-10) {
+        x_scaled[i] = (x[i] - scaler_mean_[i]) / scaler_scale_[i];
+      }
+    }
+  }
+
+  return anomaly_score_paper(x_scaled);
+}
+
+double IsolationForestPredictor::average_path_length(const std::vector<double> & x) const
+{
+  double total_path = 0.0;
+  for (const auto & tree : trees_) {
+    total_path += path_length(tree, x, 0, 0.0);
+  }
+  return total_path / static_cast<double>(trees_.size());
+}
+
+double IsolationForestPredictor::path_length(
+  const IFTree & tree, const std::vector<double> & x, int node_idx, double depth) const
+{
+  const IFNode & node = tree.nodes[node_idx];
+
+  if (node.is_leaf || node.left < 0 || node.right < 0) {
+    int n_leaf = std::max(1, node.n_samples);
+    return depth + c_factor(n_leaf);
+  }
+
+  const double next_depth = depth + 1.0;
+  if (x[node.feature] < node.threshold) {
+    return path_length(tree, x, node.left, next_depth);
+  } else {
+    return path_length(tree, x, node.right, next_depth);
+  }
+}
+
+double IsolationForestPredictor::c_factor(int n)
+{
+  if (n <= 1) {
+    return 0.0;
+  }
+  if (n == 2) {
+    return 1.0;
+  }
+  const double nn = static_cast<double>(n);
+  const double H = std::log(nn - 1.0) + 0.5772156649;
+  return 2.0 * H - 2.0 * (nn - 1.0) / nn;
 }
 
 }  // namespace
+
+LaneletGeometryValidator::~LaneletGeometryValidator()
+{
+  if (if_model_) {
+    delete static_cast<IsolationForestPredictor *>(if_model_);
+    if_model_ = nullptr;
+  }
+}
 
 lanelet::validation::Issues LaneletGeometryValidator::operator()(const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
   lanelet::autoware::validation::appendIssues(issues, check_lanelet_geometry(map));
-  lanelet::autoware::validation::appendIssues(issues, check_lanelet_anomaly_if(map, 
-  "/home/radityagiovanni/autoware_3/autoware/src/autoware_lanelet2_map_validator/autoware_lanelet2_map_validator/config/iforest_model.json", 
-  isolation_forest_threshold_));
+  lanelet::autoware::validation::appendIssues(
+    issues, check_lanelet_anomaly_if(
+              map,
+              "/home/radityagiovanni/autoware_3/autoware/src/autoware_lanelet2_map_validator/"
+              "autoware_lanelet2_map_validator/config/iforest_model.json",
+              isolation_forest_threshold_));
 
   return issues;
 }
 
-lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(const lanelet::LaneletMap & map)
+lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -243,33 +394,36 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(con
 }
 
 lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_anomaly_if(
-  const lanelet::LaneletMap & map,
-  const std::string & model_path,
-  double anomaly_threshold)
+  const lanelet::LaneletMap & map, const std::string & model_path, double anomaly_threshold)
 {
   lanelet::validation::Issues issues;
   if (!if_model_loaded_) {
-    if_model_ = std::make_unique<IsolationForestPredictor>();
-    if (!if_model_->loadModel(model_path)) {
+    // Create the model in the anonymous namespace
+    auto * model = new IsolationForestPredictor();
+    if (!model->load_model(model_path)) {
+      delete model;
       return issues;
     }
+    if_model_ = static_cast<void *>(model);
     if_model_loaded_ = true;
   }
+
+  // Cast back to use the model
+  auto * model = static_cast<IsolationForestPredictor *>(if_model_);
 
   for (const auto & lanelet : map.laneletLayer) {
     LaneletStats stats = computeLaneletStats(lanelet);
     std::vector<double> x = buildFeatures(stats);
-    double score_sk  = if_model_->scoreSamples(x);
-    bool is_outlier = (score_sk > anomaly_threshold);  // Use sklearn's prediction directly
+    double score_sk = model->score_samples(x);
+    bool is_outlier = (score_sk > anomaly_threshold);
 
     if (is_outlier) {
       std::map<std::string, std::string> substitution_map;
-      substitution_map["anomaly_score"]   = std::to_string(score_sk);
-      substitution_map["threshold"]       = std::to_string(anomaly_threshold);
+      substitution_map["anomaly_score"] = std::to_string(score_sk);
+      substitution_map["threshold"] = std::to_string(anomaly_threshold);
 
       issues.emplace_back(
-        construct_issue_from_code(
-          issue_code(this->name(), 2), lanelet.id(), substitution_map));
+        construct_issue_from_code(issue_code(this->name(), 2), lanelet.id(), substitution_map));
     }
   }
 
@@ -277,106 +431,3 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_anomaly_if(
 }
 
 }  // namespace lanelet::autoware::validation
-
-// ---- IsolationForestPredictor Implementation ----
-
-bool IsolationForestPredictor::loadModel(const std::string& path) {
-    std::ifstream in(path);
-    if (!in) {
-        return false;
-    }
-    json j;
-    in >> j;
-
-    n_features_    = j.at("n_features").get<int>();
-    psi_           = j.at("psi").get<int>();
-    offset_        = j.at("offset").get<double>();
-    feature_names_ = j.at("feature_names").get<std::vector<std::string>>();
-    
-    if (j.contains("scaler_mean") && j.contains("scaler_scale")) {
-        scaler_mean_  = j.at("scaler_mean").get<std::vector<double>>();
-        scaler_scale_ = j.at("scaler_scale").get<std::vector<double>>();
-    }
-
-    trees_.clear();
-    for (const auto& tjson : j.at("trees")) {
-        IFTree t;
-        for (const auto& njson : tjson.at("nodes")) {
-            IFNode n;
-            n.is_leaf   = njson.at("is_leaf").get<bool>();
-            n.feature   = njson.at("feature").get<int>();
-            n.threshold = njson.at("threshold").get<double>();
-            n.left      = njson.at("left").get<int>();
-            n.right     = njson.at("right").get<int>();
-            n.n_samples = njson.at("n_samples").get<int>();
-            t.nodes.push_back(n);
-        }
-        trees_.push_back(std::move(t));
-    }
-    return true;
-}
-
-double IsolationForestPredictor::anomalyScorePaper(const std::vector<double>& x) const {
-    const double h = averagePathLength(x);
-    const double cn = cFactor(psi_);
-    if (cn <= 0.0) {
-        return 1.0;
-    }
-    return std::pow(2.0, -h / cn);
-}
-
-double IsolationForestPredictor::scoreSamples(const std::vector<double>& x) const {
-    std::vector<double> x_scaled = x;
-    if (!scaler_mean_.empty() && !scaler_scale_.empty()) {
-        for (size_t i = 0; i < x.size() && i < scaler_mean_.size(); ++i) {
-            if (scaler_scale_[i] > 1e-10) {
-                x_scaled[i] = (x[i] - scaler_mean_[i]) / scaler_scale_[i];
-            }
-        }
-    }
-    
-    return anomalyScorePaper(x_scaled);
-}
-
-double IsolationForestPredictor::decisionFunction(const std::vector<double>& x) const {
-    return scoreSamples(x) - offset_;
-}
-
-double IsolationForestPredictor::averagePathLength(const std::vector<double>& x) const {
-    double total_path = 0.0;
-    for (const auto& tree : trees_) {
-        total_path += pathLength(tree, x, 0, 0.0);
-    }
-    return total_path / static_cast<double>(trees_.size());
-}
-
-double IsolationForestPredictor::pathLength(const IFTree& tree,
-                      const std::vector<double>& x,
-                      int node_idx,
-                      double depth) const {
-    const IFNode& node = tree.nodes[node_idx];
-
-    if (node.is_leaf || node.left < 0 || node.right < 0) {
-        int n_leaf = std::max(1, node.n_samples);
-        return depth + cFactor(n_leaf);
-    }
-
-    const double next_depth = depth + 1.0;
-    if (x[node.feature] < node.threshold) {
-        return pathLength(tree, x, node.left, next_depth);
-    } else {
-        return pathLength(tree, x, node.right, next_depth);
-    }
-}
-
-double IsolationForestPredictor::cFactor(int n) {
-    if (n <= 1) {
-        return 0.0;
-    }
-    if (n == 2) {
-        return 1.0;
-    }
-    const double nn = static_cast<double>(n);
-    const double H  = std::log(nn - 1.0) + 0.5772156649;
-    return 2.0 * H - 2.0 * (nn - 1.0) / nn;
-}
