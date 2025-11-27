@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="2" map_version="4" validation_version="1"/>
+  <MetaInfo format_version="2" map_version="5" validation_version="1"/>
   <node id="1001" lat="35.90312398544" lon="139.93324675646">
     <tag k="local_x" v="3736.8634"/>
     <tag k="local_y" v="73729.1154"/>
@@ -81,6 +81,16 @@
     <tag k="local_y" v="73728.0539"/>
     <tag k="ele" v="19.34"/>
   </node>
+  <node id="4051" lat="35.90314629805" lon="139.9332984014">
+    <tag k="local_x" v="3741.551"/>
+    <tag k="local_y" v="73731.5394"/>
+    <tag k="ele" v="19.34"/>
+  </node>
+  <node id="4052" lat="35.90313466789" lon="139.93330651603">
+    <tag k="local_x" v="3742.2692"/>
+    <tag k="local_y" v="73730.2414"/>
+    <tag k="ele" v="19.34"/>
+  </node>
   <way id="1101">
     <nd ref="1001"/>
     <nd ref="1002"/>
@@ -103,6 +113,18 @@
     <nd ref="4008"/>
     <nd ref="4009"/>
     <tag k="type" v="road_border"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="4032">
+    <nd ref="4024"/>
+    <nd ref="4025"/>
+    <tag k="type" v="stop_line"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="4053">
+    <nd ref="4051"/>
+    <nd ref="4052"/>
+    <tag k="type" v="stop_line"/>
     <tag k="subtype" v="solid"/>
   </way>
   <way id="4027">
@@ -135,13 +157,9 @@
   </relation>
   <relation id="4050">
     <member type="way" role="refers" ref="4027"/>
+    <member type="way" role="ref_line" ref="4032"/>
+    <member type="way" role="ref_line" ref="4053"/>
     <tag k="type" v="regulatory_element"/>
     <tag k="subtype" v="no_stopping_area"/>
   </relation>
-  <way id="4032">
-    <nd ref="4024"/>
-    <nd ref="4025"/>
-    <tag k="type" v="stop_line"/>
-    <tag k="subtype" v="solid"/>
-  </way>
 </osm>

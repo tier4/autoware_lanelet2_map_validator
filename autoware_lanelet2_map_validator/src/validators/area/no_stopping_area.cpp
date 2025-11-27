@@ -90,20 +90,23 @@ lanelet::validation::Issues NoStoppingAreaValidator::check_no_stopping_area(
 
       referenced_no_stopping_area_polygon_ids.insert(polygon.id());
 
-      // Issue-004: Regulatory element should refer to exactly one stop_line
+      // Issue-004: Regulatory element should refer to at most one stop_line
       const auto & ref_lines = reg_elem->getParameters<lanelet::ConstLineString3d>("ref_line");
-      if (ref_lines.size() != 1) {
+      if (ref_lines.size() > 1) {
         issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 4), reg_elem->id()));
         continue;
       }
 
       // Issue-005: The ref_line should be a stop_line type linestring
-      const auto & stop_line = ref_lines[0];
-      if (
-        !stop_line.hasAttribute(lanelet::AttributeName::Type) ||
-        stop_line.attribute(lanelet::AttributeName::Type) != "stop_line") {
-        issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
-        continue;
+      if (!ref_lines.empty()) {
+        const auto & stop_line = ref_lines[0];
+        if (
+          !stop_line.hasAttribute(lanelet::AttributeName::Type) ||
+          stop_line.attribute(lanelet::AttributeName::Type) != "stop_line") {
+          issues.emplace_back(
+            construct_issue_from_code(issue_code(this->name(), 5), reg_elem->id()));
+          continue;
+        }
       }
 
       // Issue-006: Regulatory element should be referred by at least one road subtype lanelet

@@ -1035,8 +1035,8 @@
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "This no_stopping_area regulatory element must refer to exactly one ref_line.",
-      "ja": "この no_stopping_area regulatory element はちょうど1つの ref_line を参照する必要があります。"
+      "en": "This no_stopping_area regulatory element must refer to at most one stop_line.",
+      "ja": "この no_stopping_area regulatory element は最大でも1つの stop_line を参照する必要があります。"
     }
   },
   "Area.NoStoppingArea-005": {
