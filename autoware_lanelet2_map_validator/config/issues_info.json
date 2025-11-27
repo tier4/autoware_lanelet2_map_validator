@@ -95,6 +95,14 @@
       "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
     }
   },
+  "Lane.LaneletGeometry-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet has shared points between left and right bounds.",
+      "ja": "この lanelet の左右の境界が同じ点を共有してしまっています。"
+    }
+  },
   "Lane.SpeedLimitValidity-001": {
     "severity": "Error",
     "primitive": "lanelet",
