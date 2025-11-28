@@ -547,16 +547,16 @@
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "Internal lanelet {internal_lanelet_id} does not connect entry and exit lanelets properly.",
-      "ja": "内部 lanelet {internal_lanelet_id} が entry lanelet と exit lanelet を適切に接続していません。"
+      "en": "Route from entry lanelet {entry_lanelet_id} to exit lanelet {exit_lanelet_id} contains invalid lanelet {invalid_lanelet_id}.",
+      "ja": "entry lanelet {entry_lanelet_id} から exit lanelet {exit_lanelet_id} への経路に不正な lanelet {invalid_lanelet_id} が含まれています。"
     }
   },
   "Intersection.RoundaboutConfiguration-002": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "Route from entry lanelet {entry_lanelet_id} to exit lanelet {exit_lanelet_id} contains invalid lanelet {invalid_lanelet_id}.",
-      "ja": "entry lanelet {entry_lanelet_id} から exit lanelet {exit_lanelet_id} への経路に不正な lanelet {invalid_lanelet_id} が含まれています。"
+      "en": "Internal lanelet {internal_lanelet_id} does not connect entry and exit lanelets properly.",
+      "ja": "内部 lanelet {internal_lanelet_id} が entry lanelet と exit lanelet を適切に接続していません。"
     }
   },
   "Intersection.RoundaboutConfiguration-003": {
