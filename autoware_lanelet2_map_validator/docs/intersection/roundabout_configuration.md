@@ -30,7 +30,6 @@ None.
 ## Notes
 
 - The "three meter rule" mentioned in VM-03-19 is not implemented in this validator
-- This validator uses `polygon_overlap_ratio` to determine if lanelets have significant conflicts (threshold: 1%)
 
 ## Related source codes
 
