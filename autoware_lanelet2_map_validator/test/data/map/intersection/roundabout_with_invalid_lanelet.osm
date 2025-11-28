@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <osm generator="VMB">
-  <MetaInfo format_version="7" map_version="46" validation_version="1"/>
+  <MetaInfo format_version="7" map_version="47" validation_version="1"/>
   <node id="18096" lat="41.02493579129" lon="28.88696913012">
     <tag k="local_x" v="58641.1934"/>
     <tag k="local_y" v="43240.2121"/>
@@ -1296,39 +1296,16 @@
     <tag k="local_y" v="43238.5172"/>
     <tag k="ele" v="74.2876"/>
   </node>
-  <way id="18125">
-    <nd ref="18109"/>
-    <nd ref="18145"/>
-    <nd ref="18146"/>
-    <nd ref="18148"/>
-    <nd ref="18149"/>
-    <nd ref="18151"/>
-    <nd ref="18152"/>
-    <nd ref="18153"/>
-    <nd ref="18154"/>
-    <nd ref="18155"/>
-    <nd ref="18100"/>
-    <tag k="type" v="line_thin"/>
-    <tag k="subtype" v="solid"/>
-  </way>
-  <way id="18128">
-    <nd ref="18108"/>
-    <nd ref="18130"/>
-    <nd ref="18131"/>
-    <nd ref="18132"/>
-    <nd ref="18133"/>
-    <nd ref="18134"/>
-    <nd ref="18135"/>
-    <nd ref="18137"/>
-    <nd ref="18138"/>
-    <nd ref="18139"/>
-    <nd ref="18140"/>
-    <nd ref="18141"/>
-    <nd ref="18142"/>
-    <nd ref="18102"/>
-    <tag k="type" v="line_thin"/>
-    <tag k="subtype" v="solid"/>
-  </way>
+  <node id="74254" lat="41.0250433816" lon="28.88683657165">
+    <tag k="local_x" v="58629.7901"/>
+    <tag k="local_y" v="43251.9156"/>
+    <tag k="ele" v="75.1761"/>
+  </node>
+  <node id="74255" lat="41.02502895625" lon="28.88686868267">
+    <tag k="local_x" v="58632.5245"/>
+    <tag k="local_y" v="43250.3725"/>
+    <tag k="ele" v="74.6791"/>
+  </node>
   <way id="18183">
     <nd ref="18096"/>
     <nd ref="18186"/>
@@ -1715,9 +1692,54 @@
     <tag k="type" v="line_thin"/>
     <tag k="subtype" v="solid"/>
   </way>
+  <way id="74256">
+    <nd ref="18108"/>
+    <nd ref="18130"/>
+    <nd ref="18131"/>
+    <nd ref="18132"/>
+    <nd ref="18133"/>
+    <nd ref="18134"/>
+    <nd ref="18135"/>
+    <nd ref="74254"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="74257">
+    <nd ref="74254"/>
+    <nd ref="18137"/>
+    <nd ref="18138"/>
+    <nd ref="18139"/>
+    <nd ref="18140"/>
+    <nd ref="18141"/>
+    <nd ref="18142"/>
+    <nd ref="18102"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="74258">
+    <nd ref="18109"/>
+    <nd ref="18145"/>
+    <nd ref="18146"/>
+    <nd ref="18148"/>
+    <nd ref="18149"/>
+    <nd ref="18151"/>
+    <nd ref="74255"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="74259">
+    <nd ref="74255"/>
+    <nd ref="18152"/>
+    <nd ref="18153"/>
+    <nd ref="18154"/>
+    <nd ref="18155"/>
+    <nd ref="18100"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
   <relation id="18129">
-    <member type="way" role="left" ref="18128"/>
-    <member type="way" role="right" ref="18125"/>
+    <member type="way" role="left" ref="74256"/>
+    <member type="way" role="right" ref="74258"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="10"/>
@@ -1854,6 +1876,15 @@
   <relation id="18522">
     <member type="way" role="left" ref="18519"/>
     <member type="way" role="right" ref="18521"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="10"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+  </relation>
+  <relation id="74260">
+    <member type="way" role="left" ref="74257"/>
+    <member type="way" role="right" ref="74259"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="10"/>

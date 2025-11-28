@@ -1723,7 +1723,6 @@
     <tag k="speed_limit" v="10"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
-    <tag k="enable_exit_turn_signal" v="true"/>
   </relation>
   <relation id="18185">
     <member type="way" role="left" ref="18183"/>

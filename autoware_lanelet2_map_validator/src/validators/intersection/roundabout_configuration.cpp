@@ -35,7 +35,8 @@ namespace
 lanelet::validation::RegisterMapValidator<RoundaboutConfigurationValidator> reg;
 }
 
-lanelet::validation::Issues RoundaboutConfigurationValidator::operator()(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RoundaboutConfigurationValidator::operator()(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
@@ -44,16 +45,17 @@ lanelet::validation::Issues RoundaboutConfigurationValidator::operator()(const l
   return issues;
 }
 
-lanelet::validation::Issues RoundaboutConfigurationValidator::check_roundabout_configuration(const lanelet::LaneletMap & map)
+lanelet::validation::Issues RoundaboutConfigurationValidator::check_roundabout_configuration(
+  const lanelet::LaneletMap & map)
 {
   lanelet::validation::Issues issues;
 
   std::vector<lanelet::RegulatoryElementConstPtr> roundabout_reg_elems;
-  
+
   for (const auto & reg_elem : map.regulatoryElementLayer) {
     const auto & attrs = reg_elem->attributes();
     const auto & subtype_it = attrs.find(lanelet::AttributeName::Subtype);
-    
+
     if (subtype_it != attrs.end() && subtype_it->second == "roundabout") {
       roundabout_reg_elems.push_back(reg_elem);
     }
@@ -72,7 +74,7 @@ lanelet::validation::Issues RoundaboutConfigurationValidator::check_roundabout_c
     for (const auto & ll : entry_lanelets) entry_ids.insert(ll.id());
     for (const auto & ll : exit_lanelets) exit_ids.insert(ll.id());
     for (const auto & ll : internal_lanelets) internal_ids.insert(ll.id());
-    
+
     std::set<lanelet::Id> internal_lanelets_in_path;
 
     // Issue-001 & Issue-002: Check all entry-to-exit paths for validity and connectivity
@@ -80,7 +82,7 @@ lanelet::validation::Issues RoundaboutConfigurationValidator::check_roundabout_c
       for (const auto & exit_ll : exit_lanelets) {
         lanelet::Optional<lanelet::routing::LaneletPath> path_opt =
           routing_graph->shortestPath(entry_ll, exit_ll, {}, false);
-        
+
         if (!path_opt) {
           continue;
         }
@@ -91,66 +93,73 @@ lanelet::validation::Issues RoundaboutConfigurationValidator::check_roundabout_c
             internal_lanelets_in_path.insert(lanelet_in_path.id());
           }
 
-          // Issue-002: Check if lanelet is not entry, exit, or internal
-          if (entry_ids.count(lanelet_in_path.id()) == 0 &&
-              exit_ids.count(lanelet_in_path.id()) == 0 &&
-              internal_ids.count(lanelet_in_path.id()) == 0) {
+          // Issue-001: Check if lanelet is not entry, exit, or internal
+          if (
+            entry_ids.count(lanelet_in_path.id()) == 0 &&
+            exit_ids.count(lanelet_in_path.id()) == 0 &&
+            internal_ids.count(lanelet_in_path.id()) == 0) {
             std::map<std::string, std::string> substitution_map;
             substitution_map["entry_lanelet_id"] = std::to_string(entry_ll.id());
             substitution_map["exit_lanelet_id"] = std::to_string(exit_ll.id());
             substitution_map["invalid_lanelet_id"] = std::to_string(lanelet_in_path.id());
             issues.emplace_back(construct_issue_from_code(
-              issue_code(this->name(), 2), roundabout_elem->id(), substitution_map));
+              issue_code(this->name(), 1), roundabout_elem->id(), substitution_map));
             break;
           }
         }
       }
     }
 
-    // Issue-001, 003, 004: Check each internal lanelet
+    // Issue-002, 003, 004: Check each internal lanelet
     for (const auto & internal_ll : internal_lanelets) {
-      // Issue-001: Check if internal lanelet is part of any path
+      // Issue-002: Check if internal lanelet is part of any path
       if (internal_lanelets_in_path.count(internal_ll.id()) == 0) {
         std::map<std::string, std::string> substitution_map;
         substitution_map["internal_lanelet_id"] = std::to_string(internal_ll.id());
         issues.emplace_back(construct_issue_from_code(
-          issue_code(this->name(), 1), roundabout_elem->id(), substitution_map));
+          issue_code(this->name(), 2), roundabout_elem->id(), substitution_map));
       }
 
       // Issue-003, 004: Check enable_exit_turn_signal for internal lanelets without conflicts
       const auto conflicting_primitives = routing_graph->conflicting(internal_ll);
       bool has_conflicting_lanelet = false;
-      
+
       for (const auto & primitive : conflicting_primitives) {
-        if (!primitive.isArea()) {
-          auto internal_polygon = internal_ll.polygon2d().basicPolygon();
-          auto conflicting_polygon = primitive.lanelet()->polygon2d().basicPolygon();
-          
-          if (polygon_overlap_ratio(internal_polygon, conflicting_polygon) >= 0.01) {
-            has_conflicting_lanelet = true;
-            break;
-          }
+        if (primitive.isArea()) {
+          continue;
+        }
+
+        auto internal_polygon = internal_ll.polygon2d().basicPolygon();
+        auto conflicting_polygon = primitive.lanelet()->polygon2d().basicPolygon();
+
+        if (polygon_overlap_ratio(internal_polygon, conflicting_polygon) >= 0.01) {
+          has_conflicting_lanelet = true;
+          break;
         }
       }
 
-      if (!has_conflicting_lanelet) {
-        if (!internal_ll.hasAttribute("enable_exit_turn_signal")) {
-          // Issue-003: Internal lanelet without conflicts missing enable_exit_turn_signal tag
-          std::map<std::string, std::string> substitution_map;
-          substitution_map["internal_lanelet_id"] = std::to_string(internal_ll.id());
-          issues.emplace_back(construct_issue_from_code(
-            issue_code(this->name(), 3), roundabout_elem->id(), substitution_map));
-        } else {
-          std::string tag_value = internal_ll.attribute("enable_exit_turn_signal").value();
-          if (tag_value != "true") {
-            // Issue-004: Internal lanelet without conflicts has enable_exit_turn_signal set to non-true value
-            std::map<std::string, std::string> substitution_map;
-            substitution_map["internal_lanelet_id"] = std::to_string(internal_ll.id());
-            substitution_map["tag_value"] = tag_value;
-            issues.emplace_back(construct_issue_from_code(
-              issue_code(this->name(), 4), roundabout_elem->id(), substitution_map));
-          }
-        }
+      if (has_conflicting_lanelet) {
+        continue;
+      }
+
+      if (!internal_ll.hasAttribute("enable_exit_turn_signal")) {
+        // Issue-003: Internal lanelet without conflicts missing enable_exit_turn_signal tag
+        std::map<std::string, std::string> substitution_map;
+        substitution_map["internal_lanelet_id"] = std::to_string(internal_ll.id());
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 3), roundabout_elem->id(), substitution_map));
+        continue;
+      }
+
+      std::string tag_value = internal_ll.attribute("enable_exit_turn_signal").value();
+      if (tag_value != "true") {
+        // Issue-004: Internal lanelet without conflicts has enable_exit_turn_signal set to non-true
+        // value
+        std::map<std::string, std::string> substitution_map;
+        substitution_map["internal_lanelet_id"] = std::to_string(internal_ll.id());
+        substitution_map["tag_value"] = tag_value;
+        issues.emplace_back(construct_issue_from_code(
+          issue_code(this->name(), 4), roundabout_elem->id(), substitution_map));
       }
     }
   }
