@@ -67,7 +67,7 @@ TEST_F(TestRoundaboutConfigurationValidator, InvalidLaneletInPath)  // NOLINT fo
   lanelet::autoware::validation::RoundaboutConfigurationValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0);
+  EXPECT_EQ(issues.size(), 7);
 
   const lanelet::Id expected_reg_elem_id = 74253;
 
@@ -131,7 +131,7 @@ TEST_F(TestRoundaboutConfigurationValidator, MissingEnableExitTurnSignalTag)  //
   lanelet::autoware::validation::RoundaboutConfigurationValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0);
+  EXPECT_EQ(issues.size(), 1);
 
   const lanelet::Id expected_reg_elem_id = 74253;
 
@@ -153,7 +153,7 @@ TEST_F(TestRoundaboutConfigurationValidator, EnableExitTurnSignalTagFalse)  // N
   lanelet::autoware::validation::RoundaboutConfigurationValidator checker;
   const auto & issues = checker(*map_);
 
-  EXPECT_GT(issues.size(), 0);
+  EXPECT_EQ(issues.size(), 1);
 
   const lanelet::Id expected_reg_elem_id = 74253;
 
