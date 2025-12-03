@@ -21,12 +21,10 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <map>
 #include <set>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -71,7 +69,7 @@ private:
   std::vector<double> scaler_scale_;
   std::vector<IFTree> trees_;
 
-  double anomaly_score_paper(const std::vector<double> & x) const;
+  double anomaly_score(const std::vector<double> & x) const;
   double average_path_length(const std::vector<double> & x) const;
   double path_length(
     const IFTree & tree, const std::vector<double> & x, int node_idx, double depth) const;
@@ -93,6 +91,32 @@ struct LaneletStats
   double log_norm_energy_R = 0.0;
 };
 
+static double angle_from_dot_product(double dot)
+{
+  dot = std::max(-1.0, std::min(1.0, dot));
+  double angle = std::acos(dot);
+  return std::isnan(angle) ? 0.0 : angle;
+}
+
+static double normalize_vector(double & x, double & y)
+{
+  double norm = std::hypot(x, y);
+  if (norm < 1e-9) return norm;
+  x /= norm;
+  y /= norm;
+  return norm;
+}
+
+static double compute_mean_squared_angles(const std::vector<AngleLength> & angles)
+{
+  if (angles.empty()) return 0.0;
+  double sum = 0.0;
+  for (const auto & al : angles) {
+    sum += al.theta * al.theta;
+  }
+  return sum / static_cast<double>(angles.size());
+}
+
 static std::vector<AngleLength> compute_angles_lengths(const lanelet::ConstLineString3d & line)
 {
   std::vector<AngleLength> result;
@@ -104,16 +128,13 @@ static std::vector<AngleLength> compute_angles_lengths(const lanelet::ConstLineS
     double dx1 = p1.x() - p0.x(), dy1 = p1.y() - p0.y();
     double dx2 = p2.x() - p1.x(), dy2 = p2.y() - p1.y();
 
-    double norm1 = std::hypot(dx1, dy1);
-    double norm2 = std::hypot(dx2, dy2);
+    double norm1 = normalize_vector(dx1, dy1);
+    double norm2 = normalize_vector(dx2, dy2);
 
     if (norm1 < 1e-9 || norm2 < 1e-9) continue;
 
-    double v1x = dx1 / norm1, v1y = dy1 / norm1;
-    double v2x = dx2 / norm2, v2y = dy2 / norm2;
-
-    double dot = v1x * v2x + v1y * v2y;
-    double theta = std::acos(std::max(-1.0, std::min(1.0, dot)));
+    double dot = dx1 * dx2 + dy1 * dy2;
+    double theta = angle_from_dot_product(dot);
 
     result.push_back({theta, norm1, norm2});
   }
@@ -130,30 +151,21 @@ static double compute_entrance_exit_angle_diff(const lanelet::ConstLineString3d 
   auto p1_entrance = line[1].basicPoint();
   double dx_entrance = p1_entrance.x() - p0_entrance.x();
   double dy_entrance = p1_entrance.y() - p0_entrance.y();
-  double norm_entrance = std::hypot(dx_entrance, dy_entrance);
 
   auto p0_exit = line[line.size() - 2].basicPoint();
   auto p1_exit = line[line.size() - 1].basicPoint();
   double dx_exit = p1_exit.x() - p0_exit.x();
   double dy_exit = p1_exit.y() - p0_exit.y();
-  double norm_exit = std::hypot(dx_exit, dy_exit);
+
+  double norm_entrance = normalize_vector(dx_entrance, dy_entrance);
+  double norm_exit = normalize_vector(dx_exit, dy_exit);
 
   if (norm_entrance < 1e-9 || norm_exit < 1e-9) {
     return 0.0;
   }
 
-  double v_ent_x = dx_entrance / norm_entrance, v_ent_y = dy_entrance / norm_entrance;
-  double v_ext_x = dx_exit / norm_exit, v_ext_y = dy_exit / norm_exit;
-
-  double dot = v_ent_x * v_ext_x + v_ent_y * v_ext_y;
-  dot = std::max(-1.0, std::min(1.0, dot));
-
-  double angle_diff = std::acos(dot);
-  if (std::isnan(angle_diff)) {
-    return 0.0;
-  }
-
-  return angle_diff;
+  double dot = dx_entrance * dx_exit + dy_entrance * dy_exit;
+  return angle_from_dot_product(dot);
 }
 
 static double compute_normalized_curvature_energy(const lanelet::ConstLineString3d & bound)
@@ -190,29 +202,17 @@ static LaneletStats compute_lanelet_stats(const lanelet::ConstLanelet & lanelet)
   const auto & left_bound = lanelet.leftBound();
   const auto & right_bound = lanelet.rightBound();
 
+  // Compute angle differences
   double angle_diff_L = compute_entrance_exit_angle_diff(left_bound);
   double angle_diff_R = compute_entrance_exit_angle_diff(right_bound);
   stats.angle_diff = (angle_diff_L + angle_diff_R) / 2.0;
-  {
-    auto angle_lengths_L = compute_angles_lengths(left_bound);
-    auto angle_lengths_R = compute_angles_lengths(right_bound);
 
-    double sum_theta2_L = 0.0;
-    for (const auto & al : angle_lengths_L) {
-      sum_theta2_L += al.theta * al.theta;
-    }
-    double mean_angle_L =
-      !angle_lengths_L.empty() ? sum_theta2_L / static_cast<double>(angle_lengths_L.size()) : 0.0;
-
-    double sum_theta2_R = 0.0;
-    for (const auto & al : angle_lengths_R) {
-      sum_theta2_R += al.theta * al.theta;
-    }
-    double mean_angle_R =
-      !angle_lengths_R.empty() ? sum_theta2_R / static_cast<double>(angle_lengths_R.size()) : 0.0;
-
-    stats.mean_angle = (mean_angle_L + mean_angle_R) / 2.0;
-  }
+  // Compute mean angles and energies
+  auto angle_lengths_L = compute_angles_lengths(left_bound);
+  auto angle_lengths_R = compute_angles_lengths(right_bound);
+  double mean_angle_L = compute_mean_squared_angles(angle_lengths_L);
+  double mean_angle_R = compute_mean_squared_angles(angle_lengths_R);
+  stats.mean_angle = (mean_angle_L + mean_angle_R) / 2.0;
 
   double energy_L = compute_normalized_curvature_energy(left_bound);
   double energy_R = compute_normalized_curvature_energy(right_bound);
@@ -266,7 +266,7 @@ bool IsolationForestPredictor::load_model(const std::string & path)
   return true;
 }
 
-double IsolationForestPredictor::anomaly_score_paper(const std::vector<double> & x) const
+double IsolationForestPredictor::anomaly_score(const std::vector<double> & x) const
 {
   const double h = average_path_length(x);
   const double cn = c_factor(psi_);
@@ -287,7 +287,7 @@ double IsolationForestPredictor::score_samples(const std::vector<double> & x) co
     }
   }
 
-  return anomaly_score_paper(x_scaled);
+  return anomaly_score(x_scaled);
 }
 
 double IsolationForestPredictor::average_path_length(const std::vector<double> & x) const
@@ -374,16 +374,13 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(
     }
 
     std::vector<lanelet::Id> shared_point_ids;
-    for (const auto & left_id : left_point_ids) {
-      if (right_point_ids.count(left_id) > 0) {
-        shared_point_ids.push_back(left_id);
-      }
-    }
+    std::set_intersection(
+      left_point_ids.begin(), left_point_ids.end(), right_point_ids.begin(), right_point_ids.end(),
+      std::back_inserter(shared_point_ids));
 
     // Issue-001: lanelet has shared points between left and right bounds
     if (!shared_point_ids.empty()) {
       std::map<std::string, std::string> substitution_map;
-
       issues.emplace_back(
         construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), substitution_map));
     }
