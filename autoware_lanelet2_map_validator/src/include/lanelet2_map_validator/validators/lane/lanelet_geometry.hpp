@@ -15,8 +15,14 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__LANELET_GEOMETRY_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__LANELET_GEOMETRY_HPP_
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
+
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace lanelet::autoware::validation
 {
@@ -28,8 +34,24 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
+  LaneletGeometryValidator()
+  {
+    const auto parameters = ValidatorConfigStore::parameters()[name()];
+    isolation_forest_threshold_ =
+      get_parameter_or<double>(parameters, "isolation_forest_threshold", 0.62);
+  }
+
+  ~LaneletGeometryValidator();
+
 private:
   lanelet::validation::Issues check_lanelet_geometry(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_lanelet_anomaly_if(
+    const lanelet::LaneletMap & map, const std::string & model_path,
+    double anomaly_threshold = 0.6);
+
+  double isolation_forest_threshold_;
+  mutable void * if_model_ = nullptr;
+  mutable bool if_model_loaded_ = false;
 };
 }  // namespace lanelet::autoware::validation
 

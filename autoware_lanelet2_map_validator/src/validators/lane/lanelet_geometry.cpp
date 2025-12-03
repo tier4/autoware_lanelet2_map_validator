@@ -16,16 +16,328 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <nlohmann/json.hpp>
+
 #include <algorithm>
+#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <map>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
+
+using nlohmann::json;
 
 namespace lanelet::autoware::validation
 {
 namespace
 {
 lanelet::validation::RegisterMapValidator<LaneletGeometryValidator> reg;
+
+struct IFNode
+{
+  bool is_leaf;
+  int feature;
+  double threshold;
+  int left;
+  int right;
+  int n_samples;
+};
+
+struct IFTree
+{
+  std::vector<IFNode> nodes;
+};
+
+class IsolationForestPredictor
+{
+public:
+  bool load_model(const std::string & path);
+  double score_samples(const std::vector<double> & x) const;
+  int n_features() const { return n_features_; }
+  const std::vector<std::string> & feature_names() const { return feature_names_; }
+
+private:
+  int n_features_ = 0;
+  int psi_ = 256;
+  double offset_ = 0.0;
+  std::vector<std::string> feature_names_;
+  std::vector<double> scaler_mean_;
+  std::vector<double> scaler_scale_;
+  std::vector<IFTree> trees_;
+
+  double anomaly_score(const std::vector<double> & x) const;
+  double average_path_length(const std::vector<double> & x) const;
+  double path_length(
+    const IFTree & tree, const std::vector<double> & x, int node_idx, double depth) const;
+  static double c_factor(int n);
+};
+
+struct AngleLength
+{
+  double theta = 0.0;
+  double seg_length_before = 0.0;
+  double seg_length_after = 0.0;
+};
+
+struct LaneletStats
+{
+  double mean_angle = 0.0;
+  double angle_diff = 0.0;
+  double log_norm_energy_L = 0.0;
+  double log_norm_energy_R = 0.0;
+};
+
+static double angle_from_dot_product(double dot)
+{
+  dot = std::max(-1.0, std::min(1.0, dot));
+  double angle = std::acos(dot);
+  return std::isnan(angle) ? 0.0 : angle;
+}
+
+static double normalize_vector(double & x, double & y)
+{
+  double norm = std::hypot(x, y);
+  if (norm < 1e-9) return norm;
+  x /= norm;
+  y /= norm;
+  return norm;
+}
+
+static double compute_mean_squared_angles(const std::vector<AngleLength> & angles)
+{
+  if (angles.empty()) return 0.0;
+  double sum = 0.0;
+  for (const auto & al : angles) {
+    sum += al.theta * al.theta;
+  }
+  return sum / static_cast<double>(angles.size());
+}
+
+static std::vector<AngleLength> compute_angles_lengths(const lanelet::ConstLineString3d & line)
+{
+  std::vector<AngleLength> result;
+  for (size_t i = 1; i + 1 < line.size(); ++i) {
+    auto p0 = line[i - 1].basicPoint();
+    auto p1 = line[i].basicPoint();
+    auto p2 = line[i + 1].basicPoint();
+
+    double dx1 = p1.x() - p0.x(), dy1 = p1.y() - p0.y();
+    double dx2 = p2.x() - p1.x(), dy2 = p2.y() - p1.y();
+
+    double norm1 = normalize_vector(dx1, dy1);
+    double norm2 = normalize_vector(dx2, dy2);
+
+    if (norm1 < 1e-9 || norm2 < 1e-9) continue;
+
+    double dot = dx1 * dx2 + dy1 * dy2;
+    double theta = angle_from_dot_product(dot);
+
+    result.push_back({theta, norm1, norm2});
+  }
+  return result;
+}
+
+static double compute_entrance_exit_angle_diff(const lanelet::ConstLineString3d & line)
+{
+  if (line.size() < 3) {
+    return 0.0;
+  }
+
+  auto p0_entrance = line[0].basicPoint();
+  auto p1_entrance = line[1].basicPoint();
+  double dx_entrance = p1_entrance.x() - p0_entrance.x();
+  double dy_entrance = p1_entrance.y() - p0_entrance.y();
+
+  auto p0_exit = line[line.size() - 2].basicPoint();
+  auto p1_exit = line[line.size() - 1].basicPoint();
+  double dx_exit = p1_exit.x() - p0_exit.x();
+  double dy_exit = p1_exit.y() - p0_exit.y();
+
+  double norm_entrance = normalize_vector(dx_entrance, dy_entrance);
+  double norm_exit = normalize_vector(dx_exit, dy_exit);
+
+  if (norm_entrance < 1e-9 || norm_exit < 1e-9) {
+    return 0.0;
+  }
+
+  double dot = dx_entrance * dx_exit + dy_entrance * dy_exit;
+  return angle_from_dot_product(dot);
+}
+
+static double compute_normalized_curvature_energy(const lanelet::ConstLineString3d & bound)
+{
+  auto angle_lengths = compute_angles_lengths(bound);
+
+  if (angle_lengths.empty()) {
+    return 0.0;
+  }
+
+  double sum_bending = 0.0;
+  double total_len = 0.0;
+
+  for (const auto & al : angle_lengths) {
+    double avg_len = (al.seg_length_before + al.seg_length_after) / 2.0;
+    if (avg_len < 1e-9) continue;
+
+    double kappa = al.theta / avg_len;
+    sum_bending += kappa * kappa * avg_len;
+    total_len += avg_len;
+  }
+
+  if (total_len < 1e-9) {
+    return 0.0;
+  }
+
+  return sum_bending / total_len;
+}
+
+static LaneletStats compute_lanelet_stats(const lanelet::ConstLanelet & lanelet)
+{
+  LaneletStats stats;
+
+  const auto & left_bound = lanelet.leftBound();
+  const auto & right_bound = lanelet.rightBound();
+
+  // Compute angle differences
+  double angle_diff_L = compute_entrance_exit_angle_diff(left_bound);
+  double angle_diff_R = compute_entrance_exit_angle_diff(right_bound);
+  stats.angle_diff = (angle_diff_L + angle_diff_R) / 2.0;
+
+  // Compute mean angles and energies
+  auto angle_lengths_L = compute_angles_lengths(left_bound);
+  auto angle_lengths_R = compute_angles_lengths(right_bound);
+  double mean_angle_L = compute_mean_squared_angles(angle_lengths_L);
+  double mean_angle_R = compute_mean_squared_angles(angle_lengths_R);
+  stats.mean_angle = (mean_angle_L + mean_angle_R) / 2.0;
+
+  double energy_L = compute_normalized_curvature_energy(left_bound);
+  double energy_R = compute_normalized_curvature_energy(right_bound);
+
+  const double eps = 1e-8;
+  stats.log_norm_energy_L = std::log(energy_L + eps);
+  stats.log_norm_energy_R = std::log(energy_R + eps);
+
+  return stats;
+}
+
+static std::vector<double> build_features(const LaneletStats & stats)
+{
+  return {stats.log_norm_energy_L, stats.log_norm_energy_R, stats.mean_angle, stats.angle_diff};
+}
+
+bool IsolationForestPredictor::load_model(const std::string & path)
+{
+  std::ifstream in(path);
+  if (!in) {
+    return false;
+  }
+  json j;
+  in >> j;
+
+  n_features_ = j.at("n_features").get<int>();
+  psi_ = j.at("psi").get<int>();
+  offset_ = j.at("offset").get<double>();
+  feature_names_ = j.at("feature_names").get<std::vector<std::string>>();
+
+  if (j.contains("scaler_mean") && j.contains("scaler_scale")) {
+    scaler_mean_ = j.at("scaler_mean").get<std::vector<double>>();
+    scaler_scale_ = j.at("scaler_scale").get<std::vector<double>>();
+  }
+
+  trees_.clear();
+  for (const auto & tjson : j.at("trees")) {
+    IFTree t;
+    for (const auto & njson : tjson.at("nodes")) {
+      IFNode n;
+      n.is_leaf = njson.at("is_leaf").get<bool>();
+      n.feature = njson.at("feature").get<int>();
+      n.threshold = njson.at("threshold").get<double>();
+      n.left = njson.at("left").get<int>();
+      n.right = njson.at("right").get<int>();
+      n.n_samples = njson.at("n_samples").get<int>();
+      t.nodes.push_back(n);
+    }
+    trees_.push_back(std::move(t));
+  }
+  return true;
+}
+
+double IsolationForestPredictor::anomaly_score(const std::vector<double> & x) const
+{
+  const double h = average_path_length(x);
+  const double cn = c_factor(psi_);
+  if (cn <= 0.0) {
+    return 1.0;
+  }
+  return std::pow(2.0, -h / cn);
+}
+
+double IsolationForestPredictor::score_samples(const std::vector<double> & x) const
+{
+  std::vector<double> x_scaled = x;
+  if (!scaler_mean_.empty() && !scaler_scale_.empty()) {
+    for (size_t i = 0; i < x.size() && i < scaler_mean_.size(); ++i) {
+      if (scaler_scale_[i] > 1e-10) {
+        x_scaled[i] = (x[i] - scaler_mean_[i]) / scaler_scale_[i];
+      }
+    }
+  }
+
+  return anomaly_score(x_scaled);
+}
+
+double IsolationForestPredictor::average_path_length(const std::vector<double> & x) const
+{
+  double total_path = 0.0;
+  for (const auto & tree : trees_) {
+    total_path += path_length(tree, x, 0, 0.0);
+  }
+  return total_path / static_cast<double>(trees_.size());
+}
+
+double IsolationForestPredictor::path_length(
+  const IFTree & tree, const std::vector<double> & x, int node_idx, double depth) const
+{
+  const IFNode & node = tree.nodes[node_idx];
+
+  if (node.is_leaf || node.left < 0 || node.right < 0) {
+    int n_leaf = std::max(1, node.n_samples);
+    return depth + c_factor(n_leaf);
+  }
+
+  const double next_depth = depth + 1.0;
+  if (x[node.feature] < node.threshold) {
+    return path_length(tree, x, node.left, next_depth);
+  } else {
+    return path_length(tree, x, node.right, next_depth);
+  }
+}
+
+double IsolationForestPredictor::c_factor(int n)
+{
+  if (n <= 1) {
+    return 0.0;
+  }
+  if (n == 2) {
+    return 1.0;
+  }
+  const double nn = static_cast<double>(n);
+  const double H = std::log(nn - 1.0) + 0.5772156649;
+  return 2.0 * H - 2.0 * (nn - 1.0) / nn;
+}
+
+}  // namespace
+
+LaneletGeometryValidator::~LaneletGeometryValidator()
+{
+  if (if_model_) {
+    delete static_cast<IsolationForestPredictor *>(if_model_);
+    if_model_ = nullptr;
+  }
 }
 
 lanelet::validation::Issues LaneletGeometryValidator::operator()(const lanelet::LaneletMap & map)
@@ -33,6 +345,13 @@ lanelet::validation::Issues LaneletGeometryValidator::operator()(const lanelet::
   lanelet::validation::Issues issues;
 
   lanelet::autoware::validation::appendIssues(issues, check_lanelet_geometry(map));
+
+  std::string package_share_directory =
+    ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+  std::string model_path = package_share_directory + "/config/isolation_forest_model.json";
+
+  lanelet::autoware::validation::appendIssues(
+    issues, check_lanelet_anomaly_if(map, model_path, isolation_forest_threshold_));
 
   return issues;
 }
@@ -61,10 +380,48 @@ lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_geometry(
 
     // Issue-001: lanelet has shared points between left and right bounds
     if (!shared_point_ids.empty()) {
-      issues.emplace_back(construct_issue_from_code(issue_code(this->name(), 1), lanelet.id()));
+      std::map<std::string, std::string> substitution_map;
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 1), lanelet.id(), substitution_map));
     }
   }
 
   return issues;
 }
+
+lanelet::validation::Issues LaneletGeometryValidator::check_lanelet_anomaly_if(
+  const lanelet::LaneletMap & map, const std::string & model_path, double anomaly_threshold)
+{
+  lanelet::validation::Issues issues;
+  if (!if_model_loaded_) {
+    auto * model = new IsolationForestPredictor();
+    if (!model->load_model(model_path)) {
+      delete model;
+      return issues;
+    }
+    if_model_ = static_cast<void *>(model);
+    if_model_loaded_ = true;
+  }
+
+  auto * model = static_cast<IsolationForestPredictor *>(if_model_);
+
+  for (const auto & lanelet : map.laneletLayer) {
+    LaneletStats stats = compute_lanelet_stats(lanelet);
+    std::vector<double> x = build_features(stats);
+    double score_sk = model->score_samples(x);
+    bool is_outlier = (score_sk > anomaly_threshold);
+
+    if (is_outlier) {
+      std::map<std::string, std::string> substitution_map;
+      substitution_map["anomaly_score"] = std::to_string(score_sk);
+      substitution_map["threshold"] = std::to_string(anomaly_threshold);
+
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), 2), lanelet.id(), substitution_map));
+    }
+  }
+
+  return issues;
+}
+
 }  // namespace lanelet::autoware::validation
