@@ -66,11 +66,11 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
     "participants", po::value(&validation_config.participants)->composing(),
     "Participants for which the routing graph will be instantiated (default: vehicle)"
   )(
-    "lat", po::value(&validation_config.origin.lat)->default_value(validation_config.origin.lat),
+    "lat", po::value(&validation_config.origin.lat),
     "Latitude coordinate of map origin. This is required for the transverse mercator "
     "and utm projector"
   )(
-    "lon", po::value(&validation_config.origin.lon)->default_value(validation_config.origin.lon),
+    "lon", po::value(&validation_config.origin.lon),
     "Longitude coordinate of map origin. This is required for the transverse mercator "
     "and utm projector"
   )(
@@ -105,8 +105,8 @@ MetaConfig parseCommandLine(int argc, const char * argv[])
   config.language = vm["language"].as<std::string>();
 
   if (
-    (vm.count("lat") != 0 && vm.count("lon") != 0) &&
-    (config.projector_type == "tm" || config.projector_type == "utm")) {
+    (vm.count("lat") == 0 || vm.count("lon") == 0) &&
+    (config.projector_type == "transverse_mercator" || config.projector_type == "utm")) {
     throw std::runtime_error(
       "Please set latitude and longitude. These are required for " + config.projector_type +
       " projector. Please refer to the help message.");
