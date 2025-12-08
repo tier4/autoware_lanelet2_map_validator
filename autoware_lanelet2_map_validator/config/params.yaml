@@ -1,6 +1,6 @@
 mapping.lane.centerline_geometry:
   dimension_mode: 2D
-  planar_threshold: 0.01
+  planar_threshold: 0.1
   height_threshold: 0.1
 mapping.lane.border_sharing:
   iou_threshold: 0.05
