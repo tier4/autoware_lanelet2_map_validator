@@ -63,3 +63,86 @@ TEST_F(TestLaneletGeometryValidator, SharedPointsBetweenBounds)  // NOLINT for g
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestLaneletGeometryValidator, IsolationForestAnomalyDetection)  // NOLINT for gtest
+{
+  load_target_map("lane/lanelet_geometry_check_1.osm");
+
+  lanelet::autoware::validation::LaneletGeometryValidator checker;
+  const auto & issues = checker(*map_);
+
+  // Expected lanelet IDs and their approximate scores based on the output
+  std::map<int, double> expected_anomaly_lanelets = {
+    {125, 0.633220}, {124, 0.625706}, {50, 0.694877}, {53, 0.679235},
+    {57, 0.710649},  {60, 0.675717},  {54, 0.733188}};
+
+  // Create expected issues with substitution maps
+  lanelet::validation::Issues expected_issues;
+  for (const auto & [lanelet_id, score] : expected_anomaly_lanelets) {
+    std::map<std::string, std::string> substitution_map;
+    substitution_map["anomaly_score"] = std::to_string(score);
+    substitution_map["threshold"] = "0.620000";
+
+    expected_issues.emplace_back(
+      construct_issue_from_code(issue_code(test_target_, 2), lanelet_id, substitution_map));
+  }
+
+  // Compare issues
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestLaneletGeometryValidator, IsolationForestAnomalyDetectionCheck2)  // NOLINT for gtest
+{
+  load_target_map("lane/lanelet_geometry_check_2.osm");
+
+  lanelet::autoware::validation::LaneletGeometryValidator checker;
+  const auto & issues = checker(*map_);
+
+  // Expected lanelet IDs and their approximate scores based on the output
+  std::map<int, double> expected_anomaly_lanelets = {{49, 0.688922}, {50, 0.664310}, {52, 0.685694},
+                                                     {53, 0.658740}, {54, 0.699378}, {57, 0.634708},
+                                                     {59, 0.668245}, {60, 0.655135}};
+
+  // Create expected issues with substitution maps
+  lanelet::validation::Issues expected_issues;
+  for (const auto & [lanelet_id, score] : expected_anomaly_lanelets) {
+    std::map<std::string, std::string> substitution_map;
+    substitution_map["anomaly_score"] = std::to_string(score);
+    substitution_map["threshold"] = "0.620000";
+
+    expected_issues.emplace_back(
+      construct_issue_from_code(issue_code(test_target_, 2), lanelet_id, substitution_map));
+  }
+
+  // Compare issues
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
+TEST_F(TestLaneletGeometryValidator, IsolationForestAnomalyDetectionCheck3)  // NOLINT for gtest
+{
+  load_target_map("lane/lanelet_geometry_check_3.osm");
+
+  lanelet::autoware::validation::LaneletGeometryValidator checker;
+  const auto & issues = checker(*map_);
+
+  // Expected lanelet IDs and their approximate scores based on the output
+  std::map<int, double> expected_anomaly_lanelets = {
+    {15, 0.656861}, {18, 0.669237}, {9463, 0.707636}, {9102, 0.693157}, {10291, 0.719456}};
+
+  // Create expected issues with substitution maps
+  lanelet::validation::Issues expected_issues;
+  for (const auto & [lanelet_id, score] : expected_anomaly_lanelets) {
+    std::map<std::string, std::string> substitution_map;
+    substitution_map["anomaly_score"] = std::to_string(score);
+    substitution_map["threshold"] = "0.620000";
+
+    expected_issues.emplace_back(
+      construct_issue_from_code(issue_code(test_target_, 2), lanelet_id, substitution_map));
+  }
+
+  // Compare issues
+  const auto difference = compare_issues(expected_issues, issues);
+  EXPECT_TRUE(difference.empty()) << difference;
+}

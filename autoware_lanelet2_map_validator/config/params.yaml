@@ -25,3 +25,5 @@ mapping.stop_line.regulatory_element_details_for_traffic_signs:
 mapping.lane.speed_limit_validity:
   min_speed_limit: 1.0
   max_speed_limit: 50.0
+mapping.lane.lanelet_geometry:
+  isolation_forest_threshold: 0.62
