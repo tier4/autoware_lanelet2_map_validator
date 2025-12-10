@@ -543,6 +543,38 @@
       "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
     }
   },
+  "Intersection.RoundaboutConfiguration-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Route from entry lanelet {entry_lanelet_id} to exit lanelet {exit_lanelet_id} contains invalid lanelet {invalid_lanelet_id}.",
+      "ja": "entry lanelet {entry_lanelet_id} から exit lanelet {exit_lanelet_id} への経路に不正な lanelet {invalid_lanelet_id} が含まれています。"
+    }
+  },
+  "Intersection.RoundaboutConfiguration-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Internal lanelet {internal_lanelet_id} does not connect entry and exit lanelets properly.",
+      "ja": "内部 lanelet {internal_lanelet_id} が entry lanelet と exit lanelet を適切に接続していません。"
+    }
+  },
+  "Intersection.RoundaboutConfiguration-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Internal lanelet {internal_lanelet_id} without conflicts is missing enable_exit_turn_signal tag.",
+      "ja": "競合のない内部 lanelet {internal_lanelet_id} に enable_exit_turn_signal タグがありません。"
+    }
+  },
+  "Intersection.RoundaboutConfiguration-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Internal lanelet {internal_lanelet_id} without conflicts has enable_exit_turn_signal set to '{tag_value}' instead of 'true'.",
+      "ja": "競合のない内部 lanelet {internal_lanelet_id} の enable_exit_turn_signal が 'true' ではなく '{tag_value}' に設定されています。"
+    }
+  },
   "TrafficLight.MissingRegulatoryElements-001": {
     "severity": "Error",
     "primitive": "linestring",
