@@ -2,6 +2,22 @@
   "version": "1.0.2",
   "requirements": [
     {
+      "id": "vm-01-01",
+      "validators": [
+        {
+          "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-02",
+      "validators": [
+        {
+          "name": "mapping.lane.lane_change_attribute"
+        }
+      ]
+    },
+    {
       "id": "vm-01-03_vm-01-04",
       "validators": [
         {
@@ -14,6 +30,22 @@
       "validators": [
         {
           "name": "mapping.lane.centerline_geometry"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-15",
+      "validators": [
+        {
+          "name": "mapping.lane.road_shoulder"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-17",
+      "validators": [
+        {
+          "name": "mapping.lane.pedestrian_lane"
         }
       ]
     },
@@ -60,6 +92,14 @@
         },
         {
           "name": "mapping.intersection.lanelet_border_type"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-05",
+      "validators": [
+        {
+          "name": "mapping.intersection.lanelet_division"
         }
       ]
     },
@@ -141,6 +181,9 @@
       "validators": [
         {
           "name": "mapping.traffic_light.correct_facing"
+        },
+        {
+          "name": "mapping.traffic_light.body_height"
         }
       ]
     },
@@ -168,6 +211,22 @@
       "validators": [
         {
           "name": "mapping.area.buffer_zone_validity"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-02",
+      "validators": [
+        {
+          "name": "mapping.area.no_parking_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-04",
+      "validators": [
+        {
+          "name": "mapping.area.no_stopping_area"
         }
       ]
     },

@@ -1,11 +1,19 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-01-01",
       "validators": [
         {
           "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-02",
+      "validators": [
+        {
+          "name": "mapping.lane.lane_change_attribute"
         }
       ]
     },

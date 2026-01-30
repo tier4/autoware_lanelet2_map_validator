@@ -1,11 +1,19 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-01-01",
       "validators": [
         {
           "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-02",
+      "validators": [
+        {
+          "name": "mapping.lane.lane_change_attribute"
         }
       ]
     },
@@ -58,7 +66,7 @@
       ]
     },
     {
-      "id": "vm-02-02",
+      "id": "vm-02-04",
       "validators": [
         {
           "name": "mapping.stop_line.missing_regulatory_elements"
@@ -119,38 +127,6 @@
       "validators": [
         {
           "name": "mapping.intersection.right_of_way_without_traffic_lights"
-        }
-      ]
-    },
-    {
-      "id": "vm-03-16",
-      "validators": [
-        {
-          "name": "mapping.intersection.regulatory_element_details_for_virtual_traffic_lights"
-        },
-        {
-          "name": "mapping.intersection.virtual_traffic_light_line_order"
-        }
-      ]
-    },
-    {
-      "id": "vm-03-17",
-      "validators": [
-        {
-          "name": "mapping.intersection.right_of_way_for_virtual_traffic_lights"
-        }
-      ]
-    },
-    {
-      "id": "vm-03-18",
-      "validators": [
-        {
-          "name": "mapping.intersection.virtual_traffic_light_section_overlap",
-          "prerequisites": [
-            {
-              "name": "mapping.intersection.virtual_traffic_light_line_order"
-            }
-          ]
         }
       ]
     },

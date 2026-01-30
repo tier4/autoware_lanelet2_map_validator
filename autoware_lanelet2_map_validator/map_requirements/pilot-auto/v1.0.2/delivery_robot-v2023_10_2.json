@@ -2,6 +2,14 @@
   "version": "1.0.2",
   "requirements": [
     {
+      "id": "vm-01-01",
+      "validators": [
+        {
+          "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
       "id": "vm-01-10",
       "validators": [
         {
