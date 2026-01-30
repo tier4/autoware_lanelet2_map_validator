@@ -148,8 +148,6 @@ RightOfWayWithoutTrafficLightsValidator::check_right_of_way_without_traffic_ligh
         }
       }
 
-      std::string turn_direction = lanelet.attribute("turn_direction").value();
-
       std::set<lanelet::Id> conflicting_ids;
       for (const auto & conflicting_lanelet : conflicting_lanelets) {
         conflicting_ids.insert(conflicting_lanelet.id());
