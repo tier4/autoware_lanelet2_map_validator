@@ -10,6 +10,14 @@
       ]
     },
     {
+      "id": "vm-01-09",
+      "validators": [
+        {
+          "name": "mapping.lane.speed_limit_validity"
+        }
+      ]
+    },
+    {
       "id": "vm-01-10",
       "validators": [
         {
@@ -89,6 +97,14 @@
       "validators": [
         {
           "name": "mapping.area.no_parking_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-05",
+      "validators": [
+        {
+          "name": "mapping.area.detection_area"
         }
       ]
     }

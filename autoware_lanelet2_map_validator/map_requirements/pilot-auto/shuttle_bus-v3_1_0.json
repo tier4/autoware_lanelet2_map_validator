@@ -18,6 +18,14 @@
       ]
     },
     {
+      "id": "vm-01-09",
+      "validators": [
+        {
+          "name": "mapping.lane.speed_limit_validity"
+        }
+      ]
+    },
+    {
       "id": "vm-01-10",
       "validators": [
         {
@@ -38,6 +46,14 @@
       "validators": [
         {
           "name": "mapping.lane.pedestrian_lane"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-19",
+      "validators": [
+        {
+          "name": "mapping.lane.walkway_intersection"
         }
       ]
     },
@@ -123,6 +139,14 @@
       ]
     },
     {
+      "id": "vm-03-14",
+      "validators": [
+        {
+          "name": "mapping.intersection.road_markings"
+        }
+      ]
+    },
+    {
       "id": "vm-04-01",
       "validators": [
         {
@@ -167,6 +191,14 @@
       ]
     },
     {
+      "id": "vm-05-03",
+      "validators": [
+        {
+          "name": "mapping.crosswalk.safety_attributes"
+        }
+      ]
+    },
+    {
       "id": "vm-06-01",
       "validators": [
         {
@@ -187,6 +219,14 @@
       "validators": [
         {
           "name": "mapping.area.no_stopping_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-05",
+      "validators": [
+        {
+          "name": "mapping.area.detection_area"
         }
       ]
     },

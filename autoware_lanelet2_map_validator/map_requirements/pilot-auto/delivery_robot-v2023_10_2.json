@@ -10,6 +10,14 @@
       ]
     },
     {
+      "id": "vm-01-09",
+      "validators": [
+        {
+          "name": "mapping.lane.speed_limit_validity"
+        }
+      ]
+    },
+    {
       "id": "vm-01-10",
       "validators": [
         {
@@ -70,6 +78,14 @@
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "vm-06-05",
+      "validators": [
+        {
+          "name": "mapping.area.detection_area"
         }
       ]
     }
