@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-01-01",
@@ -235,6 +235,14 @@
       "validators": [
         {
           "name": "mapping.area.detection_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-06",
+      "validators": [
+        {
+          "name": "mapping.area.missing_regulatory_elements_for_bus_stop_areas"
         }
       ]
     }

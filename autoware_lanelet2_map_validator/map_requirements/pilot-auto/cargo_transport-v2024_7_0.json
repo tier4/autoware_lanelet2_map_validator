@@ -1,6 +1,22 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "requirements": [
+    {
+      "id": "vm-01-01",
+      "validators": [
+        {
+          "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-09",
+      "validators": [
+        {
+          "name": "mapping.lane.speed_limit_validity"
+        }
+      ]
+    },
     {
       "id": "vm-01-10",
       "validators": [
@@ -73,6 +89,22 @@
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "vm-06-02",
+      "validators": [
+        {
+          "name": "mapping.area.no_parking_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-05",
+      "validators": [
+        {
+          "name": "mapping.area.detection_area"
         }
       ]
     }

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.3",
   "requirements": [
     {
       "id": "vm-01-01",
@@ -50,6 +50,17 @@
       ]
     },
     {
+      "id": "vm-03-02",
+      "validators": [
+        {
+          "name": "mapping.intersection.turn_direction_tagging"
+        },
+        {
+          "name": "mapping.intersection.lanelet_border_type"
+        }
+      ]
+    },
+    {
       "id": "vm-03-16",
       "validators": [
         {
@@ -78,6 +89,14 @@
               "name": "mapping.intersection.virtual_traffic_light_line_order"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "vm-06-02",
+      "validators": [
+        {
+          "name": "mapping.area.no_parking_area"
         }
       ]
     },
