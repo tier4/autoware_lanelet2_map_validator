@@ -193,7 +193,7 @@ jobs:
           cd autoware_ws/src
           git clone https://github.com/autowarefoundation/autoware_msgs.git
           cd ..
-          colcon build --cmake-args -DBUILD_TESTING=OFF
+          colcon build --cmake-args -DBUILD_TESTING=OFF --packages-up-to autoware_map_msgs autoware_planning_msgs
 
       - name: Build fmt (static)
         run: |
