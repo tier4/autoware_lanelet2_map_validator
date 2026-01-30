@@ -876,7 +876,7 @@
     "primitive": "lanelet",
     "message": {
       "en": "Road shoulder lanelet has no adjacent lanelets.",
-      "ja": "路肩レーンには隣接するレーンが存在しません。"
+      "ja": "路肩レーンに隣接するレーンが存在しません。"
     }
   },
   "Lane.RoadShoulder-002": {

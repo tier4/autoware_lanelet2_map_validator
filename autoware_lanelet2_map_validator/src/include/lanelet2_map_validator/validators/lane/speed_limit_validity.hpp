@@ -33,7 +33,7 @@ public:
   SpeedLimitValidityValidator()
   {
     const auto parameters = ValidatorConfigStore::parameters()[name()];
-    max_speed_limit_ = get_parameter_or<double>(parameters, "max_speed_limit", 50.0);
+    max_speed_limit_ = get_parameter_or<double>(parameters, "max_speed_limit", 80.0);
     min_speed_limit_ = get_parameter_or<double>(parameters, "min_speed_limit", 10.0);
   }
 
