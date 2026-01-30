@@ -1,0 +1,234 @@
+{
+  "version": "1.0.3",
+  "requirements": [
+    {
+      "id": "vm-01-01",
+      "validators": [
+        {
+          "name": "mapping.lane.road_lanelet_attribute"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-03_vm-01-04",
+      "validators": [
+        {
+          "name": "mapping.lane.border_sharing"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-09",
+      "validators": [
+        {
+          "name": "mapping.lane.speed_limit_validity"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-10",
+      "validators": [
+        {
+          "name": "mapping.lane.centerline_geometry"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-15",
+      "validators": [
+        {
+          "name": "mapping.lane.road_shoulder"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-17",
+      "validators": [
+        {
+          "name": "mapping.lane.pedestrian_lane"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-19",
+      "validators": [
+        {
+          "name": "mapping.lane.walkway_intersection"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-20",
+      "validators": [
+        {
+          "name": "mapping.lane.lateral_subtype_connection"
+        }
+      ]
+    },
+    {
+      "id": "vm-01-21",
+      "validators": [
+        {
+          "name": "mapping.lane.longitudinal_subtype_connection"
+        }
+      ]
+    },
+    {
+      "id": "vm-02-04",
+      "validators": [
+        {
+          "name": "mapping.stop_line.missing_regulatory_elements"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-01",
+      "validators": [
+        {
+          "name": "mapping.intersection.intersection_area_dangling_reference"
+        },
+        {
+          "name": "mapping.intersection.intersection_area_tagging"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-02",
+      "validators": [
+        {
+          "name": "mapping.intersection.turn_direction_tagging"
+        },
+        {
+          "name": "mapping.intersection.lanelet_border_type"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-05",
+      "validators": [
+        {
+          "name": "mapping.intersection.lanelet_division"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-08",
+      "validators": [
+        {
+          "name": "mapping.intersection.intersection_area_validity"
+        },
+        {
+          "name": "mapping.intersection.intersection_area_segment_type"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-10",
+      "validators": [
+        {
+          "name": "mapping.intersection.right_of_way_with_traffic_lights"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-11",
+      "validators": [
+        {
+          "name": "mapping.intersection.right_of_way_without_traffic_lights"
+        }
+      ]
+    },
+    {
+      "id": "vm-03-14",
+      "validators": [
+        {
+          "name": "mapping.intersection.road_markings"
+        }
+      ]
+    },
+    {
+      "id": "vm-04-01",
+      "validators": [
+        {
+          "name": "mapping.traffic_light.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.traffic_light.missing_referrers"
+        },
+        {
+          "name": "mapping.traffic_light.regulatory_element_details"
+        }
+      ]
+    },
+    {
+      "id": "vm-04-02",
+      "validators": [
+        {
+          "name": "mapping.traffic_light.correct_facing"
+        },
+        {
+          "name": "mapping.traffic_light.body_height"
+        }
+      ]
+    },
+    {
+      "id": "vm-04-03",
+      "validators": [
+        {
+          "name": "mapping.traffic_light.light_bulb_tagging"
+        }
+      ]
+    },
+    {
+      "id": "vm-05-01",
+      "validators": [
+        {
+          "name": "mapping.crosswalk.missing_regulatory_elements"
+        },
+        {
+          "name": "mapping.crosswalk.regulatory_element_details"
+        }
+      ]
+    },
+    {
+      "id": "vm-05-03",
+      "validators": [
+        {
+          "name": "mapping.crosswalk.safety_attributes"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-01",
+      "validators": [
+        {
+          "name": "mapping.area.buffer_zone_validity"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-02",
+      "validators": [
+        {
+          "name": "mapping.area.no_parking_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-04",
+      "validators": [
+        {
+          "name": "mapping.area.no_stopping_area"
+        }
+      ]
+    },
+    {
+      "id": "vm-06-05",
+      "validators": [
+        {
+          "name": "mapping.area.detection_area"
+        }
+      ]
+    }
+  ]
+}
