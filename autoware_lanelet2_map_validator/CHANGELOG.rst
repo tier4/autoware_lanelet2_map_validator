@@ -2,55 +2,6 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.6.0 (2026-01-30)
-------------------
-* chore: add input requirements for v1.6.0 (`#152 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/152>`_)
-* fix: remove redundant line from right_of_way_without_traffic_lights (`#151 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/151>`_)
-* fix(cli): fix issue that utm and transverse_mercator does not work (`#149 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/149>`_)
-* fix(area): remove issue 4 regarding the mandatory of stop_line for no_stopping_area (`#143 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/143>`_)
-* feat(lane): add lanelet_geometry validator for shared points between bounds (`#146 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/146>`_)
-* fix(params): modify the params for bounding box and centerline_geometry (`#144 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/144>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(lane): added validator for lane speed limit (vm-01-09) (`#123 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/123>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(crosswalk): added validator for crosswalk safety attributes (vm-05-03) (`#124 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/124>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(lane): added `bicycle_lane` to lateral_subtype_connection (`#145 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/145>`_)
-* feat(crosswalk): added validator for potential unrelated primitives to VM-05-01 (`#112 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/112>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(traffic_light): added validator for potential unrelated primitives to VM-04-01 (`#113 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/113>`_)
-* feat(stop_line): added validator for potential unrelated primitives to VM-02-02 (`#111 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/111>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(area): added validator for no detection area (vm-06-05) (`#109 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/109>`_)
-* feat(crosswalk): added check whether crosswalk and refers road lanelet is intersecting to VM-05-01 (`#117 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/117>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(crosswalk): added validator for sidewalk VM-01-19 (`#118 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/118>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(intersection): add validator for road_markings VM-03-14 (`#121 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/121>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
-* docs(intersection): fix the parameter docs for virtual_traffic_light (`#122 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/122>`_)
-* feat(intersection): added validator for potential unrelated primitives to vm-03-16 (`#114 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/114>`_)
-* feat(area): added validator for no parking area (vm-06-02) (`#108 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/108>`_)
-* feat(area): added validator for no stopping area (vm-06-04) (`#107 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/107>`_)
-  Co-authored-by: Taiki Yamada <129915538+TaikiYamada4@users.noreply.github.com>
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(lane): added validator for pedestrian_lane (vm-01-17) (`#98 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/98>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* chore: delete utility functions from autoware_lanelet2_extension (`#119 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/119>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* fix(autoware_lanelet2_map_validator): update copyright header (`#116 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/116>`_)
-* fix(gui): fix regex error on multi validator selection (`#115 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/115>`_)
-* feat(traffic_light): added validator for traffic_light height (vm-04-02) (`#105 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/105>`_)
-* feat(intersection): added validator for lanelet division (vm-03-05)  (`#104 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/104>`_)
-* feat(lane): added validator for road shoulder (vm-01-15) (`#99 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/99>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(lane): added validator for lane change attribute (vm-01-02) (`#97 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/97>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* feat(lane): added validator for attributes of road lanelet (vm-01-01) (`#94 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/94>`_)
-  Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-* Contributors: Giovanni Muhammad Raditya, Taiki Yamada
-
 1.5.2 (2025-09-29)
 ------------------
 * fix(intersection): add validation for lanelets with turn_direction tag to require intersection_area tag (`#102 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/102>`_)
