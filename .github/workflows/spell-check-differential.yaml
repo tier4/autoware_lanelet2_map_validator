@@ -7,6 +7,10 @@ name: spell-check-differential
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   spell-check-differential:
     runs-on: ubuntu-22.04
@@ -18,7 +22,6 @@ jobs:
         uses: autowarefoundation/autoware-github-actions/spell-check@v1
         with:
           cspell-json-url: https://raw.githubusercontent.com/autowarefoundation/autoware-spell-check-dict/main/.cspell.json
-          local-cspell-json: .cspell.json
           dict-packages: |
             https://github.com/autowarefoundation/autoware-spell-check-dict
             https://github.com/tier4/cspell-dicts
