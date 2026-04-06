@@ -309,9 +309,10 @@ std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
   auto [validation_queue, remaining_validators] = create_validation_queue(validators);
 
   // Note validators that cannot be run from the start
-  if (auto unused_validator_issues =
-        describe_unused_validators_to_json(json_data, remaining_validators);
-      !unused_validator_issues.empty()) {
+  if (
+    auto unused_validator_issues =
+      describe_unused_validators_to_json(json_data, remaining_validators);
+    !unused_validator_issues.empty()) {
     appendIssues(total_issues, std::move(unused_validator_issues));
   }
 
