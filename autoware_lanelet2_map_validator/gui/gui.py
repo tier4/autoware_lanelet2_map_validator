@@ -15,6 +15,7 @@
 # limitations under the License.
 
 """GUI application for Autoware Lanelet2 map validation with integrated map visualization."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -223,8 +224,7 @@ class ValidatorUI(QMainWindow):
         self.visualize_map_checkbox.setToolTip(
             "Enable/disable map visualization for better performance"
         )
-        self.visualize_map_checkbox.setStyleSheet(
-            """
+        self.visualize_map_checkbox.setStyleSheet("""
             QCheckBox {
                 font-size: 14px;
                 font-weight: bold;
@@ -234,8 +234,7 @@ class ValidatorUI(QMainWindow):
                 width: 18px;
                 height: 18px;
             }
-        """
-        )
+        """)
         self.visualize_map_checkbox.stateChanged.connect(self.toggle_map_visualization)
         opts_grid.addWidget(self.visualize_map_checkbox, 1, 0, 1, 2)
 
@@ -292,8 +291,7 @@ language (-l arg)           Language to display the issue messages. Available
         action_cli_help.triggered.connect(show_cli_help)
 
         def set_theme_light():
-            self.setStyleSheet(
-                """
+            self.setStyleSheet("""
                 QWidget { background-color: #f6f6f7; color: #232629; font-family: 'Segoe UI', 'Noto Sans', 'Arial', sans-serif; font-size: 13px; }
 
                 QLineEdit, QPushButton {
@@ -382,12 +380,10 @@ language (-l arg)           Language to display the issue messages. Available
                     background-color: #e9e9ea;
                     color: #232629;
                 }
-            """
-            )
+            """)
 
         def set_theme_dark():
-            self.setStyleSheet(
-                """
+            self.setStyleSheet("""
                 QWidget { background-color: #232629; color: #f0f0f0; font-family: 'Segoe UI', 'Noto Sans', 'Arial', sans-serif; font-size: 13px; }
                 QLineEdit, QPushButton {
                     background-color: #31363b; color: #f0f0f0;
@@ -475,8 +471,7 @@ language (-l arg)           Language to display the issue messages. Available
                     background-color: #50555b;
                     color: #fff;
                 }
-            """
-            )
+            """)
 
         action_light.triggered.connect(set_theme_light)
         action_dark.triggered.connect(set_theme_dark)
@@ -487,8 +482,7 @@ language (-l arg)           Language to display the issue messages. Available
         btn_layout = QHBoxLayout()
         self.run_btn = QPushButton("Run Validator")
         self.run_btn.clicked.connect(self.run_validator)
-        self.run_btn.setStyleSheet(
-            """
+        self.run_btn.setStyleSheet("""
             QPushButton {
                 font-size: 16px;
                 font-weight: bold;
@@ -500,8 +494,7 @@ language (-l arg)           Language to display the issue messages. Available
             QPushButton:hover {
                 background-color: #005fa3;
             }
-        """
-        )
+        """)
         btn_layout.addWidget(self.run_btn)
         input_panel.addLayout(btn_layout)
         input_panel.addStretch(1)
