@@ -12,7 +12,6 @@
   <buildtool_depend>autoware_cmake</buildtool_depend>
 
   <depend>autoware_lanelet2_extension</depend>
-  <depend>autoware_lanelet2_extension_python</depend>
   <depend>fmt</depend>
   <depend>lanelet2_core</depend>
   <depend>lanelet2_io</depend>
@@ -25,6 +24,7 @@
   <depend>pugixml-dev</depend>
   <depend>yaml-cpp</depend>
 
+  <exec_depend>autoware_lanelet2_extension_python</exec_depend>
   <exec_depend>python3-pyside6</exec_depend>
 
   <test_depend>ament_cmake_ros</test_depend>
