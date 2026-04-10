@@ -44,6 +44,9 @@ hiddenimports = [
     'matplotlib_widget',
     'lanelet2',
     'autoware_lanelet2_extension_python.projection',
+    # distutils removed in Python 3.12; matplotlib may import distutils.version
+    'setuptools._distutils',
+    'setuptools._distutils.version',
 ]
 tmp_ret = collect_all('PySide6-essential')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
@@ -56,7 +59,7 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=[os.path.join(spec_dir, 'pyi_rth_distutils.py')],
     excludes=[],
     noarchive=False,
     optimize=0,

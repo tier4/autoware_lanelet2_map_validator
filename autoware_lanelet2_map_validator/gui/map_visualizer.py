@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 TIER IV, Inc.
+# Copyright 2025-2026 TIER IV, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 # limitations under the License.
 
 """Map visualizer widget using matplotlib and lanelet2."""
+from __future__ import annotations
+
 import os
 import sys
 
@@ -176,10 +178,18 @@ class MapVisualizerWidget(QWidget):
             self.canvas.set_zoom_level(value)
             self.zoom_label.setText(f"{value}%")
 
-    def load_map_file(self, file_path: str, projector_type: str = "utm"):
+    def load_map_file(
+        self,
+        file_path: str,
+        projector_type: str = "utm",
+        origin_lat: float | None = None,
+        origin_lon: float | None = None,
+    ):
         """Load a specific OSM map file with given projector type."""
         try:
-            projector = create_appropriate_projector(file_path, projector_type)
+            projector = create_appropriate_projector(
+                file_path, projector_type, origin_lat=origin_lat, origin_lon=origin_lon
+            )
             self.lanelet_map = load(file_path, projector)
             self.current_file = file_path
 
