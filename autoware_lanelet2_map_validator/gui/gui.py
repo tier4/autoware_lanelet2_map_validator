@@ -586,9 +586,9 @@ language (-l arg)           Language to display the issue messages. Available
         min_lon, min_lat, max_lon, max_lat = get_map_bounds_from_osm(osm_path)
         if min_lon is None or min_lat is None or max_lon is None or max_lat is None:
             return None, None
-        clat = (min_lat + max_lat) / 2.0
-        clon = (min_lon + max_lon) / 2.0
-        return clat, clon
+        center_lat = (min_lat + max_lat) / 2.0
+        center_lon = (min_lon + max_lon) / 2.0
+        return center_lat, center_lon
 
     def parse_origin_lat_lon(self) -> tuple[float | None, float | None]:
         lat_s = self.lat_edit.text().strip()
@@ -612,9 +612,9 @@ language (-l arg)           Language to display the issue messages. Available
             osm_path = self.osm_edit.text().strip()
             if osm_path and os.path.exists(osm_path):
                 projector = self.projector_combo.currentText()
-                olat, olon = self.get_origin_for_map_load()
+                origin_lat, origin_lon = self.get_origin_for_map_load()
                 try:
-                    self.map_visualizer.load_map_file(osm_path, projector, olat, olon)
+                    self.map_visualizer.load_map_file(osm_path, projector, origin_lat, origin_lon)
                 except Exception as e:
                     print(f"Error reloading map for visualization: {e}")
                     self.map_visualizer.map_info_label.setText(f"Error loading map: {str(e)}")
@@ -1089,12 +1089,14 @@ language (-l arg)           Language to display the issue messages. Available
                 # Load the current map file into the visualizer if not already loaded
                 osm_path = self.osm_edit.text().strip()
                 projector_type = self.projector_combo.currentText()
-                olat, olon = self.get_origin_for_map_load()
+                origin_lat, origin_lon = self.get_origin_for_map_load()
                 if osm_path and os.path.exists(osm_path):
                     if self.map_visualizer.current_file != osm_path:
                         # Load the map file with the selected projector
                         try:
-                            self.map_visualizer.load_map_file(osm_path, projector_type, olat, olon)
+                            self.map_visualizer.load_map_file(
+                                osm_path, projector_type, origin_lat, origin_lon
+                            )
                         except Exception as e:
                             print(f"Error loading map for visualization: {e}")
 
