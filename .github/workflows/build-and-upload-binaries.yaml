@@ -7,13 +7,56 @@ on:
         description: The name of the tag to build and upload binaries for
         type: string
         required: true
+      dry-run:
+        description: If true, build but skip GPG signing and GitHub release upload
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 jobs:
+  setup:
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      category: ${{ steps.parse.outputs.category }}
+    steps:
+      - name: Get Release Version
+        id: parse
+        run: |
+          REF_NAME="${{ github.event.inputs.tag-name }}"
+          VERSION=${REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Split into major, minor, patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          # Default values to 0 if missing
+          MAJOR=${MAJOR:-0}
+          MINOR=${MINOR:-0}
+          PATCH=${PATCH:-0}
+
+          # Reference version 1.5.2
+          REF_MAJOR=1
+          REF_MINOR=5
+          REF_PATCH=2
+
+          # Compare version parts
+          if (( MAJOR < REF_MAJOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR < REF_MINOR )) || \
+             (( MAJOR == REF_MAJOR && MINOR == REF_MINOR && PATCH <= REF_PATCH )); then
+            CATEGORY="before_or_equal_1_5_2"
+          else
+            CATEGORY="after_1_5_2"
+          fi
+
+          echo "Category: $CATEGORY"
+          echo "category=$CATEGORY" >> "$GITHUB_OUTPUT"
+
   build-gui:
     runs-on: ubuntu-22.04
+    needs: [setup]
     container:
       image: ghcr.io/autowarefoundation/autoware:core-devel
       options: --user root
@@ -23,11 +66,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: static_build_helper
+          ref: ${{ needs.setup.outputs.version }}
 
       - name: Configure Git Safe Directory
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Apply static-build overlays
+        shell: bash
+        run: |
+          bash "$GITHUB_WORKSPACE/.github/scripts/apply-static-build-overlays.sh" "${{ needs.setup.outputs.category }}"
 
       - name: Build validator GUI
         id: build_gui
@@ -70,65 +118,18 @@ jobs:
 
   build:
     runs-on: ubuntu-22.04
-    needs: [build-gui]
+    needs: [setup, build-gui]
 
     steps:
-      - name: Get Release Version
-        id: get_version
-        run: |
-          REF_NAME="${{ github.event.inputs.tag-name }}"
-          VERSION=${REF_NAME#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-          # Split into major, minor, patch
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-
-          # Default values to 0 if missing
-          MAJOR=${MAJOR:-0}
-          MINOR=${MINOR:-0}
-          PATCH=${PATCH:-0}
-
-          # Reference version 1.5.2
-          REF_MAJOR=1
-          REF_MINOR=5
-          REF_PATCH=2
-
-          # Compare version parts
-          if (( MAJOR < REF_MAJOR )) || \
-             (( MAJOR == REF_MAJOR && MINOR < REF_MINOR )) || \
-             (( MAJOR == REF_MAJOR && MINOR == REF_MINOR && PATCH <= REF_PATCH )); then
-            CATEGORY="before_or_equal_1_5_2"
-          else
-            CATEGORY="after_1_5_2"
-          fi
-
-          echo "Category: $CATEGORY"
-          echo "category=$CATEGORY" >> "$GITHUB_OUTPUT"
-
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ steps.get_version.outputs.version }}
+          ref: ${{ needs.setup.outputs.version }}
 
-      - name: Cherry-pick preparation
+      - name: Apply static-build overlays
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main static_build_helper
-
-      - name: cherry-pick for version <= 1.5.2
-        if: steps.get_version.outputs.category == 'before_or_equal_1_5_2'
-        run: |
-          git cherry-pick b92492bb2232f0c1d502cfc0c6aede2f3169116b
-          git cherry-pick 8ed41f2f8d59d63c09bb47ac8ad59d4f56c7d07c
-          git cherry-pick 36c5e266dbf2bba0df39a7f789615fa4a2ecb8c3
-          git cherry-pick c8192e2311785a21894d7311f079b28caa541ca5
-
-      - name: cherry-pick for version > 1.5.2
-        if: steps.get_version.outputs.category == 'after_1_5_2'
-        run: |
-          git cherry-pick c8192e2311785a21894d7311f079b28caa541ca5
+          bash "$GITHUB_WORKSPACE/.github/scripts/apply-static-build-overlays.sh" "${{ needs.setup.outputs.category }}"
 
       - name: Install Dependencies
         run: |
@@ -261,7 +262,7 @@ jobs:
       - name: Package artifacts
         id: package
         run: |
-          VERSION=${{ steps.get_version.outputs.version }}
+          VERSION=${{ needs.setup.outputs.version }}
           ZIP_NAME="autoware_lanelet2_map_validator-${VERSION}-linux-x86_64.zip"
           mkdir release_package
 
@@ -285,12 +286,14 @@ jobs:
 
       - name: Sign the package with GPG
         id: gpg-sign
+        if: ${{ github.event.inputs.dry-run != 'true' }}
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
           gpg --batch --yes --detach-sign --armor --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -o ${{ steps.package.outputs.zip_name }}.asc ${{ steps.package.outputs.zip_name }}
           echo "signature_name=${{ steps.package.outputs.zip_name }}.asc" >> $GITHUB_OUTPUT
 
       - name: Install GitHub CLI
+        if: ${{ github.event.inputs.dry-run != 'true' }}
         run: |
           (type -p wget >/dev/null || (sudo apt-get update && sudo apt-get install wget -y))
           sudo mkdir -p -m 755 /etc/apt/keyrings
@@ -301,10 +304,17 @@ jobs:
           sudo apt-get install gh -y
 
       - name: Upload artifacts to GitHub Release
+        if: ${{ github.event.inputs.dry-run != 'true' }}
         run: |
-          gh release upload "${{ steps.get_version.outputs.version }}" \
+          gh release upload "${{ needs.setup.outputs.version }}" \
             "${{ steps.package.outputs.zip_name }}" \
             "${{ steps.gpg-sign.outputs.signature_name }}" \
             --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Dry run summary
+        if: ${{ github.event.inputs.dry-run == 'true' }}
+        run: |
+          echo "Dry run: built ${{ steps.package.outputs.zip_name }} (not signed, not uploaded)."
+          ls -la "${{ steps.package.outputs.zip_name }}" || true

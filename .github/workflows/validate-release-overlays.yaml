@@ -1,0 +1,57 @@
+name: validate-release-overlays
+
+# Fails if static-build cherry-picks no longer apply to pinned release tags.
+# Update matrix tag_ref values when dropping support for a release line.
+
+on:
+  pull_request:
+    paths:
+      - .github/scripts/apply-static-build-overlays.sh
+      - .github/workflows/build-and-upload-binaries.yaml
+      - .github/workflows/validate-release-overlays.yaml
+      - .github/cmake/**
+  push:
+    branches:
+      - main
+    paths:
+      - .github/scripts/apply-static-build-overlays.sh
+      - .github/workflows/build-and-upload-binaries.yaml
+      - .github/workflows/validate-release-overlays.yaml
+      - .github/cmake/**
+
+permissions:
+  contents: read
+
+jobs:
+  overlay:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: legacy_tag
+            tag_ref: 1.5.2
+            category: before_or_equal_1_5_2
+          - label: modern_tag
+            tag_ref: 1.6.0
+            category: after_1_5_2
+    steps:
+      - name: Check out PR head (for overlay script)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
+      - name: Save overlay script from branch under test
+        run: |
+          cp .github/scripts/apply-static-build-overlays.sh /tmp/apply-static-build-overlays.sh
+          chmod +x /tmp/apply-static-build-overlays.sh
+
+      - name: Fetch release tag and detach
+        run: |
+          git fetch origin "+refs/tags/${{ matrix.tag_ref }}:refs/tags/${{ matrix.tag_ref }}"
+          git checkout --detach "${{ matrix.tag_ref }}"
+
+      - name: Apply overlays (script from PR / push commit)
+        run: |
+          /tmp/apply-static-build-overlays.sh "${{ matrix.category }}"
