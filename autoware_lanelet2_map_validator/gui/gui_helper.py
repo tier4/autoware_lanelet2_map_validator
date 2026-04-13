@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 TIER IV, Inc.
+# Copyright 2025-2026 TIER IV, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 from pathlib import Path
 import subprocess
 from typing import List
+from typing import Optional
 from typing import Tuple
 import xml.etree.ElementTree as ET
 
@@ -83,8 +84,23 @@ def get_map_bounds_from_osm(osm_file: str) -> Tuple[float, float, float, float]:
         return None, None, None, None
 
 
-def create_appropriate_projector(osm_file: str, projector_type: str = "utm"):
+def create_appropriate_projector(
+    osm_file: str,
+    projector_type: str = "utm",
+    origin_lat: Optional[float] = None,
+    origin_lon: Optional[float] = None,
+):
     """Create an appropriate projector based on the map's location and selected projector type."""
+    use_explicit_origin = (
+        origin_lat is not None
+        and origin_lon is not None
+        and projector_type in ("utm", "transverse_mercator")
+    )
+    if use_explicit_origin:
+        center_lat, center_lon = origin_lat, origin_lon
+        utm_zone = get_utm_zone_from_longitude(center_lon)
+        return UtmProjector(Origin(center_lat, center_lon), utm_zone, center_lat >= 0)
+
     min_lon, min_lat, max_lon, max_lat = get_map_bounds_from_osm(osm_file)
 
     if min_lon is not None and max_lon is not None and min_lat is not None and max_lat is not None:
@@ -122,6 +138,8 @@ def run_lanelet2_validator(
     output_dir: Path = None,
     language: str = "en",
     validator_filter: str = "",
+    origin_lat: Optional[float] = None,
+    origin_lon: Optional[float] = None,
 ) -> Tuple[int, List[str], List[str]]:
     """Run the Lanelet2 validator with the specified parameters."""
     cmd = [
@@ -136,6 +154,13 @@ def run_lanelet2_validator(
         "-l",
         language,
     ]
+
+    if projector in ("utm", "transverse_mercator"):
+        if origin_lat is None or origin_lon is None:
+            raise ValueError(
+                "origin_lat and origin_lon are required for utm and transverse_mercator projectors"
+            )
+        cmd += ["--lat", str(origin_lat), "--lon", str(origin_lon)]
 
     if exclusion_file:
         cmd += ["-x", str(exclusion_file)]
