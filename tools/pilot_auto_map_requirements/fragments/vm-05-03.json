@@ -1,0 +1,8 @@
+{
+  "id": "vm-05-03",
+  "validators": [
+    {
+      "name": "mapping.crosswalk.safety_attributes"
+    }
+  ]
+}

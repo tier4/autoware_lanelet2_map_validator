@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-01",
+  "validators": [
+    {
+      "name": "mapping.lane.road_lanelet_attribute"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-19",
+  "validators": [
+    {
+      "name": "mapping.lane.walkway_intersection"
+    }
+  ]
+}

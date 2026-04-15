@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-09",
+  "validators": [
+    {
+      "name": "mapping.lane.speed_limit_validity"
+    }
+  ]
+}

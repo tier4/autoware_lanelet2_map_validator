@@ -1,0 +1,34 @@
+{
+  "vehicle_group": "delivery_robot",
+  "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
+  "outputs": [
+    {
+      "path": "v1.0.4/delivery_robot-v0_39_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/cargo_transport-v2024_2_0.json",
+      "patches": [
+        {
+          "remove_ids": ["vm-01-05", "vm-03-02", "vm-06-02"]
+        }
+      ]
+    },
+    {
+      "path": "v1.0.4/delivery_robot-v2023_10_2.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.2/delivery_robot-v2023_10_2.json",
+      "version": "1.0.2",
+      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/delivery_robot-v2023_10_2.json",
+      "version": "1.0.3",
+      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
+      "patches": []
+    }
+  ]
+}

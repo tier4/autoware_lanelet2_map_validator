@@ -1,0 +1,14 @@
+{
+  "id": "vm-04-01",
+  "validators": [
+    {
+      "name": "mapping.traffic_light.missing_regulatory_elements"
+    },
+    {
+      "name": "mapping.traffic_light.missing_referrers"
+    },
+    {
+      "name": "mapping.traffic_light.regulatory_element_details"
+    }
+  ]
+}

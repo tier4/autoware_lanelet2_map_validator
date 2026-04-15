@@ -1,0 +1,104 @@
+{
+  "vehicle_group": "robo_taxi",
+  "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
+  "outputs": [
+    {
+      "path": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": [
+        {
+          "remove_ids": ["vm-01-02"]
+        }
+      ]
+    },
+    {
+      "path": "v1.0.4/robo_taxi-v0_45_0_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.4/robo_taxi-v0_46_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.4/robo_taxi-v0_47_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.4/robo_taxi-v0_48_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.4/robo_taxi-v0_50_0.json",
+      "version": "1.0.4",
+      "extends": "v1.0.4/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "version": "1.0.2",
+      "extends": "v1.0.2/shuttle_bus-v2_3_0.json",
+      "patches": [
+        {
+          "remove_ids": ["vm-01-05", "vm-06-06"]
+        }
+      ]
+    },
+    {
+      "path": "v1.0.2/robo_taxi-v0_45_0_0.json",
+      "version": "1.0.2",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.2/robo_taxi-v0_46_0.json",
+      "version": "1.0.2",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.2/robo_taxi-v0_47_0.json",
+      "version": "1.0.2",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/robo_taxi-v0_44_0_0.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/robo_taxi-v0_45_0_0.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/robo_taxi-v0_46_0.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/robo_taxi-v0_47_0.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.3/robo_taxi-v0_48_0.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/robo_taxi-v0_44_0_0.json",
+      "patches": []
+    }
+  ]
+}
