@@ -238,10 +238,10 @@ def _load_merged_manifest(tool_dir: Path) -> dict:
         index = _load_json(index_path)
         outputs: list[dict] = []
         for rel in index.get("groups", []):
-            gpath = tool_dir / rel
-            if not gpath.is_file():
-                raise FileNotFoundError(f"Group file listed in index but missing: {gpath}")
-            group = _load_json(gpath)
+            group_path = tool_dir / rel
+            if not group_path.is_file():
+                raise FileNotFoundError(f"Group file listed in index but missing: {group_path}")
+            group = _load_json(group_path)
             outputs.extend(group["outputs"])
         return {"outputs": outputs}
     legacy = tool_dir / "manifest.json"
@@ -334,9 +334,9 @@ def _compact_outputs(manifest: dict) -> list[dict]:
             if removed is None:
                 continue
             score = len(parent_ids) - len(child_ids)
-            cand = (parent_path, removed, score)
+            candidate = (parent_path, removed, score)
             if best is None or score < best[2] or (score == best[2] and parent_path < best[0]):
-                best = cand
+                best = candidate
         if best is None:
             return None
         parent_path, removed, _s = best
@@ -374,8 +374,8 @@ def cmd_generate(tool_dir: Path, fragments_dir: Path, pilot_auto: Path, check: b
             print(f"ERROR {rel}: {ex}", file=sys.stderr)
             errors += 1
             continue
-        reqs = [_load_fragment(fragments_dir, rid) for rid in ids]
-        text = _dump_requirement_set(version, reqs)
+        requirements = [_load_fragment(fragments_dir, rid) for rid in ids]
+        text = _dump_requirement_set(version, requirements)
         if check:
             if not out_path.is_file():
                 print(f"MISSING {out_path}", file=sys.stderr)
