@@ -3,16 +3,6 @@
   "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
   "outputs": [
     {
-      "path": "v1.0.4/common.json",
-      "version": "1.0.4",
-      "extends": "v1.0.2/common.json",
-      "patches": [
-        {
-          "remove_ids": ["vm-01-02"]
-        }
-      ]
-    },
-    {
       "path": "v1.0.2/common.json",
       "version": "1.0.2",
       "requirement_ids": [
@@ -55,6 +45,16 @@
       "version": "1.0.3",
       "extends": "v1.0.2/common.json",
       "patches": []
+    },
+    {
+      "path": "v1.0.4/common.json",
+      "version": "1.0.4",
+      "extends": "v1.0.3/common.json",
+      "patches": [
+        {
+          "remove_ids": ["vm-01-02"]
+        }
+      ]
     }
   ]
 }
