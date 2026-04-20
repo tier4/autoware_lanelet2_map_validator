@@ -237,14 +237,6 @@
           "name": "mapping.area.detection_area"
         }
       ]
-    },
-    {
-      "id": "vm-06-06",
-      "validators": [
-        {
-          "name": "mapping.area.missing_regulatory_elements_for_bus_stop_areas"
-        }
-      ]
     }
   ]
 }

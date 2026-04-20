@@ -50,7 +50,7 @@
       ]
     },
     {
-      "id": "vm-02-04",
+      "id": "vm-02-02",
       "validators": [
         {
           "name": "mapping.stop_line.missing_regulatory_elements"
