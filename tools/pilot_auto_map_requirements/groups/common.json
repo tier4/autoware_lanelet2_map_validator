@@ -55,6 +55,18 @@
           "remove_ids": ["vm-01-02"]
         }
       ]
+    },
+    {
+      "path": "v1.0.5/common.json",
+      "version": "1.0.5",
+      "extends": "v1.0.4/common.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.6/common.json",
+      "version": "1.0.6",
+      "extends": "v1.0.5/common.json",
+      "patches": []
     }
   ]
 }

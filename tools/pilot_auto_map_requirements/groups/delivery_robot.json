@@ -3,31 +3,105 @@
   "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
   "outputs": [
     {
-      "path": "v1.0.4/delivery_robot-v0_39_0.json",
-      "version": "1.0.4",
-      "extends": "v1.0.4/cargo_transport-v2024_2_0.json",
-      "patches": [
-        {
-          "remove_ids": ["vm-01-05", "vm-03-02", "vm-06-02"]
-        }
-      ]
-    },
-    {
-      "path": "v1.0.4/delivery_robot-v2023_10_2.json",
-      "version": "1.0.4",
-      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
-      "patches": []
-    },
-    {
       "path": "v1.0.2/delivery_robot-v2023_10_2.json",
       "version": "1.0.2",
-      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
-      "patches": []
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
     },
+
     {
       "path": "v1.0.3/delivery_robot-v2023_10_2.json",
       "version": "1.0.3",
-      "extends": "v1.0.4/delivery_robot-v0_39_0.json",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
+    },
+
+    {
+      "path": "v1.0.4/delivery_robot-v2023_10_2.json",
+      "version": "1.0.4",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.4/delivery_robot-v2023_10_2.json",
+      "path": "v1.0.4/delivery_robot-v0_39_0.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+
+    {
+      "path": "v1.0.5/delivery_robot-v2023_10_2.json",
+      "version": "1.0.5",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.5/delivery_robot-v2023_10_2.json",
+      "path": "v1.0.5/delivery_robot-v0_39_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+
+    {
+      "path": "v1.0.6/delivery_robot-v2023_10_2.json",
+      "version": "1.0.6",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.6/delivery_robot-v2023_10_2.json",
+      "path": "v1.0.6/delivery_robot-v0_39_0.json",
+      "version": "1.0.6",
       "patches": []
     }
   ]

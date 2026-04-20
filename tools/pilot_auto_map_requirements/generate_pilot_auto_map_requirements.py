@@ -58,7 +58,7 @@ from typing import Any
 # Relative paths under tools/pilot_auto_map_requirements/
 # Subdirectory under map_requirements/pilot-auto/ for the current shipped bundle
 # (must match JSON top-level "version" / bundle era; also written to index.json).
-CURRENT_REQUIREMENT_BUNDLE_DIRECTORY = "v1.0.4"
+CURRENT_REQUIREMENT_BUNDLE_DIRECTORY = "v1.0.6"
 
 GROUP_INDEX_PATH = "index.json"
 GROUP_FILE_BY_ID: dict[str, str] = {
