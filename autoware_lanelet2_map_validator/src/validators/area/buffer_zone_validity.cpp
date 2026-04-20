@@ -78,9 +78,9 @@ lanelet::validation::Issues BufferZoneValidity::check_buffer_zone_validity(
         }
       }
 
-      // check for road/road_shoulder overlap (Issue-003)
+      // check for road overlap (Issue-003)
       std::string subtype = ll.attributeOr(lanelet::AttributeName::Subtype, "");
-      if (subtype == "road" || subtype == "road_shoulder") {
+      if (subtype == "road") {
         lanelet::BasicPolygon2d lanelet_polygon = ll.polygon2d().basicPolygon();
         boost::geometry::correct(lanelet_polygon);
 
