@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-10",
+  "validators": [
+    {
+      "name": "mapping.lane.centerline_geometry"
+    }
+  ]
+}

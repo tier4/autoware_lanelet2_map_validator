@@ -26,6 +26,14 @@
       ]
     },
     {
+      "id": "vm-01-05",
+      "validators": [
+        {
+          "name": "mapping.lane.lanelet_geometry"
+        }
+      ]
+    },
+    {
       "id": "vm-01-09",
       "validators": [
         {

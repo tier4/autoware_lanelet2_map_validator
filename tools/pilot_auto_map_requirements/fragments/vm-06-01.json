@@ -1,0 +1,8 @@
+{
+  "id": "vm-06-01",
+  "validators": [
+    {
+      "name": "mapping.area.buffer_zone_validity"
+    }
+  ]
+}

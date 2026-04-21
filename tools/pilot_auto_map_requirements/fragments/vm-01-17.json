@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-17",
+  "validators": [
+    {
+      "name": "mapping.lane.pedestrian_lane"
+    }
+  ]
+}

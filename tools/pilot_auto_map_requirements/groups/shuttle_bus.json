@@ -1,0 +1,371 @@
+{
+  "vehicle_group": "shuttle_bus",
+  "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
+  "outputs": [
+    {
+      "path": "v1.0.2/shuttle_bus-v2_3_0.json",
+      "version": "1.0.2",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-02",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-02",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.2/shuttle_bus-v2_3_0.json",
+      "path": "v1.0.2/shuttle_bus-v3_0_0.json",
+      "version": "1.0.2",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.2/shuttle_bus-v3_0_0.json",
+      "path": "v1.0.2/shuttle_bus-v3_1_0.json",
+      "version": "1.0.2",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.2/shuttle_bus-v3_1_0.json",
+      "path": "v1.0.2/shuttle_bus-v4_0_1.json",
+      "version": "1.0.2",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.2/shuttle_bus-v4_0_1.json",
+      "path": "v1.0.2/shuttle_bus-v4_1_0.json",
+      "version": "1.0.2",
+      "patches": [
+        {
+          "append_ids": ["vm-06-06"]
+        }
+      ]
+    },
+
+    {
+      "path": "v1.0.3/shuttle_bus-v2_3_0.json",
+      "version": "1.0.3",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-02",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.3/shuttle_bus-v2_3_0.json",
+      "path": "v1.0.3/shuttle_bus-v3_0_0.json",
+      "version": "1.0.3",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.3/shuttle_bus-v3_0_0.json",
+      "path": "v1.0.3/shuttle_bus-v3_1_0.json",
+      "version": "1.0.3",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.3/shuttle_bus-v3_1_0.json",
+      "path": "v1.0.3/shuttle_bus-v4_0_1.json",
+      "version": "1.0.3",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.3/shuttle_bus-v4_0_1.json",
+      "path": "v1.0.3/shuttle_bus-v4_1_0.json",
+      "version": "1.0.3",
+      "patches": [
+        {
+          "append_ids": ["vm-06-06"]
+        }
+      ]
+    },
+    {
+      "extends": "v1.0.3/shuttle_bus-v4_1_0.json",
+      "path": "v1.0.3/shuttle_bus-v4_2_0.json",
+      "version": "1.0.3",
+      "patches": []
+    },
+
+    {
+      "path": "v1.0.4/shuttle_bus-v2_3_0.json",
+      "version": "1.0.4",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v2_3_0.json",
+      "path": "v1.0.4/shuttle_bus-v3_0_0.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v3_0_0.json",
+      "path": "v1.0.4/shuttle_bus-v3_1_0.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v3_1_0.json",
+      "path": "v1.0.4/shuttle_bus-v4_0_1.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v4_0_1.json",
+      "path": "v1.0.4/shuttle_bus-v4_1_0.json",
+      "version": "1.0.4",
+      "patches": [
+        {
+          "append_ids": ["vm-06-06"]
+        }
+      ]
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v4_1_0.json",
+      "path": "v1.0.4/shuttle_bus-v4_2_0.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.4/shuttle_bus-v4_2_0.json",
+      "path": "v1.0.4/shuttle_bus-v4_3_0.json",
+      "version": "1.0.4",
+      "patches": []
+    },
+
+    {
+      "path": "v1.0.5/shuttle_bus-v2_3_0.json",
+      "version": "1.0.5",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v2_3_0.json",
+      "path": "v1.0.5/shuttle_bus-v3_0_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v3_0_0.json",
+      "path": "v1.0.5/shuttle_bus-v3_1_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v3_1_0.json",
+      "path": "v1.0.5/shuttle_bus-v4_0_1.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v4_0_1.json",
+      "path": "v1.0.5/shuttle_bus-v4_1_0.json",
+      "version": "1.0.5",
+      "patches": [
+        {
+          "append_ids": ["vm-06-06"]
+        }
+      ]
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v4_1_0.json",
+      "path": "v1.0.5/shuttle_bus-v4_2_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v4_2_0.json",
+      "path": "v1.0.5/shuttle_bus-v4_3_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.5/shuttle_bus-v4_3_0.json",
+      "path": "v1.0.5/shuttle_bus-v5_0_0.json",
+      "version": "1.0.5",
+      "patches": []
+    },
+
+    {
+      "path": "v1.0.6/shuttle_bus-v2_3_0.json",
+      "version": "1.0.6",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v2_3_0.json",
+      "path": "v1.0.6/shuttle_bus-v3_0_0.json",
+      "version": "1.0.6",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v3_0_0.json",
+      "path": "v1.0.6/shuttle_bus-v3_1_0.json",
+      "version": "1.0.6",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v3_1_0.json",
+      "path": "v1.0.6/shuttle_bus-v4_0_1.json",
+      "version": "1.0.6",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v4_0_1.json",
+      "path": "v1.0.6/shuttle_bus-v4_1_0.json",
+      "version": "1.0.6",
+      "patches": [
+        {
+          "append_ids": ["vm-06-06"]
+        }
+      ]
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v4_1_0.json",
+      "path": "v1.0.6/shuttle_bus-v4_2_0.json",
+      "version": "1.0.6",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v4_2_0.json",
+      "path": "v1.0.6/shuttle_bus-v4_3_0.json",
+      "version": "1.0.6",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.6/shuttle_bus-v4_3_0.json",
+      "path": "v1.0.6/shuttle_bus-v5_0_0.json",
+      "version": "1.0.6",
+      "patches": []
+    }
+  ]
+}
