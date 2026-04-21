@@ -147,13 +147,10 @@ jobs:
           fetch-depth: 0
           ref: ${{ needs.setup.outputs.version }}
 
-<<<<<<< HEAD
       - name: Configure Git safe directory
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-=======
->>>>>>> 49edbb5 (ci: materialize overlay script from workflow SHA after tag checkout (#160))
       - name: Materialize overlay script from workflow ref
         run: |
           set -e
