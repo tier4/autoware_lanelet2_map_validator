@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.parse.outputs.version }}
-      category: ${{ steps.parse.outputs.category }}
     steps:
       - name: Get Release Version
         id: parse
@@ -28,31 +27,6 @@ jobs:
           REF_NAME="${{ github.event.inputs.tag-name }}"
           VERSION=${REF_NAME#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-          # Split into major, minor, patch
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-
-          # Default values to 0 if missing
-          MAJOR=${MAJOR:-0}
-          MINOR=${MINOR:-0}
-          PATCH=${PATCH:-0}
-
-          # Reference version 1.5.2
-          REF_MAJOR=1
-          REF_MINOR=5
-          REF_PATCH=2
-
-          # Compare version parts
-          if (( MAJOR < REF_MAJOR )) || \
-             (( MAJOR == REF_MAJOR && MINOR < REF_MINOR )) || \
-             (( MAJOR == REF_MAJOR && MINOR == REF_MINOR && PATCH <= REF_PATCH )); then
-            CATEGORY="before_or_equal_1_5_2"
-          else
-            CATEGORY="after_1_5_2"
-          fi
-
-          echo "Category: $CATEGORY"
-          echo "category=$CATEGORY" >> "$GITHUB_OUTPUT"
 
   build-gui:
     runs-on: ubuntu-22.04
@@ -72,20 +46,18 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Materialize overlay script from workflow ref
+      - name: Apply static-build overlay files
         shell: bash
         run: |
           set -e
-          # Release tags predate this script; always take the definition from the commit that runs the workflow.
+          # Release tags may predate .github/static_build/; always take it from the
+          # workflow-run commit so the release build is independent of the tag's
+          # snapshot of these overlays.
           git fetch origin "${{ github.sha }}"
-          mkdir -p .github/scripts
-          git show "${{ github.sha }}:.github/scripts/apply-static-build-overlays.sh" > .github/scripts/apply-static-build-overlays.sh
-          chmod +x .github/scripts/apply-static-build-overlays.sh
-
-      - name: Apply static-build overlays
-        shell: bash
-        run: |
-          bash "$GITHUB_WORKSPACE/.github/scripts/apply-static-build-overlays.sh" "${{ needs.setup.outputs.category }}"
+          git checkout "${{ github.sha }}" -- .github/static_build
+          cp -rf "$GITHUB_WORKSPACE/.github/static_build/gui" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -rf "$GITHUB_WORKSPACE/.github/static_build/src" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -f "$GITHUB_WORKSPACE/.github/static_build/CMakeLists.txt" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/CMakeLists.txt"
 
       - name: Build validator GUI
         id: build_gui
@@ -141,17 +113,17 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Materialize overlay script from workflow ref
+      - name: Apply static-build overlay files
         run: |
           set -e
+          # Release tags may predate .github/static_build/; always take it from the
+          # workflow-run commit so the release build is independent of the tag's
+          # snapshot of these overlays.
           git fetch origin "${{ github.sha }}"
-          mkdir -p .github/scripts
-          git show "${{ github.sha }}:.github/scripts/apply-static-build-overlays.sh" > .github/scripts/apply-static-build-overlays.sh
-          chmod +x .github/scripts/apply-static-build-overlays.sh
-
-      - name: Apply static-build overlays
-        run: |
-          bash "$GITHUB_WORKSPACE/.github/scripts/apply-static-build-overlays.sh" "${{ needs.setup.outputs.category }}"
+          git checkout "${{ github.sha }}" -- .github/static_build
+          cp -rf "$GITHUB_WORKSPACE/.github/static_build/gui" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -rf "$GITHUB_WORKSPACE/.github/static_build/src" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -f "$GITHUB_WORKSPACE/.github/static_build/CMakeLists.txt" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/CMakeLists.txt"
 
       - name: Install Dependencies
         run: |
@@ -240,7 +212,7 @@ jobs:
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
-          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
+          cp $GITHUB_WORKSPACE/.github/static_build/external/autoware_lanelet2_extension/CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
           cd autoware_lanelet2_extension/autoware_lanelet2_extension
           mkdir -p build
           cd build
@@ -258,7 +230,6 @@ jobs:
         run: |
           set -e
           source /opt/ros/humble/setup.bash
-          cp $GITHUB_WORKSPACE/.github/cmake/validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
           cd autoware_lanelet2_map_validator
           mkdir -p build install
           cd build

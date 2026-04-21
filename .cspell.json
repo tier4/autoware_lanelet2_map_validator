@@ -9,5 +9,5 @@
     "DLANELET",
     "DAUTOWARE"
   ],
-  "ignorePaths": [".github/cmake"]
+  "ignorePaths": [".github/static_build"]
 }
