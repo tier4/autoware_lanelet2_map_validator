@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-03_vm-01-04",
+  "validators": [
+    {
+      "name": "mapping.lane.border_sharing"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "current_requirement_bundle_directory": "v1.0.4",
+  "groups": [
+    "groups/common.json",
+    "groups/cargo_transport.json",
+    "groups/delivery_robot.json",
+    "groups/robo_taxi.json",
+    "groups/shuttle_bus.json"
+  ]
+}

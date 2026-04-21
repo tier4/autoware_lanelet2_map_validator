@@ -1,0 +1,8 @@
+{
+  "id": "vm-06-05",
+  "validators": [
+    {
+      "name": "mapping.area.detection_area"
+    }
+  ]
+}

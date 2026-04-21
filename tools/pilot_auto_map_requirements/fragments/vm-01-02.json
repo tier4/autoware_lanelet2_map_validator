@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-02",
+  "validators": [
+    {
+      "name": "mapping.lane.lane_change_attribute"
+    }
+  ]
+}

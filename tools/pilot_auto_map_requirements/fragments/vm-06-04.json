@@ -1,0 +1,8 @@
+{
+  "id": "vm-06-04",
+  "validators": [
+    {
+      "name": "mapping.area.no_stopping_area"
+    }
+  ]
+}

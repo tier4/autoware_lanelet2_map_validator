@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-20",
+  "validators": [
+    {
+      "name": "mapping.lane.lateral_subtype_connection"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "id": "vm-01-15",
+  "validators": [
+    {
+      "name": "mapping.lane.road_shoulder"
+    }
+  ]
+}

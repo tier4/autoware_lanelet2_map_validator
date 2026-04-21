@@ -1,0 +1,8 @@
+{
+  "id": "vm-03-11",
+  "validators": [
+    {
+      "name": "mapping.intersection.right_of_way_without_traffic_lights"
+    }
+  ]
+}

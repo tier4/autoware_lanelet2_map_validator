@@ -1,0 +1,11 @@
+{
+  "id": "vm-05-01",
+  "validators": [
+    {
+      "name": "mapping.crosswalk.missing_regulatory_elements"
+    },
+    {
+      "name": "mapping.crosswalk.regulatory_element_details"
+    }
+  ]
+}

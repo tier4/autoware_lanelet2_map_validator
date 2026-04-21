@@ -1,0 +1,72 @@
+{
+  "vehicle_group": "common",
+  "requirement_bundle_versions": ["1.0.2", "1.0.3", "1.0.4"],
+  "outputs": [
+    {
+      "path": "v1.0.2/common.json",
+      "version": "1.0.2",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-02",
+        "vm-01-03_vm-01-04",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-15",
+        "vm-01-17",
+        "vm-01-19",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-02",
+        "vm-03-01",
+        "vm-03-02",
+        "vm-03-05",
+        "vm-03-08",
+        "vm-03-10",
+        "vm-03-11",
+        "vm-03-14",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-04-01",
+        "vm-04-02",
+        "vm-04-03",
+        "vm-05-01",
+        "vm-05-03",
+        "vm-06-01",
+        "vm-06-02",
+        "vm-06-04",
+        "vm-06-05",
+        "vm-06-06"
+      ]
+    },
+    {
+      "path": "v1.0.3/common.json",
+      "version": "1.0.3",
+      "extends": "v1.0.2/common.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.4/common.json",
+      "version": "1.0.4",
+      "extends": "v1.0.3/common.json",
+      "patches": [
+        {
+          "remove_ids": ["vm-01-02"]
+        }
+      ]
+    },
+    {
+      "path": "v1.0.5/common.json",
+      "version": "1.0.5",
+      "extends": "v1.0.4/common.json",
+      "patches": []
+    },
+    {
+      "path": "v1.0.6/common.json",
+      "version": "1.0.6",
+      "extends": "v1.0.5/common.json",
+      "patches": []
+    }
+  ]
+}

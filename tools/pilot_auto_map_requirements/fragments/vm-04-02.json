@@ -1,0 +1,11 @@
+{
+  "id": "vm-04-02",
+  "validators": [
+    {
+      "name": "mapping.traffic_light.correct_facing"
+    },
+    {
+      "name": "mapping.traffic_light.body_height"
+    }
+  ]
+}
