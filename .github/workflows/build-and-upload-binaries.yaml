@@ -68,16 +68,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ needs.setup.outputs.version }}
 
-      - name: Materialize overlay script from workflow ref
-        shell: bash
-        run: |
-          set -e
-          # Release tags predate this script; always take the definition from the commit that runs the workflow.
-          git fetch origin "${{ github.sha }}"
-          mkdir -p .github/scripts
-          git show "${{ github.sha }}:.github/scripts/apply-static-build-overlays.sh" > .github/scripts/apply-static-build-overlays.sh
-          chmod +x .github/scripts/apply-static-build-overlays.sh
-
       - name: Configure Git Safe Directory
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
