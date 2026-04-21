@@ -50,11 +50,14 @@ jobs:
         shell: bash
         run: |
           set -e
-          # Release tags predate .github/static_build/; always take it from the workflow-run commit.
+          # Release tags may predate .github/static_build/; always take it from the
+          # workflow-run commit so the release build is independent of the tag's
+          # snapshot of these overlays.
           git fetch origin "${{ github.sha }}"
           git checkout "${{ github.sha }}" -- .github/static_build
           cp -rf "$GITHUB_WORKSPACE/.github/static_build/gui" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
           cp -rf "$GITHUB_WORKSPACE/.github/static_build/src" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -f "$GITHUB_WORKSPACE/.github/static_build/CMakeLists.txt" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/CMakeLists.txt"
 
       - name: Build validator GUI
         id: build_gui
@@ -113,10 +116,14 @@ jobs:
       - name: Apply static-build overlay files
         run: |
           set -e
+          # Release tags may predate .github/static_build/; always take it from the
+          # workflow-run commit so the release build is independent of the tag's
+          # snapshot of these overlays.
           git fetch origin "${{ github.sha }}"
           git checkout "${{ github.sha }}" -- .github/static_build
           cp -rf "$GITHUB_WORKSPACE/.github/static_build/gui" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
           cp -rf "$GITHUB_WORKSPACE/.github/static_build/src" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/"
+          cp -f "$GITHUB_WORKSPACE/.github/static_build/CMakeLists.txt" "$GITHUB_WORKSPACE/autoware_lanelet2_map_validator/CMakeLists.txt"
 
       - name: Install Dependencies
         run: |
@@ -205,7 +212,7 @@ jobs:
           set -e
           source /opt/ros/humble/setup.bash
           git clone https://github.com/autowarefoundation/autoware_lanelet2_extension.git
-          cp $GITHUB_WORKSPACE/.github/cmake/lanelet2_extension_CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
+          cp $GITHUB_WORKSPACE/.github/static_build/external/autoware_lanelet2_extension/CMakeLists.txt autoware_lanelet2_extension/autoware_lanelet2_extension/CMakeLists.txt
           cd autoware_lanelet2_extension/autoware_lanelet2_extension
           mkdir -p build
           cd build
@@ -223,7 +230,6 @@ jobs:
         run: |
           set -e
           source /opt/ros/humble/setup.bash
-          cp $GITHUB_WORKSPACE/.github/cmake/validator_CMakeLists.txt autoware_lanelet2_map_validator/CMakeLists.txt
           cd autoware_lanelet2_map_validator
           mkdir -p build install
           cd build
