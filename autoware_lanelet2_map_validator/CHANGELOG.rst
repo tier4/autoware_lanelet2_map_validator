@@ -2,6 +2,14 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.7.0 (2026-04-21)
+------------------
+* feat: manage map requirements by diffs (`#162 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/162>`_)
+* fix: relieve the condition for BufferZoneValidity-003 (`#161 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/161>`_)
+* feat: add text window for lat, lon when utm or transverse_mercator is selected (`#158 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/158>`_)
+* fix: move autoware_lanelet2_extension_python to exec_depend (`#157 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/157>`_)
+* Contributors: Taiki Yamada
+
 1.6.0 (2026-01-30)
 ------------------
 * chore: add vm-01-05 to map requirements (`#155 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/155>`_)
