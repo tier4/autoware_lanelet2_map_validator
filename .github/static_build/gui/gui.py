@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 TIER IV, Inc.
+# Copyright 2025-2026 TIER IV, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ if SCRIPT_DIR not in sys.path:
     sys.path.insert(0, SCRIPT_DIR)
 
 from gui_helper import DropLineEdit
+from gui_helper import get_map_bounds_from_osm
 from gui_helper import run_lanelet2_validator
 from map_visualizer import MapVisualizerWidget
 
@@ -215,7 +216,53 @@ class ValidatorUI(QMainWindow):
         self.language_combo.addItems(["en", "ja"])
         opts_grid.addWidget(self.language_combo, 0, 3)
 
-        # Visualize map checkbox (row 1)
+        self._origin_lat_label = QLabel("Origin latitude:")
+        self.lat_edit = QLineEdit()
+        self.lat_edit.setPlaceholderText("WGS84, e.g. 35.681236 (optional: filled from map on Run)")
+        self.lat_edit.setToolTip(
+            "For UTM and Transverse Mercator. Leave empty to estimate map center from OSM when "
+            "you press Start Validation."
+        )
+        self._origin_lon_label = QLabel("Origin longitude:")
+        self.lon_edit = QLineEdit()
+        self.lon_edit.setPlaceholderText(
+            "WGS84, e.g. 139.767125 (optional: filled from map on Run)"
+        )
+        self.lon_edit.setToolTip(
+            "For UTM and Transverse Mercator. Leave empty to estimate map center from OSM when "
+            "you press Start Validation."
+        )
+        self.origin_estimate_label = QLabel()
+        self.origin_estimate_label.setWordWrap(True)
+        self.origin_estimate_label.setVisible(False)
+        self.origin_estimate_label.setStyleSheet(
+            "color: #b45309; font-size: 12px; padding-top: 4px;"
+        )
+
+        lat_row = QHBoxLayout()
+        lat_row.setSpacing(8)
+        lat_row.addWidget(self._origin_lat_label)
+        lat_row.addWidget(self.lat_edit, 1)
+
+        lon_row = QHBoxLayout()
+        lon_row.setSpacing(8)
+        lon_row.addWidget(self._origin_lon_label)
+        lon_row.addWidget(self.lon_edit, 1)
+
+        origin_inner = QVBoxLayout()
+        origin_inner.setSpacing(6)
+        origin_inner.setContentsMargins(0, 0, 0, 0)
+        origin_inner.addLayout(lat_row)
+        origin_inner.addLayout(lon_row)
+        origin_inner.addWidget(self.origin_estimate_label)
+
+        self._origin_container = QWidget()
+        self._origin_container.setLayout(origin_inner)
+        opts_grid.addWidget(self._origin_container, 1, 0, 1, 4)
+
+        self._projector_origin_widgets = [self._origin_container]
+
+        # Visualize map checkbox (below lat/lon)
         self.visualize_map_checkbox = QCheckBox("Visualize map")
         self.visualize_map_checkbox.setObjectName("visualize_map_checkbox")
         self.visualize_map_checkbox.setChecked(True)
@@ -236,7 +283,10 @@ class ValidatorUI(QMainWindow):
         """
         )
         self.visualize_map_checkbox.stateChanged.connect(self.toggle_map_visualization)
-        opts_grid.addWidget(self.visualize_map_checkbox, 1, 0, 1, 2)
+        opts_grid.addWidget(self.visualize_map_checkbox, 2, 0, 1, 4)
+
+        self.projector_combo.currentTextChanged.connect(self.on_projector_type_changed)
+        self.on_projector_type_changed()
 
         input_panel.addWidget(opts_group)
 
@@ -276,6 +326,11 @@ Parameter YAML              Path to the YAML file where a list of
 Projector (-p arg)          Projector used for loading lanelet map.
                             Available projectors are: mgrs, utm,
                             transverse_mercator. (default: mgrs)
+----------------------------------------------------------------------------------
+lat / lon (--lat, --lon)    Map origin in WGS84 degrees. Required by the CLI
+                            for utm / transverse_mercator. In the GUI, if you
+                            leave them empty, the map center is estimated from
+                            OSM nodes when you press Start Validation.
 ----------------------------------------------------------------------------------
 language (-l arg)           Language to display the issue messages. Available
                             languare are: jp, en. (default: en)
@@ -515,6 +570,40 @@ language (-l arg)           Language to display the issue messages. Available
         self.tab_widget.setTabPosition(QTabWidget.North)
         self.setCentralWidget(central)
 
+    def on_projector_type_changed(self, _text: str | None = None) -> None:
+        show = self.projector_combo.currentText() in ("utm", "transverse_mercator")
+        for w in self._projector_origin_widgets:
+            w.setVisible(show)
+        if not show:
+            self.origin_estimate_label.setVisible(False)
+            self.origin_estimate_label.clear()
+
+    def estimate_origin_from_osm(self, osm_path: str) -> tuple[float | None, float | None]:
+        """Return map center (lat, lon) from OSM node bounds, or (None, None) if unavailable."""
+        if not osm_path or not os.path.exists(osm_path):
+            return None, None
+        min_lon, min_lat, max_lon, max_lat = get_map_bounds_from_osm(osm_path)
+        if min_lon is None or min_lat is None or max_lon is None or max_lat is None:
+            return None, None
+        center_lat = (min_lat + max_lat) / 2.0
+        center_lon = (min_lon + max_lon) / 2.0
+        return center_lat, center_lon
+
+    def parse_origin_lat_lon(self) -> tuple[float | None, float | None]:
+        lat_s = self.lat_edit.text().strip()
+        lon_s = self.lon_edit.text().strip()
+        if not lat_s or not lon_s:
+            return None, None
+        try:
+            return float(lat_s), float(lon_s)
+        except ValueError:
+            return None, None
+
+    def get_origin_for_map_load(self) -> tuple[float | None, float | None]:
+        if self.projector_combo.currentText() not in ("utm", "transverse_mercator"):
+            return None, None
+        return self.parse_origin_lat_lon()
+
     def toggle_map_visualization(self, state):
         """Toggle map visualization without removing the tab."""
         if state == Qt.Checked:
@@ -522,8 +611,9 @@ language (-l arg)           Language to display the issue messages. Available
             osm_path = self.osm_edit.text().strip()
             if osm_path and os.path.exists(osm_path):
                 projector = self.projector_combo.currentText()
+                origin_lat, origin_lon = self.get_origin_for_map_load()
                 try:
-                    self.map_visualizer.load_map_file(osm_path, projector)
+                    self.map_visualizer.load_map_file(osm_path, projector, origin_lat, origin_lon)
                 except Exception as e:
                     print(f"Error reloading map for visualization: {e}")
                     self.map_visualizer.map_info_label.setText(f"Error loading map: {str(e)}")
@@ -686,6 +776,58 @@ language (-l arg)           Language to display the issue messages. Available
             self.tab_widget.setCurrentWidget(self.error_tab)
             return
 
+        origin_lat: float | None = None
+        origin_lon: float | None = None
+        used_estimated_origin = False
+        if projector in ("utm", "transverse_mercator"):
+            self.origin_estimate_label.setVisible(False)
+            self.origin_estimate_label.clear()
+
+            lat_s = self.lat_edit.text().strip()
+            lon_s = self.lon_edit.text().strip()
+
+            if lat_s and lon_s:
+                origin_lat, origin_lon = self.parse_origin_lat_lon()
+                if origin_lat is None or origin_lon is None:
+                    self.error_content = (
+                        '<span style="color:red">For UTM and Transverse Mercator, enter valid '
+                        "numeric latitude and longitude (WGS84 degrees), or leave both empty "
+                        "to estimate from the map on Run.</span>"
+                    )
+                    self.error_tab.setHtml(self.error_content)
+                    self.warn_tab.clear()
+                    self.tab_widget.setCurrentWidget(self.error_tab)
+                    return
+            elif not lat_s and not lon_s:
+                est_lat, est_lon = self.estimate_origin_from_osm(osm_path)
+                if est_lat is None or est_lon is None:
+                    self.error_content = (
+                        '<span style="color:red">For UTM and Transverse Mercator, enter '
+                        "latitude and longitude, or ensure the OSM file contains nodes with "
+                        "lat/lon so the map center can be estimated.</span>"
+                    )
+                    self.error_tab.setHtml(self.error_content)
+                    self.warn_tab.clear()
+                    self.tab_widget.setCurrentWidget(self.error_tab)
+                    return
+                origin_lat, origin_lon = est_lat, est_lon
+                self.lat_edit.setText(f"{origin_lat:.8f}")
+                self.lon_edit.setText(f"{origin_lon:.8f}")
+                used_estimated_origin = True
+                self.origin_estimate_label.setText(
+                    "Lat/Lon is not input, an estimated value is used instead."
+                )
+                self.origin_estimate_label.setVisible(True)
+            else:
+                self.error_content = (
+                    '<span style="color:red">Enter both latitude and longitude, or leave both '
+                    "empty to estimate from the map.</span>"
+                )
+                self.error_tab.setHtml(self.error_content)
+                self.warn_tab.clear()
+                self.tab_widget.setCurrentWidget(self.error_tab)
+                return
+
         if output_dir:
             output_file = os.path.join(output_dir, "lanelet2_validation_results.json")
             existed_before = os.path.exists(output_file)
@@ -693,7 +835,7 @@ language (-l arg)           Language to display the issue messages. Available
         try:
             if self.visualize_map_checkbox.isChecked():
                 try:
-                    self.map_visualizer.load_map_file(osm_path, projector)
+                    self.map_visualizer.load_map_file(osm_path, projector, origin_lat, origin_lon)
                 except Exception as e:
                     print(f"Error loading map for visualization: {e}")
                     self.map_visualizer.map_info_label.setText(f"Error loading map: {str(e)}")
@@ -709,6 +851,8 @@ language (-l arg)           Language to display the issue messages. Available
                 output_dir=Path(output_dir) if output_dir else None,
                 language=language,
                 validator_filter=validator_filter if validator_filter else None,
+                origin_lat=origin_lat,
+                origin_lon=origin_lon,
             )
 
             # Populate errors
@@ -737,6 +881,11 @@ language (-l arg)           Language to display the issue messages. Available
 
             # Populate warnings
             warn_html = []
+            if used_estimated_origin:
+                warn_html.append(
+                    '<span style="color:#b45309">Lat/Lon is not input, and estimated value is '
+                    "used instead.</span><br/>"
+                )
             for line in out_lines:
                 if line.lower().startswith("warning"):
                     if ":" in line:
@@ -897,11 +1046,14 @@ language (-l arg)           Language to display the issue messages. Available
                 # Load the current map file into the visualizer if not already loaded
                 osm_path = self.osm_edit.text().strip()
                 projector_type = self.projector_combo.currentText()
+                origin_lat, origin_lon = self.get_origin_for_map_load()
                 if osm_path and os.path.exists(osm_path):
                     if self.map_visualizer.current_file != osm_path:
                         # Load the map file with the selected projector
                         try:
-                            self.map_visualizer.load_map_file(osm_path, projector_type)
+                            self.map_visualizer.load_map_file(
+                                osm_path, projector_type, origin_lat, origin_lon
+                            )
                         except Exception as e:
                             print(f"Error loading map for visualization: {e}")
 
