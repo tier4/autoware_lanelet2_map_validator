@@ -15,6 +15,7 @@
 # limitations under the License.
 
 """Map visualizer widget using matplotlib and lanelet2."""
+
 from __future__ import annotations
 
 import os
