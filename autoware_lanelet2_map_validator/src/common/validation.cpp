@@ -14,6 +14,8 @@
 
 #include "lanelet2_map_validator/validation.hpp"
 
+#include "lanelet2_map_validator/config_store.hpp"
+
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -376,6 +378,70 @@ std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
   }
 
   return total_issues;
+}
+
+void append_loading_issues_to_json(
+  json & json_data, const std::vector<lanelet::validation::DetectedIssues> & loading_issues)
+{
+  static constexpr const char * issue_code = "General.MapLoading-001";
+  static constexpr const char * requirement_id = "map-loading";
+  static constexpr const char * validator_name = "mapping.general.map_loading";
+  static constexpr const char * placeholder = "{error_message}";
+
+  if (!json_data.contains("requirements")) {
+    json_data["requirements"] = json::array();
+  }
+
+  const auto & issues_info = ValidatorConfigStore::issues_info().at(issue_code);
+  const std::string severity = issues_info["severity"].get<std::string>();
+  const std::string primitive = issues_info["primitive"].get<std::string>();
+
+  std::string message_template = issues_info["message"]["en"].get<std::string>();
+  const std::string language = ValidatorConfigStore::language();
+  if (issues_info["message"].contains(language)) {
+    message_template = issues_info["message"][language].get<std::string>();
+  }
+
+  json issue_json_array = json::array();
+  for (size_t group_idx = 0; group_idx < loading_issues.size(); ++group_idx) {
+    for (size_t issue_idx = 0; issue_idx < loading_issues[group_idx].issues.size(); ++issue_idx) {
+      if (group_idx == 0 && issue_idx == 0) {
+        // Skip the first loading issue message by request.
+        continue;
+      }
+
+      const auto & loading_issue = loading_issues[group_idx].issues[issue_idx];
+
+      std::string message = message_template;
+      const auto found_pos = message.find(placeholder);
+      if (found_pos == std::string::npos) {
+        message = loading_issue.message;
+      } else {
+        message.replace(found_pos, std::string(placeholder).length(), loading_issue.message);
+      }
+
+      issue_json_array.push_back({
+        {"severity", severity},
+        {"primitive", primitive},
+        {"id", loading_issue.id},
+        {"issue_code", issue_code},
+        {"message", message},
+      });
+    }
+  }
+
+  const bool passed = issue_json_array.empty();
+  json_data["requirements"].push_back({
+    {"id", requirement_id},
+    {"passed", passed},
+    {"validators", json::array({
+                     {
+                       {"name", validator_name},
+                       {"passed", passed},
+                       {"issues", issue_json_array},
+                     },
+                   })},
+  });
 }
 
 void export_results(json & json_data, const std::string output_file_path)
