@@ -45,13 +45,14 @@ public:
       str.resize(str.size() - 3);  // remove "000"
       expected_prefixes_.insert(str);
     }
+    expected_prefixes_.insert("General.MapLoading-");
   }
 
 protected:
   std::set<std::string> extract_placeholders(const std::string & message);
   inline static const std::set<std::string> expected_severities_ = {"Error", "Warning", "info"};
   inline static const std::set<std::string> expected_primitives_ = {
-    "point", "linestring", "polygon", "lanelet", "area", "regulatory element", "primitive"};
+    "point", "linestring", "polygon", "lanelet", "area", "regulatory element", "primitive", "map"};
   std::set<std::string> expected_prefixes_ = {};
 };
 
