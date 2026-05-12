@@ -15,6 +15,7 @@
 #include "lanelet2_map_validator/validation.hpp"
 
 #include "lanelet2_map_validator/config_store.hpp"
+#include "lanelet2_map_validator/utils.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -386,46 +387,31 @@ void append_loading_issues_to_json(
   static constexpr const char * issue_code = "General.MapLoading-001";
   static constexpr const char * requirement_id = "map-loading";
   static constexpr const char * validator_name = "mapping.general.map_loading";
-  static constexpr const char * placeholder = "{error_message}";
 
   if (!json_data.contains("requirements")) {
     json_data["requirements"] = json::array();
   }
 
-  const auto & issues_info = ValidatorConfigStore::issues_info().at(issue_code);
-  const std::string severity = issues_info["severity"].get<std::string>();
-  const std::string primitive = issues_info["primitive"].get<std::string>();
-
-  std::string message_template = issues_info["message"]["en"].get<std::string>();
-  const std::string language = ValidatorConfigStore::language();
-  if (issues_info["message"].contains(language)) {
-    message_template = issues_info["message"][language].get<std::string>();
-  }
-
   json issue_json_array = json::array();
+  // Actually, there should be only one group. But keep this loop for future extension.
   for (size_t group_idx = 0; group_idx < loading_issues.size(); ++group_idx) {
     for (size_t issue_idx = 0; issue_idx < loading_issues[group_idx].issues.size(); ++issue_idx) {
       if (group_idx == 0 && issue_idx == 0) {
-        // Skip the first loading issue message by request.
+        // Skip the first loading issue message since it has no meaning.
         continue;
       }
 
       const auto & loading_issue = loading_issues[group_idx].issues[issue_idx];
 
-      std::string message = message_template;
-      const auto found_pos = message.find(placeholder);
-      if (found_pos == std::string::npos) {
-        message = loading_issue.message;
-      } else {
-        message.replace(found_pos, std::string(placeholder).length(), loading_issue.message);
-      }
+      const lanelet::validation::Issue issue = construct_issue_from_code(
+        issue_code, loading_issue.id, {{"error_message", loading_issue.message}});
 
       issue_json_array.push_back({
-        {"severity", severity},
-        {"primitive", primitive},
-        {"id", loading_issue.id},
+        {"severity", lanelet::validation::toString(issue.severity)},
+        {"primitive", lanelet::validation::toString(issue.primitive)},
+        {"id", issue.id},
         {"issue_code", issue_code},
-        {"message", message},
+        {"message", issue.message},
       });
     }
   }
