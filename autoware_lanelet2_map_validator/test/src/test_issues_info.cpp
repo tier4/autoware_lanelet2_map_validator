@@ -45,6 +45,7 @@ public:
       str.resize(str.size() - 3);  // remove "000"
       expected_prefixes_.insert(str);
     }
+    expected_prefixes_.insert("General.MapLoading-");
   }
 
 protected:

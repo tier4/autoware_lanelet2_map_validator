@@ -115,6 +115,7 @@ int main(int argc, char * argv[])
     const auto mapping_issues = lanelet::autoware::validation::validate_all_requirements(
       json_data, meta_config, *lanelet_map_ptr, exclusion_map);
 
+    lanelet::autoware::validation::append_loading_issues_to_json(json_data, loading_issues);
     lanelet::autoware::validation::summarize_validator_results(json_data);
     lanelet::validation::printAllIssues(mapping_issues);
 
