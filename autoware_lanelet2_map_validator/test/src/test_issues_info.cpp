@@ -52,7 +52,7 @@ protected:
   std::set<std::string> extract_placeholders(const std::string & message);
   inline static const std::set<std::string> expected_severities_ = {"Error", "Warning", "info"};
   inline static const std::set<std::string> expected_primitives_ = {
-    "point", "linestring", "polygon", "lanelet", "area", "regulatory element", "primitive", "map"};
+    "point", "linestring", "polygon", "lanelet", "area", "regulatory element", "primitive"};
   std::set<std::string> expected_prefixes_ = {};
 };
 
