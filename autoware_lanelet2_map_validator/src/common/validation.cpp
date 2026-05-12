@@ -179,8 +179,8 @@ std::vector<lanelet::validation::DetectedIssues> describe_unused_validators_to_j
     issues.push_back(issue);
   }
 
-  if (issues.size() > 0) {
-    detected_issues.push_back({"general.invalid_prerequisites", issues});
+  if (!issues.empty()) {
+    detected_issues.emplace_back("general.invalid_prerequisites", issues);
   }
   return detected_issues;
 }
@@ -194,7 +194,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
   ValidatorInfo current_validator_info = validators.at(target_validator_name);
 
   bool prerequisite_complete = true;
-  std::string prereq_str = "";
+  std::string prereq_str;
   for (const auto & [prereq, forgive_warnings] :
        current_validator_info.prereq_with_forgive_warnings) {
     prereq_str += prereq;
@@ -207,7 +207,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
     }
   }
 
-  if (prereq_str.size() > 0) {
+  if (!prereq_str.empty()) {
     prereq_str.resize(prereq_str.size() - 2);
   }
 
@@ -221,8 +221,8 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
     issues.push_back(issue);
   }
 
-  if (issues.size() > 0) {
-    detected_issues.push_back({target_validator_name, issues});
+  if (!issues.empty()) {
+    detected_issues.emplace_back(target_validator_name, issues);
   }
 
   return detected_issues;
@@ -430,7 +430,7 @@ void append_loading_issues_to_json(
   });
 }
 
-void export_results(json & json_data, const std::string output_file_path)
+void export_results(json & json_data, const std::string & output_file_path)
 {
   if (!std::filesystem::is_directory(output_file_path)) {
     throw std::invalid_argument("Output path doesn't exist or is not a directory!");
@@ -486,7 +486,7 @@ void filter_out_primitives(
   std::vector<lanelet::validation::DetectedIssues> & issues_vector,
   std::vector<SimplePrimitive> primitive_list_to_exclude)
 {
-  const auto has_same_primitive = [&](lanelet::validation::Issue issue) {
+  const auto has_same_primitive = [&](lanelet::validation::Issue & issue) {
     SimplePrimitive issue_primitive = {lanelet::validation::toString(issue.primitive), issue.id};
     return std::find(
              primitive_list_to_exclude.begin(), primitive_list_to_exclude.end(), issue_primitive) !=
