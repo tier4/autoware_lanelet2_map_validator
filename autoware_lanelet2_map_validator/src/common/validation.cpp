@@ -406,12 +406,19 @@ void append_loading_issues_to_json(
       const lanelet::validation::Issue issue = construct_issue_from_code(
         issue_code, loading_issue.id, {{"error_message", loading_issue.message}});
 
+      // strip the issue code prefix from the message
+      const std::string issue_code_prefix = "[" + std::string(issue_code) + "] ";
+      std::string message = issue.message;
+      if (message.rfind(issue_code_prefix, 0) == 0) {
+        message.erase(0, issue_code_prefix.size());
+      }
+
       issue_json_array.push_back({
         {"severity", lanelet::validation::toString(issue.severity)},
         {"primitive", lanelet::validation::toString(issue.primitive)},
         {"id", issue.id},
         {"issue_code", issue_code},
-        {"message", issue.message},
+        {"message", message},
       });
     }
   }
