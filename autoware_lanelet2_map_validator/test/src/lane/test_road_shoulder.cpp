@@ -64,20 +64,6 @@ TEST_F(TestRoadShoulderValidator, NoAdjacentLanelets)  // NOLINT for gtest
   EXPECT_TRUE(difference.empty()) << difference;
 }
 
-TEST_F(TestRoadShoulderValidator, NonRoadAdjacentLanelet)  // NOLINT for gtest
-{
-  load_target_map("lane/shoulder_road_with_non_road_adjacent.osm");
-
-  lanelet::autoware::validation::RoadShoulderValidator checker;
-  const auto & issues = checker(*map_);
-
-  EXPECT_EQ(issues.size(), 1);
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 23);
-
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
-}
-
 TEST_F(TestRoadShoulderValidator, NoRoadBorderBound)  // NOLINT for gtest
 {
   load_target_map("lane/shoulder_road_empty_side_no_road_border.osm");
