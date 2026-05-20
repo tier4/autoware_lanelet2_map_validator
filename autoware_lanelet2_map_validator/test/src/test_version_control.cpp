@@ -83,8 +83,9 @@ TEST_F(VersionControlTest, AddValidationInfo)  // NOLINT for gtest
   ASSERT_FALSE(has_duplicate_attributes(validation_node));
 
   EXPECT_STREQ(validation_node.attribute("name").value(), "autoware_lanelet2_map_validator");
-  EXPECT_TRUE(std::regex_match(
-    validation_node.attribute("validator_version").value(), version_format_regex_));
+  EXPECT_TRUE(
+    std::regex_match(
+      validation_node.attribute("validator_version").value(), version_format_regex_));
   EXPECT_STREQ(validation_node.attribute("requirements").value(), "autoware_requirement_set.json");
   EXPECT_STREQ(validation_node.attribute("requirements_version").value(), "1.2.3");
 
@@ -120,8 +121,9 @@ TEST_F(VersionControlTest, ModifyValidationInfo)  // NOLINT for gtest
   ASSERT_FALSE(has_duplicate_attributes(validation_node));
 
   EXPECT_STREQ(validation_node.attribute("name").value(), "autoware_lanelet2_map_validator");
-  EXPECT_TRUE(std::regex_match(
-    validation_node.attribute("validator_version").value(), version_format_regex_));
+  EXPECT_TRUE(
+    std::regex_match(
+      validation_node.attribute("validator_version").value(), version_format_regex_));
   EXPECT_STRNE(validation_node.attribute("validator_version").value(), "0.0.0");
   EXPECT_STREQ(validation_node.attribute("requirements").value(), "original_requirement_set.json");
   EXPECT_STREQ(validation_node.attribute("requirements_version").value(), "1.2.3");
