@@ -75,16 +75,6 @@ lanelet::validation::Issues RoadShoulderValidator::check_road_shoulder(
     }
 
     if (has_left != has_right) {
-      // Issue-002: Check if adjacent lanelet is a road
-      const auto & adjacent_lanelets = has_left ? left_lanelets : right_lanelets;
-      const auto & adjacent = adjacent_lanelets.value();
-      const auto & adj_attrs = adjacent.attributes();
-      const auto & adj_subtype_it = adj_attrs.find(lanelet::AttributeName::Subtype);
-
-      if (adj_subtype_it == adj_attrs.end() || adj_subtype_it->second != "road") {
-        issues.push_back(construct_issue_from_code(issue_code(this->name(), 2), lanelet.id()));
-      }
-
       // Issue-003: Check if empty side bound is road_border
       const auto & empty_side_bound = has_left ? lanelet.rightBound() : lanelet.leftBound();
       const auto & bound_attrs = empty_side_bound.attributes();
