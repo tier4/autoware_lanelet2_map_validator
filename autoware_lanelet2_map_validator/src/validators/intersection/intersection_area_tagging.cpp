@@ -19,6 +19,7 @@
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/BoundingBox.h>
 #include <lanelet2_core/geometry/Polygon.h>
+#include <lanelet2_core/primitives/BasicRegulatoryElements.h>
 #include <lanelet2_core/primitives/Polygon.h>
 
 #include <map>
@@ -92,13 +93,16 @@ lanelet::validation::Issues IntersectionAreaTaggingValidator::check_intersection
 
   // Issue-003: Lanelet has intersection_area tag but is not completely covered by the referenced
   // area
-  // Issue-004: Lanelet has turn_direction tag but missing intersection_area tag
+  // Issue-004: Lanelet has turn_direction and right_of_way reference but missing intersection_area
+  // tag
   for (const lanelet::ConstLanelet & lanelet : map.laneletLayer) {
     lanelet::Id tagged_area_id = lanelet.attributeOr("intersection_area", lanelet::InvalId);
     std::string turn_direction = lanelet.attributeOr("turn_direction", "");
 
-    // Issue-004: Check if lanelet has turn_direction but missing intersection_area tag
-    if (!turn_direction.empty() && tagged_area_id == lanelet::InvalId) {
+    // Issue-004: Lanelets with turn_direction and a right_of_way reference must have
+    // intersection_area tag
+    const bool has_right_of_way = !lanelet.regulatoryElementsAs<lanelet::RightOfWay>().empty();
+    if (!turn_direction.empty() && has_right_of_way && tagged_area_id == lanelet::InvalId) {
       std::map<std::string, std::string> tag_map;
       tag_map["turn_direction"] = turn_direction;
       issues.emplace_back(
