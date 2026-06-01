@@ -75,14 +75,28 @@ lanelet::validation::Issues TrafficLightFacingValidator::check_traffic_light_fac
     }
 
     lanelet::Optional<lanelet::ConstLineString3d> stop_line = tl_reg_elem->stopLine();
-    if (!stop_line) {
-      // This case should be filtered out by mapping.traffic_light.regulatory_element_details
-      continue;
-    }
 
     for (const lanelet::ConstLineString3d & refers_linestring :
          tl_reg_elem->getParameters<lanelet::ConstLineString3d>(lanelet::RoleName::Refers)) {
+      if (is_red_green_traffic_light(refers_linestring)) {
+        traffic_light_facing_status.insert({refers_linestring.id(), NOT_EXAMINED});
+        for (const lanelet::ConstLanelet & crosswalk_lanelet :
+             map.laneletLayer.findUsages(tl_reg_elem)) {
+          if (is_pedestrian_traffic_light_facing_correct(refers_linestring, crosswalk_lanelet)) {
+            traffic_light_facing_status[refers_linestring.id()] |= FOUND_CORRECT;
+          } else {
+            traffic_light_facing_status[refers_linestring.id()] |= FOUND_WRONG;
+          }
+        }
+        continue;
+      }
+
       if (!is_red_yellow_green_traffic_light(refers_linestring)) {
+        continue;
+      }
+
+      if (!stop_line) {
+        // This case should be filtered out by mapping.traffic_light.regulatory_element_details
         continue;
       }
 
