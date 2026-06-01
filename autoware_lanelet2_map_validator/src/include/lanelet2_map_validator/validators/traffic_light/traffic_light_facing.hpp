@@ -46,6 +46,12 @@ private:
    */
   bool is_red_yellow_green_traffic_light(const lanelet::ConstLineString3d & linestring);
 
+  bool is_red_green_traffic_light(const lanelet::ConstLineString3d & linestring);
+
+  bool is_pedestrian_traffic_light_facing_correct(
+    const lanelet::ConstLineString3d & pedestrian_traffic_light,
+    const lanelet::ConstLanelet & crosswalk_lanelet);
+
   /**
    * @brief Convert lanelet::ConstLineString3d to a Eigen::Vector3d.
    * The linestring must be made only from two points.

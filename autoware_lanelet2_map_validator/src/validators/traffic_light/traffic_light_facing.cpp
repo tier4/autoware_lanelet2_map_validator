@@ -148,6 +148,41 @@ bool TrafficLightFacingValidator::is_red_yellow_green_traffic_light(
            lanelet::AttributeValueString::RedYellowGreen;
 }
 
+bool TrafficLightFacingValidator::is_red_green_traffic_light(
+  const lanelet::ConstLineString3d & linestring)
+{
+  return linestring.hasAttribute(lanelet::AttributeName::Type) &&
+         linestring.hasAttribute(lanelet::AttributeName::Subtype) &&
+         linestring.attribute(lanelet::AttributeName::Type).value() ==
+           lanelet::AttributeValueString::TrafficLight &&
+         linestring.attribute(lanelet::AttributeName::Subtype).value() == "red_green";
+}
+
+bool TrafficLightFacingValidator::is_pedestrian_traffic_light_facing_correct(
+  const lanelet::ConstLineString3d & pedestrian_traffic_light,
+  const lanelet::ConstLanelet & crosswalk_lanelet)
+{
+  const Eigen::Vector2d start_xy(
+    pedestrian_traffic_light.front().x(), pedestrian_traffic_light.front().y());
+  const Eigen::Vector2d end_xy(
+    pedestrian_traffic_light.back().x(), pedestrian_traffic_light.back().y());
+  const Eigen::Vector2d v1 = end_xy - start_xy;
+
+  const auto & left_bound = crosswalk_lanelet.leftBound();
+  const auto & right_bound = crosswalk_lanelet.rightBound();
+  const Eigen::Vector2d midpoint_xy =
+    (Eigen::Vector2d(left_bound.front().x(), left_bound.front().y()) +
+     Eigen::Vector2d(left_bound.back().x(), left_bound.back().y()) +
+     Eigen::Vector2d(right_bound.front().x(), right_bound.front().y()) +
+     Eigen::Vector2d(right_bound.back().x(), right_bound.back().y())) /
+    4.0;
+
+  const Eigen::Vector2d v2 = midpoint_xy - start_xy;
+
+  const double cross_z = v1.x() * v2.y() - v1.y() * v2.x();
+  return cross_z < 0.0;
+}
+
 lanelet::LineString3d TrafficLightFacingValidator::get_starting_edge_from_lanelet(
   const lanelet::ConstLanelet & lanelet, const lanelet::ConstLineString3d & reference)
 {
