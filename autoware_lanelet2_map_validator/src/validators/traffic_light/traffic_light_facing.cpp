@@ -176,24 +176,18 @@ bool TrafficLightFacingValidator::is_pedestrian_traffic_light_facing_correct(
   const lanelet::ConstLineString3d & pedestrian_traffic_light,
   const lanelet::ConstLanelet & crosswalk_lanelet)
 {
-  const Eigen::Vector2d start_xy(
-    pedestrian_traffic_light.front().x(), pedestrian_traffic_light.front().y());
-  const Eigen::Vector2d end_xy(
-    pedestrian_traffic_light.back().x(), pedestrian_traffic_light.back().y());
-  const Eigen::Vector2d v1 = end_xy - start_xy;
+  Eigen::Vector2d start_xy = pedestrian_traffic_light.front().basicPoint().head<2>();
+  Eigen::Vector2d end_xy = pedestrian_traffic_light.back().basicPoint().head<2>();
+  Eigen::Vector2d v_light = end_xy - start_xy;
 
-  const auto & left_bound = crosswalk_lanelet.leftBound();
-  const auto & right_bound = crosswalk_lanelet.rightBound();
-  const Eigen::Vector2d midpoint_xy =
-    (Eigen::Vector2d(left_bound.front().x(), left_bound.front().y()) +
-     Eigen::Vector2d(left_bound.back().x(), left_bound.back().y()) +
-     Eigen::Vector2d(right_bound.front().x(), right_bound.front().y()) +
-     Eigen::Vector2d(right_bound.back().x(), right_bound.back().y())) /
-    4.0;
+  Eigen::Vector2d midpoint_xy = (crosswalk_lanelet.leftBound().front().basicPoint().head<2>() +
+                                 crosswalk_lanelet.leftBound().back().basicPoint().head<2>() +
+                                 crosswalk_lanelet.rightBound().front().basicPoint().head<2>() +
+                                 crosswalk_lanelet.rightBound().back().basicPoint().head<2>()) /
+                                4.0;
+  Eigen::Vector2d v_mid = midpoint_xy - start_xy;
 
-  const Eigen::Vector2d v2 = midpoint_xy - start_xy;
-
-  const double cross_z = v1.x() * v2.y() - v1.y() * v2.x();
+  double cross_z = v_light.x() * v_mid.y() - v_light.y() * v_mid.x();
   return cross_z < 0.0;
 }
 
