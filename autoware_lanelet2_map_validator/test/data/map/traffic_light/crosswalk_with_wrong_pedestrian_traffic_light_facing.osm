@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm generator="VMB">
+  <MetaInfo format_version="1" map_version="6" validation_version="1" />
+  <node id="285" lat="35.90327302784" lon="139.9336616108">
+    <tag k="local_x" v="3774.4814" />
+    <tag k="local_y" v="73745.2383" />
+    <tag k="ele" v="19.267" />
+  </node>
+  <node id="287" lat="35.90324402805" lon="139.93364250018">
+    <tag k="local_x" v="3772.7217" />
+    <tag k="local_y" v="73742.0405" />
+    <tag k="ele" v="19.273" />
+  </node>
+  <node id="423" lat="35.90333113903" lon="139.93358580547">
+    <tag k="local_x" v="3767.7109" />
+    <tag k="local_y" v="73751.7586" />
+    <tag k="ele" v="19.226" />
+  </node>
+  <node id="425" lat="35.90332841683" lon="139.93362555503">
+    <tag k="local_x" v="3771.2947" />
+    <tag k="local_y" v="73751.4175" />
+    <tag k="ele" v="19.253" />
+  </node>
+  <node id="8935" lat="35.90333041537" lon="139.93361395716">
+    <tag k="local_x" v="3770.2505" />
+    <tag k="local_y" v="73751.6506" />
+    <tag k="ele" v="22.115" />
+  </node>
+  <node id="8936" lat="35.90333181916" lon="139.93361863457">
+    <tag k="local_x" v="3770.6743" />
+    <tag k="local_y" v="73751.8017" />
+    <tag k="ele" v="22.115" />
+  </node>
+  <node id="10285" lat="35.90327302784" lon="139.9338816108">
+    <tag k="local_x" v="3794.4814" />
+    <tag k="local_y" v="73745.2383" />
+    <tag k="ele" v="19.267" />
+  </node>
+  <node id="10287" lat="35.90324402805" lon="139.93386250018">
+    <tag k="local_x" v="3792.7217" />
+    <tag k="local_y" v="73742.0405" />
+    <tag k="ele" v="19.273" />
+  </node>
+  <node id="10423" lat="35.90333113903" lon="139.93380580547">
+    <tag k="local_x" v="3787.7109" />
+    <tag k="local_y" v="73751.7586" />
+    <tag k="ele" v="19.226" />
+  </node>
+  <node id="10425" lat="35.90333241683" lon="139.93384555503">
+    <tag k="local_x" v="3791.2947" />
+    <tag k="local_y" v="73751.4175" />
+    <tag k="ele" v="19.253" />
+  </node>
+  <node id="18935" lat="35.90333041537" lon="139.93383395716">
+    <tag k="local_x" v="3790.2505" />
+    <tag k="local_y" v="73751.6506" />
+    <tag k="ele" v="22.115" />
+  </node>
+  <node id="18936" lat="35.90333181916" lon="139.93383863457">
+    <tag k="local_x" v="3790.6743" />
+    <tag k="local_y" v="73751.8017" />
+    <tag k="ele" v="22.115" />
+  </node>
+  <way id="331">
+    <nd ref="423" />
+    <nd ref="287" />
+    <tag k="type" v="line_thin" />
+  </way>
+  <way id="332">
+    <nd ref="425" />
+    <nd ref="285" />
+    <tag k="type" v="line_thin" />
+  </way>
+  <way id="410">
+    <nd ref="8935" />
+    <nd ref="8936" />
+    <tag k="type" v="traffic_light" />
+    <tag k="subtype" v="red_green" />
+    <tag k="height" v="0.5" />
+  </way>
+  <way id="10331">
+    <nd ref="10423" />
+    <nd ref="10287" />
+    <tag k="type" v="line_thin" />
+  </way>
+  <way id="10332">
+    <nd ref="10425" />
+    <nd ref="10285" />
+    <tag k="type" v="line_thin" />
+  </way>
+  <way id="999">
+    <nd ref="18936" />
+    <nd ref="18935" />
+    <tag k="type" v="traffic_light" />
+    <tag k="subtype" v="red_green" />
+    <tag k="height" v="0.5" />
+  </way>
+  <relation id="166">
+    <member type="way" role="left" ref="331" />
+    <member type="way" role="right" ref="332" />
+    <member type="relation" role="regulatory_element" ref="9838" />
+    <member type="relation" role="regulatory_element" ref="20001" />
+    <tag k="type" v="lanelet" />
+    <tag k="subtype" v="crosswalk" />
+    <tag k="speed_limit" v="30" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="participant:pedestrian" v="yes" />
+  </relation>
+  <relation id="9998">
+    <member type="way" role="left" ref="10331" />
+    <member type="way" role="right" ref="10332" />
+    <member type="relation" role="regulatory_element" ref="9999" />
+    <member type="relation" role="regulatory_element" ref="20002" />
+    <tag k="type" v="lanelet" />
+    <tag k="subtype" v="crosswalk" />
+    <tag k="speed_limit" v="30" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="participant:pedestrian" v="yes" />
+  </relation>
+  <relation id="9838">
+    <member type="way" role="refers" ref="410" />
+    <tag k="type" v="regulatory_element" />
+    <tag k="subtype" v="traffic_light" />
+  </relation>
+  <relation id="9999">
+    <member type="way" role="refers" ref="999" />
+    <tag k="type" v="regulatory_element" />
+    <tag k="subtype" v="traffic_light" />
+  </relation>
+  <relation id="20001">
+    <member type="relation" role="refers" ref="166" />
+    <tag k="type" v="regulatory_element" />
+    <tag k="subtype" v="crosswalk" />
+  </relation>
+  <relation id="20002">
+    <member type="relation" role="refers" ref="9998" />
+    <tag k="type" v="regulatory_element" />
+    <tag k="subtype" v="crosswalk" />
+  </relation>
+</osm>
