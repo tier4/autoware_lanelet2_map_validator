@@ -169,7 +169,8 @@ bool TrafficLightFacingValidator::is_red_green_traffic_light(
          linestring.hasAttribute(lanelet::AttributeName::Subtype) &&
          linestring.attribute(lanelet::AttributeName::Type).value() ==
            lanelet::AttributeValueString::TrafficLight &&
-         linestring.attribute(lanelet::AttributeName::Subtype).value() == "red_green";
+         linestring.attribute(lanelet::AttributeName::Subtype).value() ==
+           lanelet::AttributeValueString::RedGreen;
 }
 
 bool TrafficLightFacingValidator::is_pedestrian_traffic_light_facing_correct(
