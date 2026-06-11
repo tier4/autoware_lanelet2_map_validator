@@ -103,6 +103,29 @@
       "path": "v1.0.6/delivery_robot-v0_39_0.json",
       "version": "1.0.6",
       "patches": []
+    },
+
+    {
+      "path": "v1.0.7/delivery_robot-v2023_10_2.json",
+      "version": "1.0.7",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-04",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.7/delivery_robot-v2023_10_2.json",
+      "path": "v1.0.7/delivery_robot-v0_39_0.json",
+      "version": "1.0.7",
+      "patches": []
     }
   ]
 }

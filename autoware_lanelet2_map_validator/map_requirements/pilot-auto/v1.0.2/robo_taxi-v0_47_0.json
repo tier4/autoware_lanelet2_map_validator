@@ -113,9 +113,6 @@
       "validators": [
         {
           "name": "mapping.intersection.turn_direction_tagging"
-        },
-        {
-          "name": "mapping.intersection.lanelet_border_type"
         }
       ]
     },
