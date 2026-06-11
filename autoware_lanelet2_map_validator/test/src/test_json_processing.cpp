@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "lanelet2_map_validator/cli.hpp"
+#include "lanelet2_map_validator/config_store.hpp"
 #include "lanelet2_map_validator/utils.hpp"
 #include "lanelet2_map_validator/validation.hpp"
 
@@ -24,6 +25,7 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -33,10 +35,14 @@ namespace lanelet::autoware::validation
 class JsonProcessingTest : public ::testing::Test
 {
 protected:
+  std::string get_package_share_directory() const
+  {
+    return ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+  }
+
   json load_json_file(std::string file_name)
   {
-    std::string package_share_directory =
-      ament_index_cpp::get_package_share_directory("autoware_lanelet2_map_validator");
+    std::string package_share_directory = get_package_share_directory();
     std::ifstream file(package_share_directory + "/data/json/" + file_name);
     EXPECT_TRUE(file.is_open()) << "Failed to open test JSON file.";
 
@@ -151,5 +157,73 @@ TEST_F(JsonProcessingTest, SummarizeValidatorResults)
   EXPECT_NE(output.find("[failure-requirement] \033[1;31mFailed"), std::string::npos);
   EXPECT_NE(output.find("Total of 1 errors were found"), std::string::npos);
   EXPECT_EQ(output.find("warnings were found"), std::string::npos);
+}
+
+TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonSkipFirstMessage)
+{
+  ValidatorConfigStore::initialize(
+    "", get_package_share_directory() + "/config/issues_info.json", "en");
+
+  std::vector<lanelet::validation::DetectedIssues> loading_issues;
+  loading_issues.push_back(
+    {"general",
+     {
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, "skip_me"),
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, "keep_from_first_group"),
+     }});
+  loading_issues.push_back(
+    {"general.secondary",
+     {
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, "keep_from_second_group"),
+     }});
+
+  json output_json = {{"requirements", json::array()}};
+  append_loading_issues_to_json(output_json, loading_issues);
+
+  ASSERT_EQ(output_json["requirements"].size(), 1);
+  const auto & inserted_requirement = output_json["requirements"][0];
+  EXPECT_EQ(inserted_requirement["id"], "map-loading");
+  EXPECT_EQ(inserted_requirement["passed"], false);
+
+  const auto & validators = inserted_requirement["validators"];
+  ASSERT_EQ(validators.size(), 1);
+  EXPECT_EQ(validators[0]["name"], "mapping.general.map_loading");
+  EXPECT_EQ(validators[0]["passed"], false);
+
+  const auto & issues = validators[0]["issues"];
+  ASSERT_EQ(issues.size(), 2);
+  EXPECT_EQ(issues[0]["issue_code"], "General.MapLoading-001");
+  EXPECT_EQ(
+    issues[0]["message"],
+    "The following error occurred while loading the map file: keep_from_first_group");
+  EXPECT_EQ(
+    issues[1]["message"],
+    "The following error occurred while loading the map file: keep_from_second_group");
+}
+
+TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonWithAllMessagesSkipped)
+{
+  ValidatorConfigStore::initialize(
+    "", get_package_share_directory() + "/config/issues_info.json", "en");
+
+  std::vector<lanelet::validation::DetectedIssues> loading_issues;
+  loading_issues.push_back(
+    {"general",
+     {
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, "skip_me"),
+     }});
+
+  json output_json = {{"requirements", json::array()}};
+  append_loading_issues_to_json(output_json, loading_issues);
+
+  ASSERT_EQ(output_json["requirements"].size(), 1);
+  const auto & inserted_requirement = output_json["requirements"][0];
+  EXPECT_EQ(inserted_requirement["id"], "map-loading");
+  EXPECT_EQ(inserted_requirement["passed"], true);
+
+  const auto & validator = inserted_requirement["validators"][0];
+  EXPECT_EQ(validator["passed"], true);
+  ASSERT_TRUE(validator["issues"].is_array());
+  EXPECT_TRUE(validator["issues"].empty());
 }
 }  // namespace lanelet::autoware::validation

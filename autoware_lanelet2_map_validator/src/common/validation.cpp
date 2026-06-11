@@ -14,6 +14,9 @@
 
 #include "lanelet2_map_validator/validation.hpp"
 
+#include "lanelet2_map_validator/config_store.hpp"
+#include "lanelet2_map_validator/utils.hpp"
+
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -176,8 +179,8 @@ std::vector<lanelet::validation::DetectedIssues> describe_unused_validators_to_j
     issues.push_back(issue);
   }
 
-  if (issues.size() > 0) {
-    detected_issues.push_back({"general.invalid_prerequisites", issues});
+  if (!issues.empty()) {
+    detected_issues.emplace_back("general.invalid_prerequisites", issues);
   }
   return detected_issues;
 }
@@ -191,7 +194,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
   ValidatorInfo current_validator_info = validators.at(target_validator_name);
 
   bool prerequisite_complete = true;
-  std::string prereq_str = "";
+  std::string prereq_str;
   for (const auto & [prereq, forgive_warnings] :
        current_validator_info.prereq_with_forgive_warnings) {
     prereq_str += prereq;
@@ -204,7 +207,7 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
     }
   }
 
-  if (prereq_str.size() > 0) {
+  if (!prereq_str.empty()) {
     prereq_str.resize(prereq_str.size() - 2);
   }
 
@@ -218,8 +221,8 @@ std::vector<lanelet::validation::DetectedIssues> check_prerequisite_completion(
     issues.push_back(issue);
   }
 
-  if (issues.size() > 0) {
-    detected_issues.push_back({target_validator_name, issues});
+  if (!issues.empty()) {
+    detected_issues.emplace_back(target_validator_name, issues);
   }
 
   return detected_issues;
@@ -378,7 +381,63 @@ std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
   return total_issues;
 }
 
-void export_results(json & json_data, const std::string output_file_path)
+void append_loading_issues_to_json(
+  json & json_data, const std::vector<lanelet::validation::DetectedIssues> & loading_issues)
+{
+  static constexpr const char * issue_code = "General.MapLoading-001";
+  static constexpr const char * requirement_id = "map-loading";
+  static constexpr const char * validator_name = "mapping.general.map_loading";
+
+  if (!json_data.contains("requirements")) {
+    json_data["requirements"] = json::array();
+  }
+
+  json issue_json_array = json::array();
+  // Actually, there should be only one group. But keep this loop for future extension.
+  for (size_t group_idx = 0; group_idx < loading_issues.size(); ++group_idx) {
+    for (size_t issue_idx = 0; issue_idx < loading_issues[group_idx].issues.size(); ++issue_idx) {
+      if (group_idx == 0 && issue_idx == 0) {
+        // Skip the first loading issue message since it has no meaning.
+        continue;
+      }
+
+      const auto & loading_issue = loading_issues[group_idx].issues[issue_idx];
+
+      const lanelet::validation::Issue issue = construct_issue_from_code(
+        issue_code, loading_issue.id, {{"error_message", loading_issue.message}});
+
+      // strip the issue code prefix from the message
+      const std::string issue_code_prefix = "[" + std::string(issue_code) + "] ";
+      std::string message = issue.message;
+      if (message.rfind(issue_code_prefix, 0) == 0) {
+        message.erase(0, issue_code_prefix.size());
+      }
+
+      issue_json_array.push_back({
+        {"severity", lanelet::validation::toString(issue.severity)},
+        {"primitive", lanelet::validation::toString(issue.primitive)},
+        {"id", issue.id},
+        {"issue_code", issue_code},
+        {"message", message},
+      });
+    }
+  }
+
+  const bool passed = issue_json_array.empty();
+  json_data["requirements"].push_back({
+    {"id", requirement_id},
+    {"passed", passed},
+    {"validators", json::array({
+                     {
+                       {"name", validator_name},
+                       {"passed", passed},
+                       {"issues", issue_json_array},
+                     },
+                   })},
+  });
+}
+
+void export_results(json & json_data, const std::string & output_file_path)
 {
   if (!std::filesystem::is_directory(output_file_path)) {
     throw std::invalid_argument("Output path doesn't exist or is not a directory!");
@@ -434,7 +493,7 @@ void filter_out_primitives(
   std::vector<lanelet::validation::DetectedIssues> & issues_vector,
   std::vector<SimplePrimitive> primitive_list_to_exclude)
 {
-  const auto has_same_primitive = [&](lanelet::validation::Issue issue) {
+  const auto has_same_primitive = [&](lanelet::validation::Issue & issue) {
     SimplePrimitive issue_primitive = {lanelet::validation::toString(issue.primitive), issue.id};
     return std::find(
              primitive_list_to_exclude.begin(), primitive_list_to_exclude.end(), issue_primitive) !=

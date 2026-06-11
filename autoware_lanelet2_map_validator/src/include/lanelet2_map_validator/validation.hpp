@@ -114,7 +114,10 @@ std::vector<lanelet::validation::DetectedIssues> validate_all_requirements(
   json & json_data, const lanelet::autoware::validation::MetaConfig & validator_config,
   const lanelet::LaneletMap & lanelet_map, const ValidatorExclusionMap & exclusion_map);
 
-void export_results(json & json_data, const std::string output_file_path);
+void append_loading_issues_to_json(
+  json & json_data, const std::vector<lanelet::validation::DetectedIssues> & loading_issues);
+
+void export_results(json & json_data, const std::string & output_file_path);
 
 ValidatorExclusionMap import_exclusion_list(const json & json_data);
 

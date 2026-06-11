@@ -1,4 +1,28 @@
 {
+  "General.MapLoading-001": {
+    "severity": "Error",
+    "primitive": "primitive",
+    "message": {
+      "en": "The following error occurred while loading the map file: {error_message}",
+      "ja": "地図ファイルの読み込み中に以下のエラーが発生しました: {error_message}"
+    }
+  },
+  "Lane.RoadLaneletAttribute-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban' or 'private'.",
+      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' または 'private' に設定されていません。"
+    }
+  },
+  "Lane.RoadLaneletAttribute-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
+      "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
+    }
+  },
   "Lane.BorderSharing-001": {
     "severity": "Error",
     "primitive": "lanelet",
@@ -15,28 +39,28 @@
       "ja": "複数の Lanelet {lanelet_ids} と隣接しているようですが、境界線を同一の linestring で共有していません。"
     }
   },
-  "Lane.LocalCoordinatesDeclaration-001": {
+  "Lane.LaneletGeometry-001": {
     "severity": "Error",
-    "primitive": "point",
+    "primitive": "lanelet",
     "message": {
-      "en": "This point doesn't have local coordinates while others do.",
-      "ja": "この point は local 座標が定義されていません。"
+      "en": "This lanelet has shared points between left and right bounds.",
+      "ja": "この lanelet の左右の境界が同じ点を共有してしまっています。"
     }
   },
-  "Lane.LocalCoordinatesDeclaration-002": {
+  "Lane.SpeedLimitValidity-001": {
     "severity": "Error",
-    "primitive": "point",
+    "primitive": "lanelet",
     "message": {
-      "en": "\"local_x\" is declared but \"local_y\" is not.",
-      "ja": "この point は \"local_x\" が定義されていますが、\"local_y\" が定義されていません。"
+      "en": "This {subtype} lanelet has an invalid speed_limit attribute value '{speed_limit_value}'. The value must be a positive numerical value.",
+      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' は無効です。正の数値である必要があります。"
     }
   },
-  "Lane.LocalCoordinatesDeclaration-003": {
+  "Lane.SpeedLimitValidity-002": {
     "severity": "Error",
-    "primitive": "point",
+    "primitive": "lanelet",
     "message": {
-      "en": "\"local_y\" is declared but \"local_x\" is not.",
-      "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
+      "en": "This {subtype} lanelet has a speed_limit attribute value '{speed_limit_value}' that is outside the configured range [{min_speed_limit}, {max_speed_limit}].",
+      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' はパラメータで設定した範囲 [{min_speed_limit}, {max_speed_limit}] の外にあります。"
     }
   },
   "Lane.CenterlineGeometry-001": {
@@ -61,6 +85,78 @@
     "message": {
       "en": "This centerline contains points that are distant from the lanelet plane. (Point IDs: {point_ids})",
       "ja": "この centerline は lanelet 平面から離れた点を持っています。(Point IDs: {point_ids})"
+    }
+  },
+  "Lane.RoadShoulder-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulder lanelet has no adjacent lanelets.",
+      "ja": "路肩レーンに隣接するレーンが存在しません。"
+    }
+  },
+  "Lane.RoadShoulder-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Road shoulders must be adjacent to at least one road subtype lanelet.",
+      "ja": "road_shoulder Lanelet は少なくとも一つの road subtype の Lanelet と隣接しなければいけません。"
+    }
+  },
+  "Lane.RoadShoulder-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The empty side of the lanelet bound must be a road_border type linestring.",
+      "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
+    }
+  },
+  "Lane.PedestrianLane-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Pedestrian lane must have at least one adjacent lanelet.",
+      "ja": "pedestrian_lane lanelet は少なくとも1つの隣接 lanelet を持つ必要があります。"
+    }
+  },
+  "Lane.PedestrianLane-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet must be a road subtype lanelet.",
+      "ja": "隣接する lanelet は road subtype の lanelet でなければなりません。"
+    }
+  },
+  "Lane.PedestrianLane-003": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "The bound linestring on the empty side must have road_border type.",
+      "ja": "空いている側の境界線 linestring は road_border type でなければなりません。"
+    }
+  },
+  "Lane.WalkwayIntersection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet should only exist when intersecting with road/private lanelets. No conflicts found with any road/private lanelets.",
+      "ja": "walkway lanelet は road/private lanelet と交差する場合にのみ必要です。他の road/private lanelet との重複が見つかりませんでした。"
+    }
+  },
+  "Lane.WalkwayIntersection-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road/private lanelet {road_lanelet_id}. Current extension: {extension} meters.",
+      "ja": "walkway lanelet は road/private lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長距離: {extension} メートル。"
+    }
+  },
+  "Lane.LateralSubtypeConnection-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Adjacent lanelet {adjacent_lanelet_id} of subtype `{adjacent_subtype}` and the designated lanelet of subtype `{self_adjacent_subtype}` cannot share linestring.",
+      "ja": "linestring を共有している Lanelet {adjacent_lanelet_id} (subtype `{adjacent_subtype}`) と、指定された Lanelet (subtype `{self_adjacent_subtype}`) は、横に隣り合っていてはいけません。"
     }
   },
   "Lane.LongitudinalSubtypeConnection-001": {
@@ -95,28 +191,28 @@
       "ja": "この {bound_type} bound linestring の lane_change タグの値 '{invalid_value}' は無効です。有効な値は 'yes' または 'no' です。"
     }
   },
-  "Lane.LaneletGeometry-001": {
+  "Lane.LocalCoordinatesDeclaration-001": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "point",
     "message": {
-      "en": "This lanelet has shared points between left and right bounds.",
-      "ja": "この lanelet の左右の境界が同じ点を共有してしまっています。"
+      "en": "This point doesn't have local coordinates while others do.",
+      "ja": "この point は local 座標が定義されていません。"
     }
   },
-  "Lane.SpeedLimitValidity-001": {
+  "Lane.LocalCoordinatesDeclaration-002": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "point",
     "message": {
-      "en": "This {subtype} lanelet has an invalid speed_limit attribute value '{speed_limit_value}'. The value must be a positive numerical value.",
-      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' は無効です。正の数値である必要があります。"
+      "en": "\"local_x\" is declared but \"local_y\" is not.",
+      "ja": "この point は \"local_x\" が定義されていますが、\"local_y\" が定義されていません。"
     }
   },
-  "Lane.SpeedLimitValidity-002": {
+  "Lane.LocalCoordinatesDeclaration-003": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "point",
     "message": {
-      "en": "This {subtype} lanelet has a speed_limit attribute value '{speed_limit_value}' that is outside the configured range [{min_speed_limit}, {max_speed_limit}].",
-      "ja": "この {subtype} lanelet の speed_limit タグの値 '{speed_limit_value}' はパラメータで設定した範囲 [{min_speed_limit}, {max_speed_limit}] の外にあります。"
+      "en": "\"local_y\" is declared but \"local_x\" is not.",
+      "ja": "この point は \"local_y\" が定義されていますが、\"local_x\" が定義されていません。"
     }
   },
   "StopLine.MissingRegulatoryElements-001": {
@@ -175,38 +271,6 @@
       "ja": "この lanelet が参照する intersection area (ID {area_id}) が見つかりませんでした。"
     }
   },
-  "Intersection.TurnDirectionTagging-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "This lanelet is missing a turn_direction tag.",
-      "ja": "この lanelet に turn_direction タグが設定されていません。"
-    }
-  },
-  "Intersection.TurnDirectionTagging-002": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Invalid turn_direction tag {invalid_tag} is found.",
-      "ja": "不適切な turn_direction タグ {invalid_tag} が設定されています。"
-    }
-  },
-  "Intersection.IntersectionAreaValidity-001": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
-      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
-      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
-    }
-  },
-  "Intersection.IntersectionAreaSegmentType-001": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
-      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Violating Point ID: {point_ids})",
-      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（違反 Point ID: {point_ids}）"
-    }
-  },
   "Intersection.IntersectionAreaTagging-001": {
     "severity": "Error",
     "primitive": "lanelet",
@@ -239,12 +303,164 @@
       "ja": "この lanelet は turn_direction タグに '{turn_direction}' が設定されていますが、intersection_area タグがありません。"
     }
   },
+  "Intersection.TurnDirectionTagging-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "This lanelet is missing a turn_direction tag.",
+      "ja": "この lanelet に turn_direction タグが設定されていません。"
+    }
+  },
+  "Intersection.TurnDirectionTagging-002": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Invalid turn_direction tag {invalid_tag} is found.",
+      "ja": "不適切な turn_direction タグ {invalid_tag} が設定されています。"
+    }
+  },
+  "Intersection.LaneletBorderType-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "The LeftBound and RightBound of lanelet with intersection_area tag must be either virtual or road_border type.",
+      "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
+    }
+  },
   "Intersection.LaneletDivision-001": {
     "severity": "Error",
     "primitive": "lanelet",
     "message": {
       "en": "This lanelet and its successor lanelet {successor_id} should be merged into one lanelet for intersection_area {intersection_area_id}.",
       "ja": "この lanelet と後続の lanelet {successor_id} は intersection_area {intersection_area_id} 内で一つの lanelet として統合する必要があります。"
+    }
+  },
+  "Intersection.IntersectionAreaValidity-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection_area doesn't satisfy boost::geometry::is_valid. (reason: {boost_geometry_message})",
+      "ja": "この intersection_area は boost::geometry::is_valid を満たしていません。（理由： {boost_geometry_message}）"
+    }
+  },
+  "Intersection.IntersectionAreaSegmentType-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This intersection area is not made by points from road_border linestrings or lanelet edges. (Violating Point ID: {point_ids})",
+      "ja": "この intersection_area は road_border linestring および lanelet の端点から構成されていません。（違反 Point ID: {point_ids}）"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-001": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Lanelet with turn_direction '{turn_direction}' and traffic lights must be referenced by a right_of_way regulatory element.",
+      "ja": "turn_direction '{turn_direction}'  を持ち traffic light を参照する lanelet は right_of_way regulatory element を参照する必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "More than one right_of_way regulatory element exist in the same lanelet.",
+      "ja": "同一の Lanelet に複数の right_of_way regulatory element が存在します。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way element does not refer the referrer lanelet to its right_of_way role.",
+      "ja": "本 regulatory element は参照元の lanelet を right_of_way role に設定していません。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Missing required yield relationship to lanelet {missing_yield_to} at intersection.",
+      "ja": "Lanelet {missing_yield_to} は yield として設定する必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} at intersection.",
+      "ja": "Lanelet {unnecessary_yield_to} は yield である必要がありません。"
+    }
+  },
+  "Intersection.RightOfWayWithTrafficLights-006": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
+      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-001": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
+      "ja": "right_of_way regulatory element はちょうど1つの right_of_way role を持つ必要があります。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-002": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This regulatory element doesn't set the referrer lanelet as the right_of_way role.",
+      "ja": "right_of_way regulatory element が呼び出し元の lanelet を right_of_way role に設定していません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role.",
+      "ja": "重複する lanelet {conflicting_lanelet_id} が yield role として設定されていません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-004": {
+    "severity": "Warning",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Unnecessary lanelets {unnecessary_yield_to} are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
+      "ja": "不要な Lanelet {unnecessary_yield_to} が yield として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-005": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "Intersection {intersection_id} doesn't have any right_of_way regulatory element.",
+      "ja": "交差点 {intersection_id} に right_of_way regulatory element がありません。"
+    }
+  },
+  "Intersection.RightOfWayWithoutTrafficLights-006": {
+    "severity": "info",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
+      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
+    }
+  },
+  "Intersection.RoadMarkings-001": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "This road_marking regulatory element must refer to exactly one stop_line linestring using the 'refers' role and must not have any 'ref_line'.",
+      "ja": "この road_marking regulatory element は 'refers' role としてちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
+    }
+  },
+  "Intersection.RoadMarkings-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This refers linestring must be of type 'stop_line'.",
+      "ja": "この refers linestring は type 'stop_line' である必要があります。"
     }
   },
   "Intersection.RegulatoryElementDetailsForVirtualTrafficLights-001": {
@@ -351,94 +567,6 @@
       "ja": "start_line, stop_line, end_line の順序が誤っています。(end_line ID: {id})"
     }
   },
-  "Intersection.VirtualTrafficLightSectionOverlap-001": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "The virtual traffic light path has overlaps with that of regulatory element (ID: {reg_elem_id}).",
-      "ja": "virtual traffic light の経路が別の virtual traffic light (ID: {reg_elem_id}) と重複しています。"
-    }
-  },
-  "Intersection.TurnSignalDistanceOverlap-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "A different lanelet with a \"turn_direction\" tag is found before turn_signal_distance meters. (previous lanelets with a turn direction: {prev_ids})",
-      "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
-    }
-  },
-  "Intersection.RoadMarkings-001": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "This road_marking regulatory element must refer to exactly one stop_line linestring using the 'refers' role and must not have any 'ref_line'.",
-      "ja": "この road_marking regulatory element は 'refers' role としてちょうど1つの stop_line linestring を参照する必要があり、'ref_line' を持ってはいけません。"
-    }
-  },
-  "Intersection.RoadMarkings-002": {
-    "severity": "Error",
-    "primitive": "linestring",
-    "message": {
-      "en": "This refers linestring must be of type 'stop_line'.",
-      "ja": "この refers linestring は type 'stop_line' である必要があります。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Lanelet with turn_direction '{turn_direction}' and traffic lights must be referenced by a right_of_way regulatory element.",
-      "ja": "turn_direction '{turn_direction}'  を持ち traffic light を参照する lanelet は right_of_way regulatory element を参照する必要があります。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-002": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "More than one right_of_way regulatory element exist in the same lanelet.",
-      "ja": "同一の Lanelet に複数の right_of_way regulatory element が存在します。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-003": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "The right_of_way element does not refer the referrer lanelet to its right_of_way role.",
-      "ja": "本 regulatory element は参照元の lanelet を right_of_way role に設定していません。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-004": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Missing required yield relationship to lanelet {missing_yield_to} at intersection.",
-      "ja": "Lanelet {missing_yield_to} は yield として設定する必要があります。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-005": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Unnecessary yield relationship to lanelet {unnecessary_yield_to} at intersection.",
-      "ja": "Lanelet {unnecessary_yield_to} は yield である必要がありません。"
-    }
-  },
-  "Intersection.RightOfWayWithTrafficLights-006": {
-    "severity": "info",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
-      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
-    }
-  },
-  "Intersection.LaneletBorderType-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "The LeftBound and RightBound of lanelet with intersection_area tag must be either virtual or road_border type.",
-      "ja": "intersection_area タグを持つ lanelet の LeftBound と RightBound は virtual または road_border タイプである必要があります。"
-    }
-  },
   "Intersection.RightOfWayForVirtualTrafficLights-001": {
     "severity": "Error",
     "primitive": "lanelet",
@@ -495,52 +623,20 @@
       "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
     }
   },
-  "Intersection.RightOfWayWithoutTrafficLights-001": {
-    "severity": "info",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "The right_of_way regulatory element should have exactly one right_of_way role.",
-      "ja": "right_of_way regulatory element はちょうど1つの right_of_way role を持つ必要があります。"
-    }
-  },
-  "Intersection.RightOfWayWithoutTrafficLights-002": {
+  "Intersection.VirtualTrafficLightSectionOverlap-001": {
     "severity": "Error",
     "primitive": "regulatory element",
     "message": {
-      "en": "This regulatory element doesn't set the referrer lanelet as the right_of_way role.",
-      "ja": "right_of_way regulatory element が呼び出し元の lanelet を right_of_way role に設定していません。"
+      "en": "The virtual traffic light path has overlaps with that of regulatory element (ID: {reg_elem_id}).",
+      "ja": "virtual traffic light の経路が別の virtual traffic light (ID: {reg_elem_id}) と重複しています。"
     }
   },
-  "Intersection.RightOfWayWithoutTrafficLights-003": {
+  "Intersection.TurnSignalDistanceOverlap-001": {
     "severity": "Error",
-    "primitive": "regulatory element",
+    "primitive": "lanelet",
     "message": {
-      "en": "Conflicting lanelet {conflicting_lanelet_id} is not set as yield role.",
-      "ja": "重複する lanelet {conflicting_lanelet_id} が yield role として設定されていません。"
-    }
-  },
-  "Intersection.RightOfWayWithoutTrafficLights-004": {
-    "severity": "Warning",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Unnecessary lanelets {unnecessary_yield_to} are set as yield lanes. (Ignore this if the right_of_lane is a non-priority lane)",
-      "ja": "不要な Lanelet {unnecessary_yield_to} が yield として設定されています。（right_of_lane が非優先レーンの場合、この警告は無視してください）"
-    }
-  },
-  "Intersection.RightOfWayWithoutTrafficLights-005": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
-      "en": "Intersection {intersection_id} doesn't have any right_of_way regulatory element.",
-      "ja": "交差点 {intersection_id} に right_of_way regulatory element がありません。"
-    }
-  },
-  "Intersection.RightOfWayWithoutTrafficLights-006": {
-    "severity": "info",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Lanelet {soft_conflicting_id} is slightly conflicting with the right_of_way lanelet and there is a chance that this should be a yield lanelet. ({percentage} % of the right_of_way lanelet is covered.)",
-      "ja": "Lanelet {soft_conflicting_id} が right_of_way lanelet と僅かに重なっており、yield lanelet にすべき可能性があります。（right_of_way lanelet の {percentage} % が重なっています。）"
+      "en": "A different lanelet with a \"turn_direction\" tag is found before turn_signal_distance meters. (previous lanelets with a turn direction: {prev_ids})",
+      "ja": "turn_signal_distance よりも前に \"turn_direction\" タグを持つ lanelet があります。(前にある右左折 lanelet: {prev_ids})"
     }
   },
   "TrafficLight.MissingRegulatoryElements-001": {
@@ -647,6 +743,22 @@
       "ja": "この traffic_light linestring の向きが誤っているとも、合っているとも判定されました。"
     }
   },
+  "TrafficLight.BodyHeight-001": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "This traffic_light linestring is missing required 'height' attribute.",
+      "ja": "traffic_light linestring に 'height' タグがありません。"
+    }
+  },
+  "TrafficLight.BodyHeight-002": {
+    "severity": "Error",
+    "primitive": "linestring",
+    "message": {
+      "en": "Traffic light height value ({actual_height}) is outside the valid range defined by the parameter file (min: {min_height}, max: {max_height}).",
+      "ja": "traffic_light の高さの値 ({actual_height}) がパラメータファイルで設定された有効範囲の外です (最小: {min_height}, 最大: {max_height})。"
+    }
+  },
   "TrafficLight.LightBulbTagging-001": {
     "severity": "Error",
     "primitive": "point",
@@ -669,22 +781,6 @@
     "message": {
       "en": "The arrow of a light bulb should be either up, right, left, up_right, or up_left.",
       "ja": "light bulb に設定できる arrow は up, right, left, up_right, up_left のいずれかです。"
-    }
-  },
-  "TrafficLight.BodyHeight-001": {
-    "severity": "Error",
-    "primitive": "linestring",
-    "message": {
-      "en": "This traffic_light linestring is missing required 'height' attribute.",
-      "ja": "traffic_light linestring に 'height' タグがありません。"
-    }
-  },
-  "TrafficLight.BodyHeight-002": {
-    "severity": "Error",
-    "primitive": "linestring",
-    "message": {
-      "en": "Traffic light height value ({actual_height}) is outside the valid range defined by the parameter file (min: {min_height}, max: {max_height}).",
-      "ja": "traffic_light の高さの値 ({actual_height}) がパラメータファイルで設定された有効範囲の外です (最小: {min_height}, 最大: {max_height})。"
     }
   },
   "Crosswalk.MissingRegulatoryElements-001": {
@@ -815,22 +911,6 @@
       "ja": "safety_slow_down_distance タグの値 '{attribute_value}' が正の数値ではありません。"
     }
   },
-  "Lane.LateralSubtypeConnection-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Adjacent lanelet {adjacent_lanelet_id} of subtype `{adjacent_subtype}` and the designated lanelet of subtype `{self_adjacent_subtype}` cannot share linestring.",
-      "ja": "linestring を共有している Lanelet {adjacent_lanelet_id} (subtype `{adjacent_subtype}`) と、指定された Lanelet (subtype `{self_adjacent_subtype}`) は、横に隣り合っていてはいけません。"
-    }
-  },
-  "Area.MissingRegulatoryElementsForBusStopAreas-001": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
-      "en": "This bus_stop_area is not referred by any regulatory element.",
-      "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
-    }
-  },
   "Area.BufferZoneValidity-001": {
     "severity": "Error",
     "primitive": "polygon",
@@ -853,94 +933,6 @@
     "message": {
       "en": "Buffer zone polygon must not overlap with {lanelet_subtype} lanelet (ID: {lanelet_id}) unless the lanelet is a road overlapping from a side street.",
       "ja": "導流帯ポリゴンは {lanelet_subtype} lanelet (ID: {lanelet_id}) と重複してはいけません。（ただし脇道から交差するような lanelet は除く。）"
-    }
-  },
-  "Lane.RoadLaneletAttribute-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Road lanelet is missing the required 'location' attribute or it is not set to 'urban' or 'private'.",
-      "ja": "道路 Lanelet に必要な 'location' タグがないか、'location' の値が 'urban' または 'private' に設定されていません。"
-    }
-  },
-  "Lane.RoadLaneletAttribute-002": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Road lanelet is missing the required 'one_way' attribute or it is not set to 'yes'.",
-      "ja": "道路 Lanelet に必要な 'one_way' タグがないか、'one_way' の値が 'yes' に設定されていません。"
-    }
-  },
-  "Lane.RoadShoulder-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Road shoulder lanelet has no adjacent lanelets.",
-      "ja": "路肩レーンに隣接するレーンが存在しません。"
-    }
-  },
-  "Lane.RoadShoulder-002": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Road shoulders must be adjacent to at least one road subtype lanelet.",
-      "ja": "road_shoulder Lanelet は少なくとも一つの road subtype の Lanelet と隣接しなければいけません。"
-    }
-  },
-  "Lane.RoadShoulder-003": {
-    "severity": "Error",
-    "primitive": "linestring",
-    "message": {
-      "en": "The empty side of the lanelet bound must be a road_border type linestring.",
-      "ja": "road_shoulder lanelet の空いている側の境界は road_border type の linestring である必要があります。"
-    }
-  },
-  "Area.DetectionArea-001": {
-    "severity": "Error",
-    "primitive": "polygon",
-    "message": {
-      "en": "Detection area polygon is not being referred to by any regulatory element.",
-      "ja": "この detection_area polygon は regulatory element から参照されていません。"
-    }
-  },
-  "Area.DetectionArea-002": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Detection area regulatory element must refer to exactly one detection_area polygon.",
-      "ja": "detection_area regulatory element はちょうど1つの detection_area polygon のみを参照する必要があります。"
-    }
-  },
-  "Area.DetectionArea-003": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Polygon referred by detection area regulatory element must have type 'detection_area'.",
-      "ja": "detection_area regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
-    }
-  },
-  "Area.DetectionArea-004": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Detection area regulatory element must refer to exactly one stop_line type ref_line.",
-      "ja": "detection_area regulatory element はちょうど1つの stop_line type の ref_line を参照する必要があります。"
-    }
-  },
-  "Area.DetectionArea-005": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Detection area regulatory element must be referred by at least one road subtype lanelet.",
-      "ja": "detection_area regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
-    }
-  },
-  "Area.DetectionArea-006": {
-    "severity": "Error",
-    "primitive": "regulatory element",
-    "message": {
-      "en": "Detection area regulatory element must only be referred by road subtype lanelets.",
-      "ja": "detection_area regulatory element は road subtype の lanelet のみから参照される必要があります。"
     }
   },
   "Area.NoParkingArea-001": {
@@ -981,30 +973,6 @@
     "message": {
       "en": "This no_parking_area regulatory element should only be referred by road subtype lanelets.",
       "ja": "この no_parking_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
-    }
-  },
-  "Lane.PedestrianLane-001": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Pedestrian lane must have at least one adjacent lanelet.",
-      "ja": "pedestrian_lane lanelet は少なくとも1つの隣接 lanelet を持つ必要があります。"
-    }
-  },
-  "Lane.PedestrianLane-002": {
-    "severity": "Error",
-    "primitive": "lanelet",
-    "message": {
-      "en": "Adjacent lanelet must be a road subtype lanelet.",
-      "ja": "隣接する lanelet は road subtype の lanelet でなければなりません。"
-    }
-  },
-  "Lane.PedestrianLane-003": {
-    "severity": "Error",
-    "primitive": "linestring",
-    "message": {
-      "en": "The bound linestring on the empty side must have road_border type.",
-      "ja": "空いている側の境界線 linestring は road_border type でなければなりません。"
     }
   },
   "Area.NoStoppingArea-001": {
@@ -1063,20 +1031,60 @@
       "ja": "この no_stopping_area regulatory element は road subtype の lanelet からのみ参照されるべきです。"
     }
   },
-  "Lane.WalkwayIntersection-001": {
+  "Area.DetectionArea-001": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "polygon",
     "message": {
-      "en": "Walkway lanelet should only exist when intersecting with road/private lanelets. No conflicts found with any road/private lanelets.",
-      "ja": "walkway lanelet は road/private lanelet と交差する場合にのみ必要です。他の road/private lanelet との重複が見つかりませんでした。"
+      "en": "Detection area polygon is not being referred to by any regulatory element.",
+      "ja": "この detection_area polygon は regulatory element から参照されていません。"
     }
   },
-  "Lane.WalkwayIntersection-002": {
+  "Area.DetectionArea-002": {
     "severity": "Error",
-    "primitive": "lanelet",
+    "primitive": "regulatory element",
     "message": {
-      "en": "Walkway lanelet must extend at least 3 meters beyond the intersection with road/private lanelet {road_lanelet_id}. Current extension: {extension} meters.",
-      "ja": "walkway lanelet は road/private lanelet {road_lanelet_id} との交差点から少なくとも3メートル延びている必要があります。現在の延長距離: {extension} メートル。"
+      "en": "Detection area regulatory element must refer to exactly one detection_area polygon.",
+      "ja": "detection_area regulatory element はちょうど1つの detection_area polygon のみを参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-003": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Polygon referred by detection area regulatory element must have type 'detection_area'.",
+      "ja": "detection_area regulatory element から参照される polygon は type が 'detection_area' である必要があります。"
+    }
+  },
+  "Area.DetectionArea-004": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must refer to exactly one stop_line type ref_line.",
+      "ja": "detection_area regulatory element はちょうど1つの stop_line type の ref_line を参照する必要があります。"
+    }
+  },
+  "Area.DetectionArea-005": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must be referred by at least one road subtype lanelet.",
+      "ja": "detection_area regulatory element は少なくとも一つの road subtype lanelet から参照される必要があります。"
+    }
+  },
+  "Area.DetectionArea-006": {
+    "severity": "Error",
+    "primitive": "regulatory element",
+    "message": {
+      "en": "Detection area regulatory element must only be referred by road subtype lanelets.",
+      "ja": "detection_area regulatory element は road subtype の lanelet のみから参照される必要があります。"
+    }
+  },
+  "Area.MissingRegulatoryElementsForBusStopAreas-001": {
+    "severity": "Error",
+    "primitive": "polygon",
+    "message": {
+      "en": "This bus_stop_area is not referred by any regulatory element.",
+      "ja": "この bus_stop_area はどの regulatory element からも参照されていません。"
     }
   }
 }
