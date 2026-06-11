@@ -97,6 +97,21 @@ TEST_F(TestTrafficLightFacing, CorrectFacing)  // NOLINT for gtest
   EXPECT_EQ(issues.size(), 0);
 }
 
+TEST_F(TestTrafficLightFacing, WrongPedestrianTrafficLightFacing)  // NOLINT for gtest
+{
+  load_target_map("traffic_light/crosswalk_with_wrong_pedestrian_traffic_light_facing.osm");
+
+  lanelet::autoware::validation::TrafficLightFacingValidator checker;
+  const auto & issues = checker(*map_);
+
+  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 999);
+
+  EXPECT_EQ(issues.size(), 1);
+
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
+
 TEST_F(TestTrafficLightFacing, SampleMap)  // NOLINT for gtest
 {
   load_target_map("sample_map.osm");
