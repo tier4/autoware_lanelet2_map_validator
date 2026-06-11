@@ -2690,6 +2690,7 @@
   <relation id="49">
     <member type="way" role="left" ref="197"/>
     <member type="way" role="right" ref="204"/>
+    <member type="relation" role="regulatory_element" ref="99999"/>
     <tag k="type" v="lanelet"/>
     <tag k="subtype" v="road"/>
     <tag k="speed_limit" v="30"/>
@@ -2891,5 +2892,13 @@
     <tag k="speed_limit" v="30"/>
     <tag k="location" v="urban"/>
     <tag k="one_way" v="yes"/>
+  </relation>
+  <relation id="99999">
+    <member type="relation" role="right_of_way" ref="49"/>
+    <member type="relation" role="yield" ref="54"/>
+    <member type="relation" role="yield" ref="55"/>
+    <member type="relation" role="yield" ref="58"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="right_of_way"/>
   </relation>
 </osm>
