@@ -220,6 +220,62 @@
       "path": "v1.0.6/cargo_transport-v2025_11_1.json",
       "version": "1.0.6",
       "patches": []
+    },
+
+    {
+      "path": "v1.0.7/cargo_transport-v2024_2_0.json",
+      "version": "1.0.7",
+      "requirement_ids": [
+        "vm-01-01",
+        "vm-01-05",
+        "vm-01-09",
+        "vm-01-10",
+        "vm-01-20",
+        "vm-01-21",
+        "vm-02-02",
+        "vm-03-02",
+        "vm-03-16",
+        "vm-03-17",
+        "vm-03-18",
+        "vm-06-02",
+        "vm-06-05"
+      ]
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2024_2_0.json",
+      "path": "v1.0.7/cargo_transport-v2024_7_0.json",
+      "version": "1.0.7",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2024_7_0.json",
+      "path": "v1.0.7/cargo_transport-v2025_3_0.json",
+      "version": "1.0.7",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2025_3_0.json",
+      "path": "v1.0.7/cargo_transport-v2025_6_0.json",
+      "version": "1.0.7",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2025_6_0.json",
+      "path": "v1.0.7/cargo_transport-v2025_8_0.json",
+      "version": "1.0.7",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2025_8_0.json",
+      "path": "v1.0.7/cargo_transport-v2025_11_0.json",
+      "version": "1.0.7",
+      "patches": []
+    },
+    {
+      "extends": "v1.0.7/cargo_transport-v2025_11_0.json",
+      "path": "v1.0.7/cargo_transport-v2025_11_1.json",
+      "version": "1.0.7",
+      "patches": []
     }
   ]
 }
