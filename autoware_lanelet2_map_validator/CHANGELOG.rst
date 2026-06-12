@@ -2,6 +2,15 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.8.0 (2026-06-12)
+------------------
+* chore: remove intersection_lanelet_border_type from vm-03-02 and reconstruct map_requirements (`#181 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/181>`_)
+* chore(intersection_area_tagging): tighten condition for IntersectionAreaTagging-004 (`#179 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/179>`_)
+* feat: export loading errors to json files (`#177 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/177>`_)
+* feat(traffic_light_facing): add facing validation for pedestrian signals (`#180 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/180>`_)
+* chore(road_shoulder): discontinue Lane.RoadShoulder-002 (`#178 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/178>`_)
+* Contributors: Taiki Yamada, Uta Kawakami
+
 1.7.0 (2026-04-22)
 ------------------
 * feat: manage map requirements by diffs (`#162 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/162>`_)
