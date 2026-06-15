@@ -2,6 +2,11 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.8.1 (2026-06-15)
+------------------
+* chore: discontinue Lane.PedestrianLane-002 (`#183 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/183>`_)
+* Contributors: Taiki Yamada
+
 1.8.0 (2026-06-12)
 ------------------
 * chore: remove intersection_lanelet_border_type from vm-03-02 and reconstruct map_requirements (`#181 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/181>`_)
