@@ -15,6 +15,7 @@
 # limitations under the License.
 
 """Custom matplotlib widget for PySide6 Essentials compatibility."""
+
 from PySide6.QtCore import QTimer
 from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
