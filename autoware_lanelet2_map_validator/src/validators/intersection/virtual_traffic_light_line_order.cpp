@@ -106,8 +106,9 @@ VirtualTrafficLightLineOrderValidator::check_virtual_traffic_light_line_order(
       }
       end_pairs.push_back({end_line_opt.get(), lane});
 
-      if (boost::geometry::intersects(
-            lanelet::traits::to2D(start_line.basicLineString()), lane.polygon2d().basicPolygon())) {
+      if (
+        boost::geometry::intersects(
+          lanelet::traits::to2D(start_line.basicLineString()), lane.polygon2d().basicPolygon())) {
         is_start_line_intersecting = true;
       }
     }
