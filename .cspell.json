@@ -1,13 +1,15 @@
 {
+  "ignorePaths": [
+    ".github/static_build"
+  ],
   "words": [
-    "gsub",
+    "DAUTOWARE",
+    "DLANELET",
     "githubcli",
-    "pinentry",
-    "pyinstaller",
+    "gsub",
     "libeigen",
     "libyaml",
-    "DLANELET",
-    "DAUTOWARE"
-  ],
-  "ignorePaths": [".github/static_build"]
+    "pinentry",
+    "pyinstaller"
+  ]
 }
