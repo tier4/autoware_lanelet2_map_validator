@@ -76,3 +76,20 @@ TEST_F(TestLateralSubtypeConnectionValidator, InvalidSubtypeAdjacency)  // NOLIN
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestLateralSubtypeConnectionValidator, InvalidSubtypeAdjacencyWithDashedBorder)
+// NOLINT for gtest
+{
+  load_target_map("lane/lateral_subtype_connection_dashed_adjacent.osm");
+  lanelet::autoware::validation::LateralSubtypeConnectionValidator checker;
+  const auto & issues = checker(*map_);
+  std::map<std::string, std::string> substitution_map;
+  substitution_map["adjacent_lanelet_id"] = "201";
+  substitution_map["adjacent_subtype"] = "road";
+  substitution_map["self_adjacent_subtype"] = "walkway";
+  const auto expected_issue =
+    construct_issue_from_code(issue_code(test_target_, 1), 202, substitution_map);
+  EXPECT_EQ(issues.size(), 1);
+  const auto difference = compare_an_issue(expected_issue, issues[0]);
+  EXPECT_TRUE(difference.empty()) << difference;
+}
