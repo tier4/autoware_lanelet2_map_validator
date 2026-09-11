@@ -92,16 +92,31 @@ lanelet::validation::Issues LateralSubtypeConnectionValidator::check_lateral_sub
   std::set<std::pair<lanelet::Id, lanelet::Id>> processed_pairs;
 
   for (const lanelet::ConstLanelet & lane : map.laneletLayer) {
+    // A neighboring lanelet is registered as "left"/"right" (lane-changeable) instead of
+    // "adjacentLeft"/"adjacentRight" (non-lane-changeable) when the shared boundary allows a lane
+    // change (e.g. a dashed line), so both must be checked to find the adjacent lanelet.
     const auto left_adjacent = routing_graph_ptr->adjacentLeft(lane);
     if (left_adjacent) {
       check_adjacent_subtype_compatibility(
         lane, left_adjacent.get(), processed_pairs, issues, this->name());
+    } else {
+      const auto left = routing_graph_ptr->left(lane);
+      if (left) {
+        check_adjacent_subtype_compatibility(
+          lane, left.get(), processed_pairs, issues, this->name());
+      }
     }
 
     const auto right_adjacent = routing_graph_ptr->adjacentRight(lane);
     if (right_adjacent) {
       check_adjacent_subtype_compatibility(
         lane, right_adjacent.get(), processed_pairs, issues, this->name());
+    } else {
+      const auto right = routing_graph_ptr->right(lane);
+      if (right) {
+        check_adjacent_subtype_compatibility(
+          lane, right.get(), processed_pairs, issues, this->name());
+      }
     }
   }
 
