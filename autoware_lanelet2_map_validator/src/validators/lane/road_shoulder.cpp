@@ -63,10 +63,13 @@ lanelet::validation::Issues RoadShoulderValidator::check_road_shoulder(
       continue;
     }
 
-    const auto left_lanelets = routing_graph_ptr->adjacentLeft(lanelet);
-    const auto right_lanelets = routing_graph_ptr->adjacentRight(lanelet);
-    const bool has_left = left_lanelets.has_value();
-    const bool has_right = right_lanelets.has_value();
+    // A neighboring lanelet is registered as "left"/"right" (lane-changeable) instead of
+    // "adjacentLeft"/"adjacentRight" (non-lane-changeable) when the shared boundary allows a lane
+    // change (e.g. a dashed line), so both must be checked to find the adjacent lanelet.
+    const bool has_left = routing_graph_ptr->adjacentLeft(lanelet).has_value() ||
+                          routing_graph_ptr->left(lanelet).has_value();
+    const bool has_right = routing_graph_ptr->adjacentRight(lanelet).has_value() ||
+                           routing_graph_ptr->right(lanelet).has_value();
 
     // Issue-001: Road shoulder must have at least one adjacent lanelet
     if (!has_left && !has_right) {
