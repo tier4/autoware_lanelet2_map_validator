@@ -45,7 +45,7 @@ The validator considers the following subtypes as vehicle-suitable:
 An error is reported when:
 
 - A lanelet with a vehicle-suitable subtype is adjacent to a lanelet with a non-vehicle-suitable subtype
-- The adjacency relationship is determined by the routing graph's `adjacentLeft()` and `adjacentRight()` methods
+- The adjacency relationship is determined by the routing graph's `adjacentLeft()`/`adjacentRight()` methods, falling back to `left()`/`right()` when the shared boundary allows a lane change (e.g. a dashed line), since the routing graph then classifies the neighbor as lane-changeable instead of merely adjacent
 
 ## Related source codes
 

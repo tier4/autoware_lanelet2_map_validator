@@ -77,3 +77,13 @@ TEST_F(TestRoadShoulderValidator, NoRoadBorderBound)  // NOLINT for gtest
   const auto difference = compare_an_issue(expected_issue, issues[0]);
   EXPECT_TRUE(difference.empty()) << difference;
 }
+
+TEST_F(TestRoadShoulderValidator, DashedLineAdjacent)  // NOLINT for gtest
+{
+  load_target_map("lane/shoulder_road_with_dashed_adjacent.osm");
+
+  lanelet::autoware::validation::RoadShoulderValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
