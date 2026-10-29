@@ -2,6 +2,14 @@
 Changelog for package autoware_lanelet2_map_validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.8.2 (2026-10-29)
+------------------
+* chore: update map requirements for v1.0.8 (`#188 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/188>`_)
+* fix(road_shoulder, pedestrian_lane, lateral_subtype_connection): fix adjacency handling for dashed boundaries (`#187 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/187>`_)
+  Co-authored-by: Mamoru Sobue <mamoru.sobue@tier4.jp>
+* feat(agents): add AGENTS.md and develop skill (`#185 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/185>`_)
+* Contributors: Mamoru Sobue, Taiki Yamada, Uta Kawakami
+
 1.8.1 (2026-06-15)
 ------------------
 * chore: discontinue Lane.PedestrianLane-002 (`#183 <https://github.com/tier4/autoware_lanelet2_map_validator/issues/183>`_)
