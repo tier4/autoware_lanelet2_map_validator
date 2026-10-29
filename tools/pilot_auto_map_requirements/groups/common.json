@@ -73,6 +73,12 @@
       "version": "1.0.7",
       "extends": "v1.0.6/common.json",
       "patches": []
+    },
+    {
+      "path": "v1.0.8/common.json",
+      "version": "1.0.8",
+      "extends": "v1.0.7/common.json",
+      "patches": []
     }
   ]
 }
