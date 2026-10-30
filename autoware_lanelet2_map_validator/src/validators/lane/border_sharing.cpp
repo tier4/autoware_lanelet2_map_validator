@@ -16,16 +16,13 @@
 
 #include "lanelet2_map_validator/utils.hpp"
 
-#include <boost/geometry.hpp>
-
-#include <lanelet2_core/geometry/LineString.h>
-#include <lanelet2_core/geometry/Polygon.h>
-#include <lanelet2_routing/RoutingGraph.h>
+#include <lanelet2_core/Attribute.h>
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
+#include <algorithm>
 #include <map>
+#include <optional>
 #include <set>
-#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -51,223 +48,142 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
 {
   lanelet::validation::Issues issues;
 
-  lanelet::traffic_rules::TrafficRulesPtr traffic_rules =
-    lanelet::traffic_rules::TrafficRulesFactory::create(
-      "validator", lanelet::Participants::Vehicle);
-  lanelet::routing::RoutingGraphUPtr routing_graph_ptr =
-    lanelet::routing::RoutingGraph::build(map, *traffic_rules);
-
-  std::vector<std::pair<lanelet::Id, lanelet::Id>> suspicious_pairs;
-  for (const lanelet::ConstLanelet & current_lane : map.laneletLayer) {
-    // Get the surrounding polygon of the lanelet
-    const lanelet::BasicPolygon2d surrounding_polygon =
-      expanded_lanelet_polygon(current_lane, 1.05);
-
-    // Collect nearby lanelets which are candidates violating the requirements
-    lanelet::BoundingBox2d bbox2d = lanelet::geometry::boundingBox2d(surrounding_polygon);
-    lanelet::ConstLanelets nearby_lanelets = map.laneletLayer.search(bbox2d);
-
-    // Collect suspicious pairs of lanelets violating the border sharing rule
-    for (const auto & candidate_lane : nearby_lanelets) {
-      // Ignore its own self
-      if (current_lane.id() == candidate_lane.id()) {
-        continue;
-      }
-
-      // If current and candidate have a proper relation, that's OK so skip it
-      const lanelet::routing::RelationType relation =
-        get_relation(routing_graph_ptr, current_lane, candidate_lane);
-      if (
-        relation != lanelet::routing::RelationType::Conflicting &&
-        relation != lanelet::routing::RelationType::None) {
-        continue;
-      }
-
-      // Assume that high IoU means pseudo-bidirectional lanelets
-      if (
-        relation == lanelet::routing::RelationType::Conflicting &&
-        intersection_over_union(surrounding_polygon, candidate_lane.polygon2d().basicPolygon()) >
-          iou_threshold_) {
-        continue;
-      }
-
-      // Skip valid opposite lanes
-      if (
-        candidate_lane.rightBound() == current_lane.rightBound().invert() ||
-        candidate_lane.leftBound() == current_lane.leftBound().invert()) {
-        continue;
-      }
-
-      // If the surrounding_polygon covers the border of a non-related lanelet, that lanelet might
-      // be suspicious
-      if (
-        boost::geometry::covered_by(
-          candidate_lane.leftBound2d().basicLineString(), surrounding_polygon) ||
-        boost::geometry::covered_by(
-          candidate_lane.rightBound2d().basicLineString(), surrounding_polygon)) {
-        suspicious_pairs.push_back({current_lane.id(), candidate_lane.id()});
-      }
+  const auto to_points = [](const lanelet::ConstLineString3d & line) {
+    std::vector<Point> points;
+    points.reserve(line.size());
+    for (const auto & point : line) {
+      points.push_back({point.x(), point.y(), point.z()});
     }
-  }
-
-  // Sort out pairs by their directionality
-  std::set<std::pair<lanelet::Id, lanelet::Id>> unidirectional_pairs;
-  std::set<std::pair<lanelet::Id, lanelet::Id>> bidirectional_pairs;
-
-  for (const auto & pair : suspicious_pairs) {
-    std::pair<lanelet::Id, lanelet::Id> reversed_pair = {pair.second, pair.first};
-    if (unidirectional_pairs.count(reversed_pair)) {
-      bidirectional_pairs.insert(pair);
-      unidirectional_pairs.erase(reversed_pair);
-    } else {
-      unidirectional_pairs.insert(pair);
-    }
-  }
-
-  // Emplace issues violating vm-01-03
-  // Output issues for both lanelets
-  // It may be redundant but couldn't come up with a better way.
-
-  std::map<std::string, std::string> substitution_map1;
-  for (const auto & pair : bidirectional_pairs) {
-    substitution_map1["lanelet_id"] = std::to_string(pair.second);
-    issues.emplace_back(
-      construct_issue_from_code(issue_code(this->name(), 1), pair.first, substitution_map1));
-    substitution_map1["lanelet_id"] = std::to_string(pair.first);
-    issues.emplace_back(
-      construct_issue_from_code(issue_code(this->name(), 1), pair.second, substitution_map1));
-  }
-
-  // Emplace issues violating vm-01-04
-  // Output issue only for the longest lanelet and show a list of lanelets
-  // that the surrounding polygon covers
-  std::map<std::string, std::string> substitution_map2;
-  const auto ids_to_string = [](const lanelet::Ids & ids) {
-    std::string result = "";
-    for (const auto & id : ids) {
-      result += std::to_string(id) + " ";
-    }
-    result.resize(result.size() - 1);
-    return result;
+    return points;
   };
-  for (auto it = unidirectional_pairs.begin(); it != unidirectional_pairs.end();) {
-    lanelet::Id current_first = it->first;
 
-    lanelet::Ids adjacents;
-    while (it != unidirectional_pairs.end() && it->first == current_first) {
-      adjacents.push_back(it->second);
-      ++it;
-    }
-
-    if (adjacents.size() <= 0) {
+  // Collect the segments of fences so that a fence at the same position as a bound can be found
+  std::set<Segment> fence_segments;
+  for (const auto & line : map.lineStringLayer) {
+    if (
+      std::string(line.attributeOr(lanelet::AttributeName::Type, "")) !=
+      lanelet::AttributeValueString::Fence) {
       continue;
     }
-
-    substitution_map2["lanelet_ids"] = ids_to_string(adjacents);
-
-    issues.emplace_back(
-      construct_issue_from_code(issue_code(this->name(), 2), current_first, substitution_map2));
+    const auto points = to_points(line);
+    for (size_t i = 0; i + 1 < points.size(); i++) {
+      fence_segments.insert(make_segment(points[i], points[i + 1]));
+    }
   }
+
+  // Group the bounds by their end points. Bounds at the same position always fall in the same group
+  std::map<Segment, std::vector<Bound>> bounds_by_ends;
+  for (const auto & lane : map.laneletLayer) {
+    for (const bool is_right_bound : {false, true}) {
+      const lanelet::ConstLineString3d line = is_right_bound ? lane.rightBound() : lane.leftBound();
+      if (line.size() < 2) {
+        continue;
+      }
+      Bound bound{lane, line, to_points(line), is_right_bound};
+      bounds_by_ends[make_segment(bound.points.front(), bound.points.back())].push_back(bound);
+    }
+  }
+
+  const auto is_road = [](const lanelet::ConstLanelet & lane) {
+    return std::string(lane.attributeOr(lanelet::AttributeName::Subtype, "")) ==
+           lanelet::AttributeValueString::Road;
+  };
+
+  std::set<std::pair<lanelet::Id, lanelet::Id>> unshared_pairs;
+  std::set<std::pair<lanelet::Id, lanelet::Id>> fence_shared_pairs;
+
+  for (const auto & [ends, bounds] : bounds_by_ends) {
+    for (size_t i = 0; i < bounds.size(); i++) {
+      for (size_t j = i + 1; j < bounds.size(); j++) {
+        const Bound & bound1 = bounds[i];
+        const Bound & bound2 = bounds[j];
+
+        if (bound1.lanelet.id() == bound2.lanelet.id()) {
+          continue;
+        }
+
+        // Only pairs including a road lanelet affect the planning of Autoware
+        if (!is_road(bound1.lanelet) && !is_road(bound2.lanelet)) {
+          continue;
+        }
+
+        // The pair is adjacent only if the bounds are at the same position from end to end
+        const std::optional<bool> reversed = same_position(bound1.points, bound2.points);
+        if (!reversed) {
+          continue;
+        }
+
+        // Lanelets on the same side of the bound are overlapping, not adjacent
+        const bool lanelet2_is_on_left =
+          *reversed ? !bound2.lanelet_is_on_left : bound2.lanelet_is_on_left;
+        if (bound1.lanelet_is_on_left == lanelet2_is_on_left) {
+          continue;
+        }
+
+        const bool is_shared = bound1.line.id() == bound2.line.id();
+        const bool has_fence =
+          has_fence_on(bound1, fence_segments) || has_fence_on(bound2, fence_segments);
+        const lanelet::Id id1 = bound1.lanelet.id();
+        const lanelet::Id id2 = bound2.lanelet.id();
+        const std::pair<lanelet::Id, lanelet::Id> pair = std::minmax(id1, id2);
+
+        if (has_fence && is_shared) {
+          fence_shared_pairs.insert(pair);
+        } else if (!has_fence && !is_shared) {
+          unshared_pairs.insert(pair);
+        }
+      }
+    }
+  }
+
+  // Output issues for both lanelets of each pair
+  const auto emit_issues = [&](const auto & pairs, const int issue_number) {
+    std::map<std::string, std::string> substitution_map;
+    for (const auto & [id1, id2] : pairs) {
+      substitution_map["lanelet_id"] = std::to_string(id2);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), issue_number), id1, substitution_map));
+      substitution_map["lanelet_id"] = std::to_string(id1);
+      issues.emplace_back(
+        construct_issue_from_code(issue_code(this->name(), issue_number), id2, substitution_map));
+    }
+  };
+  emit_issues(unshared_pairs, 1);
+  emit_issues(fence_shared_pairs, 3);
 
   return issues;
 }
 
-lanelet::BasicPolygon2d BorderSharingValidator::expanded_lanelet_polygon(
-  const lanelet::ConstLanelet & lane, const double & scale_factor)
+std::optional<bool> BorderSharingValidator::same_position(
+  const std::vector<Point> & points1, const std::vector<Point> & points2)
 {
-  lanelet::BasicPolygon2d result;
-
-  lanelet::BasicLineString2d left_bound = lane.leftBound2d().basicLineString();
-  lanelet::BasicLineString2d right_bound = lane.rightBound2d().invert().basicLineString();
-
-  if (left_bound.size() < 2 || right_bound.size() < 2) {
-    throw std::runtime_error("A lanelet has a bound less than two points.");
+  if (points1.size() != points2.size()) {
+    return std::nullopt;
   }
-
-  const double front_width =
-    (left_bound.front() - right_bound.back()).norm();  // note that right is inverted
-  const double back_width = (left_bound.back() - right_bound.front()).norm();
-  const double delta = (front_width + back_width) / 2 * (scale_factor - 1);
-
-  const auto unit_direction = [](lanelet::BasicPoint2d from, lanelet::BasicPoint2d to) {
-    lanelet::BasicPoint2d direction = to - from;
-    return (direction.norm() > 0.0) ? direction / direction.norm()
-                                    : lanelet::BasicPoint2d(0.0, 0.0);
-  };
-
-  for (const auto & point : left_bound) {
-    lanelet::ArcCoordinates arc_point = lanelet::geometry::toArcCoordinates(left_bound, point);
-    arc_point.distance += delta;
-    lanelet::BasicPoint2d extended_point =
-      lanelet::geometry::fromArcCoordinates(left_bound, arc_point);
-
-    if (point == left_bound.front()) {
-      extended_point += delta * unit_direction(left_bound[1], left_bound[0]);
-    }
-    if (point == left_bound.back()) {
-      extended_point +=
-        delta *
-        unit_direction(left_bound[left_bound.size() - 2], left_bound[left_bound.size() - 1]);
-    }
-
-    result.push_back(extended_point);
+  if (std::equal(points1.begin(), points1.end(), points2.begin())) {
+    return false;
   }
-
-  for (const auto & point : right_bound) {
-    lanelet::ArcCoordinates arc_point = lanelet::geometry::toArcCoordinates(right_bound, point);
-    arc_point.distance += delta;
-    lanelet::BasicPoint2d extended_point =
-      lanelet::geometry::fromArcCoordinates(right_bound, arc_point);
-
-    if (point == right_bound.front()) {
-      extended_point += delta * unit_direction(right_bound[1], right_bound[0]);
-    }
-    if (point == right_bound.back()) {
-      extended_point +=
-        delta *
-        unit_direction(right_bound[right_bound.size() - 2], right_bound[right_bound.size() - 1]);
-    }
-
-    result.push_back(extended_point);
+  if (std::equal(points1.begin(), points1.end(), points2.rbegin())) {
+    return true;
   }
-
-  return result;
+  return std::nullopt;
 }
 
-lanelet::routing::RelationType BorderSharingValidator::get_relation(
-  const lanelet::routing::RoutingGraphUPtr & routing_graph_ptr, const lanelet::ConstLanelet from,
-  const lanelet::ConstLanelet to)
+bool BorderSharingValidator::has_fence_on(
+  const Bound & bound, const std::set<Segment> & fence_segments)
 {
-  // This can get relations except "previous"
-  const auto relation = routing_graph_ptr->routingRelation(from, to, true);
-  if (!!relation) {
-    return relation.get();
+  for (size_t i = 0; i + 1 < bound.points.size(); i++) {
+    if (fence_segments.count(make_segment(bound.points[i], bound.points[i + 1]))) {
+      return true;
+    }
   }
-
-  // Check previous
-  const auto previous_relation = routing_graph_ptr->routingRelation(to, from, false);
-  if (!!previous_relation && previous_relation.get() == lanelet::routing::RelationType::Successor) {
-    return lanelet::routing::RelationType::Successor;
-  }
-
-  return lanelet::routing::RelationType::None;
+  return false;
 }
 
-double BorderSharingValidator::intersection_over_union(
-  const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2)
+BorderSharingValidator::Segment BorderSharingValidator::make_segment(
+  const Point & a, const Point & b)
 {
-  std::vector<lanelet::BasicPolygon2d> intersection;
-  boost::geometry::intersection(polygon1, polygon2, intersection);
-  double intersection_area = 0.0;
-  for (const auto & portion : intersection) {
-    intersection_area += boost::geometry::area(portion);
-  }
-
-  const double area1 = boost::geometry::area(polygon1);
-  const double area2 = boost::geometry::area(polygon2);
-  const double union_area = area1 + area2 - intersection_area;
-
-  return intersection_area / union_area;
+  return a < b ? Segment{a, b} : Segment{b, a};
 }
 
 namespace traffic_rules

@@ -2,8 +2,6 @@ mapping.lane.centerline_geometry:
   dimension_mode: 2D
   planar_threshold: 0.1
   height_threshold: 0.1
-mapping.lane.border_sharing:
-  iou_threshold: 0.05
 mapping.traffic_light.regulatory_element_details:
   max_bounding_box_size: 200.0
 mapping.crosswalk.regulatory_element_details:
