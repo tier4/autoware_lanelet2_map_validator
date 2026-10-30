@@ -26,6 +26,23 @@ class TestBorderSharingValidator : public MapValidationTester
 protected:
   const std::string test_target_ =
     std::string(lanelet::autoware::validation::BorderSharingValidator::name());
+
+  void expect_issue_pair(
+    const lanelet::validation::Issues & issues, const int issue_number, const lanelet::Id id1,
+    const lanelet::Id id2)
+  {
+    std::map<std::string, std::string> id_map;
+    id_map["lanelet_id"] = std::to_string(id2);
+    const auto expected_issue1 =
+      construct_issue_from_code(issue_code(test_target_, issue_number), id1, id_map);
+    id_map["lanelet_id"] = std::to_string(id1);
+    const auto expected_issue2 =
+      construct_issue_from_code(issue_code(test_target_, issue_number), id2, id_map);
+
+    const auto expected_issues = {expected_issue1, expected_issue2};
+    const auto difference = compare_issues(expected_issues, issues);
+    EXPECT_TRUE(difference.empty()) << difference;
+  }
 };
 
 TEST_F(TestBorderSharingValidator, ValidatorAvailability)  // NOLINT for gtest
@@ -58,17 +75,8 @@ TEST_F(TestBorderSharingValidator, StraightLanesCompletelyDifferentBorders)  // 
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> id_map;
-  id_map["lanelet_id"] = "10157";
-  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 108, id_map);
-  id_map["lanelet_id"] = "108";
-  const auto expected_issue2 =
-    construct_issue_from_code(issue_code(test_target_, 1), 10157, id_map);
-
-  const auto expected_issues = {expected_issue1, expected_issue2};
-
-  const auto difference = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(difference.empty()) << difference;
+  // The borders are not at the same position, so the lanelets are not judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(
@@ -79,17 +87,8 @@ TEST_F(
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> id_map;
-  id_map["lanelet_id"] = "10157";
-  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 108, id_map);
-  id_map["lanelet_id"] = "108";
-  const auto expected_issue2 =
-    construct_issue_from_code(issue_code(test_target_, 1), 10157, id_map);
-
-  const auto expected_issues = {expected_issue1, expected_issue2};
-
-  const auto difference = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(difference.empty()) << difference;
+  // The borders are not at the same position, so the lanelets are not judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestBorderSharingValidator, StraightLanesDifferentBorderID)  // NOLINT for gtest
@@ -119,16 +118,8 @@ TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentBorders)  // NOL
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> id_map;
-  id_map["lanelet_id"] = "96";
-  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 7974, id_map);
-  id_map["lanelet_id"] = "7974";
-  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 96, id_map);
-
-  const auto expected_issues = {expected_issue1, expected_issue2};
-
-  const auto difference = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(difference.empty()) << difference;
+  // The borders are not at the same position, so the lanelets are not judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentJaggyBorders)  // NOLINT for gtest
@@ -138,16 +129,8 @@ TEST_F(TestBorderSharingValidator, CurveLanesCompletelyDifferentJaggyBorders)  /
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> id_map;
-  id_map["lanelet_id"] = "96";
-  const auto expected_issue1 = construct_issue_from_code(issue_code(test_target_, 1), 7974, id_map);
-  id_map["lanelet_id"] = "7974";
-  const auto expected_issue2 = construct_issue_from_code(issue_code(test_target_, 1), 96, id_map);
-
-  const auto expected_issues = {expected_issue1, expected_issue2};
-
-  const auto difference = compare_issues(expected_issues, issues);
-  EXPECT_TRUE(difference.empty()) << difference;
+  // The borders are not at the same position, so the lanelets are not judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestBorderSharingValidator, CurveLanesDifferentBorderID)  // NOLINT for gtest
@@ -186,14 +169,9 @@ TEST_F(TestBorderSharingValidator, WrongLaneletDivision)  // NOLINT for gtest
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> ids_map;
-  ids_map["lanelet_ids"] = "107 7944";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 108, ids_map);
-
-  EXPECT_EQ(issues.size(), 1);
-
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
+  // The borders are at the same position only in a part of their length, so the lanelets are not
+  // judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
 }
 
 TEST_F(TestBorderSharingValidator, CorrectBorderSharingLaneSplit)  // NOLINT for gtest
@@ -213,14 +191,179 @@ TEST_F(TestBorderSharingValidator, WrongBorderSharingLaneSplit)  // NOLINT for g
   lanelet::autoware::validation::BorderSharingValidator checker;
   const auto & issues = checker(*map_);
 
-  std::map<std::string, std::string> ids_map;
-  ids_map["lanelet_ids"] = "107";
-  const auto expected_issue = construct_issue_from_code(issue_code(test_target_, 2), 108, ids_map);
+  // The borders are at the same position only in a part of their length, so the lanelets are not
+  // judged as adjacent
+  EXPECT_EQ(issues.size(), 0);
+}
 
-  EXPECT_EQ(issues.size(), 1);
+TEST_F(TestBorderSharingValidator, SamePointsDifferentLinestrings)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_same_points.osm");
 
-  const auto difference = compare_an_issue(expected_issue, issues[0]);
-  EXPECT_TRUE(difference.empty()) << difference;
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 1, 17, 18);
+}
+
+TEST_F(TestBorderSharingValidator, CopiedBorder)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_copied_points.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 1, 21, 22);
+}
+
+TEST_F(TestBorderSharingValidator, SlightlyDifferentPoints)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_slightly_different_points.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, DifferentHeight)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_different_height.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, PartiallySamePoints)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_partially_same_points.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, BordersOnSameSide)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_same_side.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, OppositeLanesShared)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_opposite_lanes_shared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, OppositeLanesUnshared)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_opposite_lanes_unshared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 1, 17, 18);
+}
+
+TEST_F(TestBorderSharingValidator, NoRoadLanelet)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_no_road.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, SharedBorderWithFence)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_fence_shared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 3, 16, 17);
+}
+
+TEST_F(TestBorderSharingValidator, SharedFenceBorder)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_fence_typed_shared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 3, 16, 17);
+}
+
+TEST_F(TestBorderSharingValidator, SharedBorderWithPartialFence)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_partial_fence_shared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 3, 16, 17);
+}
+
+TEST_F(TestBorderSharingValidator, SharedBorderWithFenceRoadShoulder)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_shoulder_road_fence_shared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 3, 16, 17);
+}
+
+TEST_F(TestBorderSharingValidator, UnsharedBordersWithFence)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_fence_unshared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, UnsharedFenceBorders)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_fence_typed_unshared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, UnsharedBordersWithPartialFence)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_partial_fence_unshared.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  EXPECT_EQ(issues.size(), 0);
+}
+
+TEST_F(TestBorderSharingValidator, UnsharedBordersWithFenceInsideLanelet)  // NOLINT for gtest
+{
+  load_target_map("lane/border_sharing_fence_inside_lanelet.osm");
+
+  lanelet::autoware::validation::BorderSharingValidator checker;
+  const auto & issues = checker(*map_);
+
+  expect_issue_pair(issues, 1, 17, 18);
 }
 
 TEST_F(TestBorderSharingValidator, SampleMap)  // NOLINT for gtest
