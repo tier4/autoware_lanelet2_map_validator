@@ -15,14 +15,17 @@
 #ifndef LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 #define LANELET2_MAP_VALIDATOR__VALIDATORS__LANE__BORDER_SHARING_HPP_
 
-#include "lanelet2_map_validator/config_store.hpp"
-
-#include <lanelet2_routing/RoutingGraph.h>
+#include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_traffic_rules/GenericTrafficRules.h>
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
+#include <array>
+#include <optional>
+#include <set>
 #include <string>
+#include <utility>
+#include <vector>
 
 namespace lanelet::autoware::validation
 {
@@ -34,34 +37,33 @@ public:
 
   lanelet::validation::Issues operator()(const lanelet::LaneletMap & map) override;
 
-  BorderSharingValidator()
-  {
-    const auto parameters = ValidatorConfigStore::parameters()[name()];
-    iou_threshold_ = get_parameter_or<double>(parameters, "iou_threshold", 0.05);
-  }
-
 private:
+  using Point = std::array<double, 3>;
+  using Segment = std::pair<Point, Point>;
+
+  struct Bound
+  {
+    lanelet::ConstLanelet lanelet;
+    lanelet::ConstLineString3d line;
+    std::vector<Point> points;
+    bool lanelet_is_on_left;  // true if the lanelet lies on the left side of the points' direction
+  };
+
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
 
   /**
-   * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded
-   * to the lateral direction, and its variation length is about (average length of both edges of
-   * the lanelet) * (scale_factor-1)
+   * @brief return whether the two point sequences are at the same position from end to end.
+   * The returned value tells whether the order is reversed. Returns nullopt if not the same.
    */
-  lanelet::BasicPolygon2d expanded_lanelet_polygon(
-    const lanelet::ConstLanelet & lane, const double & scale_factor);
-
-  lanelet::routing::RelationType get_relation(
-    const lanelet::routing::RoutingGraphUPtr & routing_graph_ptr, const lanelet::ConstLanelet from,
-    const lanelet::ConstLanelet to);
+  static std::optional<bool> same_position(
+    const std::vector<Point> & points1, const std::vector<Point> & points2);
 
   /**
-   * @brief return IoU
+   * @brief return true if a fence linestring is at the same position as a part of the bound
    */
-  double intersection_over_union(
-    const lanelet::BasicPolygon2d & polygon1, const lanelet::BasicPolygon2d & polygon2);
+  static bool has_fence_on(const Bound & bound, const std::set<Segment> & fence_segments);
 
-  double iou_threshold_;
+  static Segment make_segment(const Point & a, const Point & b);
 };
 
 namespace traffic_rules
