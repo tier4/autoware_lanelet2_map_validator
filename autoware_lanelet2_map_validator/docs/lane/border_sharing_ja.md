@@ -9,63 +9,88 @@ mapping.lane.border_sharing
 ## 機能
 
 この検証器は、物理的に隣り合う lanelet どうしが同じ linestring を境界線として共有していること、およびフェンスで隔てられた lanelet どうしが境界線を共有していないことを確認します。
-詳しくは Autoware Documentation の [vm-01-03 Linestring sharing](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_lane/#vm-01-03-linestring-sharing) を参照してください。
+詳しくは Autoware Documentation の [vm-01-03 Linestring sharing](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_lane/#vm-01-03-linestring-sharing) と [vm-01-04 Sharing of the centerline of lanes for opposing traffic](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_lane/#vm-01-04-sharing-of-the-centerline-of-lanes-for-opposing-traffic) を参照してください。
 
-この検証器は、地図ファイルに書かれていることだけを使います。物（フェンス、ポール、中央分離帯など）が実際にあるかどうかは推し量りません。地図ファイルにある要素はあるものとして、地図ファイルに無い要素は無いものとして扱います。
+この検証器は、実際には隣り合っていないものの、非常に近い lanelet を誤って判定することがあります。
 
-この検証器は、次の issue を、対応する primitive の ID とともに出力します。
+この検証器は、次の issue を、対応する primitive の ID とともに出力します。"Lane.BorderSharing-001" と "Lane.BorderSharing-002" の違いは [アルゴリズム](#アルゴリズム) を、"Lane.BorderSharing-003" は [フェンスを挟んで境界線を共有する lanelet](#フェンスを挟んで境界線を共有する-lanelet) を参照してください。
 
-| Issue Code             | Message                                                                                         | Severity | Primitive | 説明                                                                                                                                                                                                                             | 直し方                                                                                                                                                                                        |
-| ---------------------- | ----------------------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lane.BorderSharing-001 | "Lanelet \<ID\> と隣接しているようですが、境界線を同一の linestring で共有していません。"       | Error    | Lanelet   | この lanelet と lanelet \<ID\> は、あいだにフェンスが無く隣り合っていますが、境界線が別々の linestring になっています。**同じ issue が lanelet \<ID\> にも出るので、1 つの違反から 2 つの issue が出ることに注意してください。** | 2 つの lanelet に共通の境界線 linestring を作り、両方の left bound か right bound にしてください。実際の地形で 2 つのあいだにフェンスがある場合は、代わりにフェンスを地図に追加してください。 |
-| Lane.BorderSharing-003 | "Lanelet \<ID\> とのあいだにフェンスがありますが、境界線を同一の linestring で共有しています。" | Error    | Lanelet   | この lanelet と lanelet \<ID\> は境界線の linestring を共有していますが、境界線の上にフェンスがあります。**同じ issue が lanelet \<ID\> にも出るので、1 つの違反から 2 つの issue が出ることに注意してください。**               | 2 つの lanelet の境界線を別々の linestring にしてください。実際の地形にフェンスが無い場合は、代わりに地図からフェンスを消すか、境界線の type を直してください。                               |
+| Issue Code             | Message                                                                                                    | Severity | Primitive | 説明                                                                                                                                                                                                                                                                                                                             | 直し方                                                                                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lane.BorderSharing-001 | "Lanelet \<ID\> と隣接しているようですが、境界線を同一の linestring で共有していません。"                  | Error    | Lanelet   | 検証器は、この lanelet と lanelet \<ID\> が隣り合っているのに、境界線の linestring を共有していないと判定しました。**同じ issue が lanelet \<ID\> にも出力されるので、1 つの違反から 2 つの issue が出力されることに注意してください。**                                                                                         | 2 つの lanelet に共通の境界線 linestring を作り、両方の left bound か right bound にしてください。                                                              |
+| Lane.BorderSharing-002 | "複数の Lanelet \<multiple IDs\> と隣接しているようですが、境界線を同一の linestring で共有していません。" | Error    | Lanelet   | 検証器は、この lanelet と lanelet \<ID\> が隣り合っているのに、境界線の linestring を共有していないと判定しました。上の issue との違いは、この違反が lanelet の区切り方の誤りから起きている可能性があることと、issue が最も大きい lanelet にだけ出力されることです（lanelet \<multiple IDs\> には同じ issue は出力されません）。 | この lanelet を適切に区切り、隣り合う各 lanelet と共通の境界線を設定してください。                                                                              |
+| Lane.BorderSharing-003 | "Lanelet \<ID\> とのあいだにフェンスがありますが、境界線を同一の linestring で共有しています。"            | Error    | Lanelet   | この lanelet と lanelet \<ID\> は境界線の linestring を共有していますが、境界線の上にフェンスがあります。**同じ issue が lanelet \<ID\> にも出力されるので、1 つの違反から 2 つの issue が出力されることに注意してください。**                                                                                                   | 2 つの lanelet の境界線を別々の linestring にしてください。実際の地形にフェンスが無い場合は、代わりに地図からフェンスを消すか、境界線の type を直してください。 |
 
 ## アルゴリズム
 
-この検証器は、すべての lanelet の組（lanelet A と lanelet B）と、それぞれの境界線（lanelet A の境界線 L1 と lanelet B の境界線 L2）を調べます。
+### 概要
 
-### 手順 1: 対象から外す組
+アルゴリズムの概要を、次のフローチャートに示します。
 
-次のどれかに当てはまる組は、対象から外します（issue を出しません）。
+![flow_chart](../../media/border_sharing_flow_chart.drawio.svg)
 
-1. lanelet A も lanelet B も `subtype:road` ではない。このような組は、Autoware の planning に影響しません。
-2. L1 と L2 が、端から端まで同じ位置にない。「同じ位置」とは、L1 と L2 が同じ point を同じ順（または逆順）で使うこと、または L1 と L2 の全点の座標が高さを含めて同じであることです。近いが同じ位置ではない境界線と、一部の区間だけ同じ位置にある境界線は、隣り合うと判定しません。
-3. lanelet A と lanelet B が、境界線の同じ側にある（走行領域が重なっている）。側は、境界線がそれぞれの lanelet の left bound と right bound のどちらかと、point の向きから決めます。
+境界線の共有の決まりに反する lanelet の組を集めたあと、検証器は、それぞれの組に逆向きの組があるかどうかで分類します。組 (Lanelet1, Lanelet2) と (Lanelet2, Lanelet1) の両方が見つかった場合は、それぞれの lanelet を広げた多角形が、もう一方の境界線を覆っていることを意味します。この組は `Lane.BorderSharing-001` に分類します。組が 1 つだけで逆向きの組が無い場合は、`Lane.BorderSharing-002` に分類します。組 (Lanelet 1, Lanelet2) と (Lanelet 1, Lanelet3) があり、(Lanelet 2, Lanelet1) と (Lanelet 3, Lanelet1) が無い場合は、まとめて Lanelet 1 の 1 つの issue にし、その issue のメッセージで Lanelet 2 と 3 を挙げます。
 
-### 手順 2: 境界線の上のフェンス
+### 例 1
 
-L1 か L2 の type が `fence` である場合、または type が `fence` の linestring が L1 か L2 の少なくとも 1 区間（連続する 2 点）と同じ位置にある場合、境界線の上にフェンスがあるとします。ほかの位置（lanelet の中など）にあるフェンスは考えません。
+次の例を見てみます。この例では、Lanelet D、E、F が、それぞれ Lanelet G、H、I と境界線の linestring を共有すべきです。
 
-| 境界線の上のフェンス | L1 と L2 が同じ linestring | 結果                   |
-| -------------------- | -------------------------- | ---------------------- |
-| なし                 | はい                       | OK                     |
-| なし                 | いいえ                     | Lane.BorderSharing-001 |
-| あり                 | はい                       | Lane.BorderSharing-003 |
-| あり                 | いいえ                     | OK                     |
+![simple_example](../../media/border_sharing_simple_example.drawio.svg)
 
-## 既知の制限
+Lanelet E を検証するとき、`mapping.lane.border_sharing` は、まず Lanelet E を広げた多角形を作り、その多角形と交わる Lanelet A〜I を候補として集めます。次に、Lanelet E との関係を求めます。結果は次の表のとおりです。
 
-作成者が誤っていない地図をエラーと判定しないために、この検証器は次の場合を検出しません。
+| Lanelet               | 関係      |
+| --------------------- | --------- |
+| Lanelet B             | Left      |
+| Lanelet D             | Previous  |
+| Lanelet F             | Successor |
+| Lanelet A, C, G, H, F | None      |
 
-- わずかにずれた位置、すき間のある位置、または重なる位置に描かれた境界線。幅のある物（中央分離帯など）で隔てられた lanelet が、地図ファイルでは同じ形になるためです。
-- 高さだけが違う境界線。上下 2 段の道路の lanelet が、地図ファイルでは同じ形になるためです。
-- 一部の区間だけ同じ位置にある境界線（隣り合う lanelet を別の位置で区切った場合など）。交差点で分かれる lanelet が、地図ファイルでは同じ形になるためです。
-- 地図ファイルに物が描かれていないまま、境界線を共有した lanelet。実際の地形にポール、中央分離帯、フェンスがあっても検出しません。
-- `subtype:road` の lanelet を含まない組。
+フローチャートに従い、Lanelet B、D、F を候補から外します。残った lanelet の left bound と right bound が多角形に完全に覆われているかを調べると、多角形に覆われているのは Lanelet H の境界線だけです。さらに、Lanelet H を検証したときも、広げた多角形が Lanelet E の境界線を覆うという同じ結果になります。そのため、Lanelet E と Lanelet H の両方に、issue コード `Lane.BorderSharing-001` の issue を出力します。
+
+### 例 2
+
+もう 1 つの例として、次のように、隣り合う lanelet と区切り方が違う場合を見てみます。
+
+![wrong_division](../../media/border_sharing_wrong_division.drawio.svg)
+
+この場合、Lanelet X を広げた多角形は Lanelet Y と Z の境界線を覆いますが、Lanelet Y を広げた多角形は Lanelet X の境界線を覆いません。このとき、Lanelet X に issue コード `Lane.BorderSharing-002` の issue を出力します。
+
+## フェンスを挟んで境界線を共有する lanelet
+
+上のアルゴリズムとは別に、この検証器は、同じ linestring（同じ ID）を境界線にしている lanelet の組をすべて調べます。次の条件にすべて当てはまる組に、`Lane.BorderSharing-003` を出力します。
+
+1. 少なくとも一方の lanelet が `subtype:road` である。road の lanelet を含まない組は、Autoware の planning に影響しません。
+2. 2 つの lanelet が、共有している境界線の両側に分かれている。側は、境界線がそれぞれの lanelet の left bound と right bound のどちらかと、point の向きから決めます。
+3. 共有している境界線の上にフェンスがある。つまり、境界線の type が `fence` である、または type が `fence` の linestring が境界線の少なくとも 1 区間（連続する 2 点）と同じ位置にある。「同じ位置」とは、2 本の linestring が同じ point を使うこと、または点の座標が高さを含めて同じであることです。ほかの位置（lanelet の中など）にあるフェンスは考えません。
+
+この判定は、地図ファイルに書かれたフェンスだけを使います。物（フェンス、ポール、中央分離帯など）が実際にあるかどうかは推し量りません。そのため、地図ファイルにフェンスが描かれていないまま境界線を共有した lanelet は、検出しません。
+
+## 判定が難しい場合
+
+「隣り合う lanelet」の判定にはあいまいさがあるので、検証器が境界線の共有の決まりへの違反を誤って判定する場合があります。
+
+### 隣り合ってはいないが、近すぎる lanelet
+
+離して作るべき 2 つの lanelet が非常に近いと、検証器は、それらが隣り合っているのに共通の境界線を持っていないと誤って判定することがあります。
+
+### 疑似的な双方向の lanelet
+
+Autoware では、lanelet は一方向を前提としています。そのため、双方向の lanelet を作りたいときは、次のように、ある lanelet の上に逆向きの lanelet を重ねて置くことがあります。
+
+![pseudo_bidirectional](../../media/border_sharing_bidirectional.drawio.svg)
+
+広げた多角形がほかの lanelet の境界線を覆ってしまうので、Conflicting の関係にある lanelet については IoU（intersection over union）を計算しています。IoU が 0.05 より大きく、多角形が境界線の linestring を覆っている場合は、この例のような疑似的な双方向の lanelet である可能性が高いとみなします。言い換えると、この検証器は、IoU が小さい組だけを隣り合う lanelet と判定します。
 
 ## パラメータ
 
-なし。
+この検証器には、次のパラメータがあります。
+
+| パラメータ    | 既定値 | 説明                                                                                                                                                                                                                                                                                                             |
+| ------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| iou_threshold | 0.05   | 広げた多角形と候補の lanelet の重なりが、意図して重ねたとみなすほど大きくはないことを見分けるためのしきい値です。IoU がこの値より小さい場合、検証器はそれらが物理的に隣り合っているとみなします。数値の例として、同じ形の 2 つの長方形が隣り合い、その一方を中心から 5 % 広げた場合、IoU は約 0.024 になります。 |
 
 ## 関連するソースコード
 
 - border_sharing.cpp
 - border_sharing.hpp
-
-## 廃止した issue
-
-次の issue は、現在は廃止しています。
-
-| Issue Code             | Message                                                                                                    | Severity | Primitive | 説明                                                                                                                                                                                                                                             | 直し方                                                                             |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| Lane.BorderSharing-002 | "複数の Lanelet \<multiple IDs\> と隣接しているようですが、境界線を同一の linestring で共有していません。" | Error    | Lanelet   | 検証器は、この lanelet と lanelet \<ID\> が隣り合っているのに境界線を共有していないと判定しました。この違反は lanelet の区切り方の誤りから起きている可能性があり、issue は最も大きい lanelet にだけ出していました。（バージョン 1.8.2 まで使用） | この lanelet を適切に区切り、隣り合う各 lanelet と共通の境界線を設定してください。 |
