@@ -22,7 +22,9 @@
 #include <lanelet2_validation/Validation.h>
 #include <lanelet2_validation/ValidatorFactory.h>
 
+#include <array>
 #include <string>
+#include <utility>
 
 namespace lanelet::autoware::validation
 {
@@ -41,7 +43,17 @@ public:
   }
 
 private:
+  using Point = std::array<double, 3>;
+  using Segment = std::pair<Point, Point>;
+
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
+
+  /**
+   * @brief check that lanelets separated by a fence don't share their border linestring
+   */
+  lanelet::validation::Issues check_fence_shared_border(const lanelet::LaneletMap & map);
+
+  static Segment make_segment(const Point & a, const Point & b);
 
   /**
    * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded

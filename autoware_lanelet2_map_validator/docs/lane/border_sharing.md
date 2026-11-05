@@ -1,22 +1,25 @@
 # border_sharing
 
+🇬🇧 **English ver** | 🇯🇵 [日本語 ver](./border_sharing_ja.md)
+
 ## Validator name
 
 mapping.lane.border_sharing
 
 ## Feature
 
-This validator checks whether physically adjacent lanelets share the same linestring as their border.
+This validator checks whether physically adjacent lanelets share the same linestring as their border, and whether lanelets separated by a fence don't share their border.
 See Autoware Documentation [vm-01-03 Linestring sharing](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_lane/#vm-01-03-linestring-sharing) and [vm-01-04 Sharing of the centerline of lanes for opposing traffic](https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/map/map-requirements/vector-map-requirements-overview/category_lane/#vm-01-04-sharing-of-the-centerline-of-lanes-for-opposing-traffic) for more information.
 
 This validator may misjudge lanelets that are very close but not adjacent in the real world.
 
-The validator will output the following issues with the corresponding primitive ID. Read [Algorithm](#algorithm) to understand the difference between "Lane.BorderSharing-001" and "Lane.BorderSharing-002".
+The validator will output the following issues with the corresponding primitive ID. Read [Algorithm](#algorithm) to understand the difference between "Lane.BorderSharing-001" and "Lane.BorderSharing-002", and [Lanelets sharing a border across a fence](#lanelets-sharing-a-border-across-a-fence) for "Lane.BorderSharing-003".
 
-| Issue Code             | Message                                                                                   | Severity | Primitive | Description                                                                                                                                                                                                                                                                                                                            | Approach                                                                                                             |
-| ---------------------- | ----------------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Lane.BorderSharing-001 | "Seems to be adjacent with Lanelet \<ID\> but doesn't share a border linestring."         | Error    | Lanelet   | The validator judged that the lanelet and lanelet \<ID\> is adjacent but doesn't share a border linestring. **Note that the same issue will be created against lanelet \<ID\> so two issues rise from one violation.**                                                                                                                 | Create a common border linestring of both lanelets and set the left bound or right bound of them to that linestring. |
-| Lane.BorderSharing-002 | "Seems to be adjacent with Lanelet \<multiple IDs\> but doesn't share a border linestring | Error    | Lanelet   | The validator judged that the lanelet and lanelet \<ID\> is adjacent but doesn't share border linestrings. The difference with the above is that this violation may be caused from incorrect lanelet division, and the issue will be made only for the largest lanelet. (The same issue will not be made for lanelet \<multiple IDs\>) | Divide this lanelet properly and then set a common border linestring to each adjacent lanelet.                       |
+| Issue Code             | Message                                                                                   | Severity | Primitive | Description                                                                                                                                                                                                                                                                                                                            | Approach                                                                                                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lane.BorderSharing-001 | "Seems to be adjacent with Lanelet \<ID\> but doesn't share a border linestring."         | Error    | Lanelet   | The validator judged that the lanelet and lanelet \<ID\> is adjacent but doesn't share a border linestring. **Note that the same issue will be created against lanelet \<ID\> so two issues rise from one violation.**                                                                                                                 | Create a common border linestring of both lanelets and set the left bound or right bound of them to that linestring.                                                |
+| Lane.BorderSharing-002 | "Seems to be adjacent with Lanelet \<multiple IDs\> but doesn't share a border linestring | Error    | Lanelet   | The validator judged that the lanelet and lanelet \<ID\> is adjacent but doesn't share border linestrings. The difference with the above is that this violation may be caused from incorrect lanelet division, and the issue will be made only for the largest lanelet. (The same issue will not be made for lanelet \<multiple IDs\>) | Divide this lanelet properly and then set a common border linestring to each adjacent lanelet.                                                                      |
+| Lane.BorderSharing-003 | "Shares a border linestring with Lanelet \<ID\> although a fence lies between them."      | Error    | Lanelet   | The lanelet and lanelet \<ID\> share a border linestring, but a fence lies on the border. **Note that the same issue will be created against lanelet \<ID\> so two issues rise from one violation.**                                                                                                                                   | Create separate border linestrings for the two lanelets. If no fence exists in the real world, remove the fence from the map or fix the type of the border instead. |
 
 ## Algorithm
 
@@ -52,6 +55,16 @@ Let's see another example. where the lanelet division is different with the adja
 ![wrong_division](../../media/border_sharing_wrong_division.drawio.svg)
 
 In this case, the expanded polygon of Lanelet X covers the border of Lanelet Y and Z, but the expanded polygon of Lanelet Y doesn't cover the border of Lanelet X. In this case, the issue of issue code `Lane.BorderSharing-002` will be called against Lanelet X.
+
+## Lanelets sharing a border across a fence
+
+Independently of the algorithm above, the validator examines every pair of lanelets that share the same linestring (the same ID) as their bound. It outputs `Lane.BorderSharing-003` for the pair if all of the following conditions hold.
+
+1. At least one of the lanelets has `subtype:road`. Pairs without a road lanelet don't affect the planning of Autoware.
+2. The two lanelets are on the opposite sides of the shared bound. The side is determined from whether the bound is the left bound or the right bound of each lanelet and from the direction of its points.
+3. A fence lies on the shared bound. That is, the bound has `type:fence`, or a linestring with `type:fence` is at the same position as at least one segment (two consecutive points) of the bound. "The same position" means that the linestrings use the same points, or that the points have the same coordinates including the height. A fence at another position (e.g. inside a lanelet) is not considered.
+
+This check only uses the fences written in the map file. It doesn't guess whether an object (a fence, a pole, a median strip, etc.) exists in the real world. Therefore, lanelets sharing a border without any fence drawn in the map file are not detected.
 
 ## Difficult cases
 

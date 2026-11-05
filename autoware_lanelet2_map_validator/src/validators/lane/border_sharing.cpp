@@ -18,11 +18,13 @@
 
 #include <boost/geometry.hpp>
 
+#include <lanelet2_core/Attribute.h>
 #include <lanelet2_core/geometry/LineString.h>
 #include <lanelet2_core/geometry/Polygon.h>
 #include <lanelet2_routing/RoutingGraph.h>
 #include <lanelet2_traffic_rules/TrafficRulesFactory.h>
 
+#include <algorithm>
 #include <map>
 #include <set>
 #include <stdexcept>
@@ -42,6 +44,7 @@ lanelet::validation::Issues BorderSharingValidator::operator()(const lanelet::La
   lanelet::validation::Issues issues;
 
   lanelet::autoware::validation::appendIssues(issues, check_border_sharing(map));
+  lanelet::autoware::validation::appendIssues(issues, check_fence_shared_border(map));
 
   return issues;
 }
@@ -170,6 +173,120 @@ lanelet::validation::Issues BorderSharingValidator::check_border_sharing(
   }
 
   return issues;
+}
+
+lanelet::validation::Issues BorderSharingValidator::check_fence_shared_border(
+  const lanelet::LaneletMap & map)
+{
+  lanelet::validation::Issues issues;
+
+  const auto to_points = [](const lanelet::ConstLineString3d & line) {
+    std::vector<Point> points;
+    points.reserve(line.size());
+    for (const auto & point : line) {
+      points.push_back({point.x(), point.y(), point.z()});
+    }
+    return points;
+  };
+
+  // Collect the segments of fences so that a fence at the same position as a border can be found
+  std::set<Segment> fence_segments;
+  for (const auto & line : map.lineStringLayer) {
+    if (
+      std::string(line.attributeOr(lanelet::AttributeName::Type, "")) !=
+      lanelet::AttributeValueString::Fence) {
+      continue;
+    }
+    const auto points = to_points(line);
+    for (size_t i = 0; i + 1 < points.size(); i++) {
+      fence_segments.insert(make_segment(points[i], points[i + 1]));
+    }
+  }
+
+  // Group the bounds of lanelets by their linestring
+  struct Bound
+  {
+    lanelet::ConstLanelet lanelet;
+    std::vector<Point> points;  // in the direction of the lanelet
+    bool lanelet_is_on_left;    // true if the lanelet lies on the left side of the points
+  };
+  std::map<lanelet::Id, std::vector<Bound>> bounds_by_line;
+  for (const auto & lane : map.laneletLayer) {
+    for (const bool is_right_bound : {false, true}) {
+      const lanelet::ConstLineString3d line = is_right_bound ? lane.rightBound() : lane.leftBound();
+      if (line.size() < 2) {
+        continue;
+      }
+      bounds_by_line[line.id()].push_back({lane, to_points(line), is_right_bound});
+    }
+  }
+
+  const auto is_road = [](const lanelet::ConstLanelet & lane) {
+    return std::string(lane.attributeOr(lanelet::AttributeName::Subtype, "")) ==
+           lanelet::AttributeValueString::Road;
+  };
+
+  std::set<std::pair<lanelet::Id, lanelet::Id>> fence_shared_pairs;
+  for (const auto & [line_id, bounds] : bounds_by_line) {
+    const lanelet::ConstLineString3d line = map.lineStringLayer.get(line_id);
+    for (size_t i = 0; i < bounds.size(); i++) {
+      for (size_t j = i + 1; j < bounds.size(); j++) {
+        const Bound & bound1 = bounds[i];
+        const Bound & bound2 = bounds[j];
+
+        if (bound1.lanelet.id() == bound2.lanelet.id()) {
+          continue;
+        }
+
+        // Only pairs including a road lanelet affect the planning of Autoware
+        if (!is_road(bound1.lanelet) && !is_road(bound2.lanelet)) {
+          continue;
+        }
+
+        // Lanelets on the same side of the shared border are overlapping, not adjacent
+        const bool reversed = bound1.points.front() != bound2.points.front();
+        const bool lanelet2_is_on_left =
+          reversed ? !bound2.lanelet_is_on_left : bound2.lanelet_is_on_left;
+        if (bound1.lanelet_is_on_left == lanelet2_is_on_left) {
+          continue;
+        }
+
+        // A fence lies on the border if the border itself is a fence or a fence is at the same
+        // position as at least one segment of the border
+        bool has_fence = std::string(line.attributeOr(lanelet::AttributeName::Type, "")) ==
+                         lanelet::AttributeValueString::Fence;
+        for (size_t k = 0; !has_fence && k + 1 < bound1.points.size(); k++) {
+          has_fence = fence_segments.count(make_segment(bound1.points[k], bound1.points[k + 1]));
+        }
+        if (!has_fence) {
+          continue;
+        }
+
+        const lanelet::Id id1 = bound1.lanelet.id();
+        const lanelet::Id id2 = bound2.lanelet.id();
+        fence_shared_pairs.insert(std::minmax(id1, id2));
+      }
+    }
+  }
+
+  // Output issues for both lanelets of each pair
+  std::map<std::string, std::string> substitution_map;
+  for (const auto & [id1, id2] : fence_shared_pairs) {
+    substitution_map["lanelet_id"] = std::to_string(id2);
+    issues.emplace_back(
+      construct_issue_from_code(issue_code(this->name(), 3), id1, substitution_map));
+    substitution_map["lanelet_id"] = std::to_string(id1);
+    issues.emplace_back(
+      construct_issue_from_code(issue_code(this->name(), 3), id2, substitution_map));
+  }
+
+  return issues;
+}
+
+BorderSharingValidator::Segment BorderSharingValidator::make_segment(
+  const Point & a, const Point & b)
+{
+  return a < b ? Segment{a, b} : Segment{b, a};
 }
 
 lanelet::BasicPolygon2d BorderSharingValidator::expanded_lanelet_polygon(
