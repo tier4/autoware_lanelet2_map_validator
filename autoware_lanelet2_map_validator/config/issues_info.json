@@ -47,6 +47,14 @@
       "ja": "Lanelet {lanelet_id} とのあいだにフェンスがありますが、境界線を同一の linestring で共有しています。"
     }
   },
+  "Lane.BorderSharing-004": {
+    "severity": "Error",
+    "primitive": "lanelet",
+    "message": {
+      "en": "Shares a border linestring of type fence with Lanelet {lanelet_id}.",
+      "ja": "Lanelet {lanelet_id} と、type が fence の境界線 linestring を共有しています。"
+    }
+  },
   "Lane.LaneletGeometry-001": {
     "severity": "Error",
     "primitive": "lanelet",

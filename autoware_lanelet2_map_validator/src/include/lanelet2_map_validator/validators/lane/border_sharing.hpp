@@ -23,6 +23,8 @@
 #include <lanelet2_validation/ValidatorFactory.h>
 
 #include <array>
+#include <map>
+#include <set>
 #include <string>
 #include <utility>
 
@@ -45,15 +47,43 @@ public:
 private:
   using Point = std::array<double, 3>;
   using Segment = std::pair<Point, Point>;
+  // Segments of fences and the IDs of the fence linestrings having them
+  using FenceSegments = std::map<Segment, std::set<lanelet::Id>>;
+  using LaneletPairs = std::set<std::pair<lanelet::Id, lanelet::Id>>;
 
   lanelet::validation::Issues check_border_sharing(const lanelet::LaneletMap & map);
 
   /**
-   * @brief check that lanelets separated by a fence don't share their border linestring
+   * @brief check that lanelets don't share a border linestring with a fence lying on it
    */
-  lanelet::validation::Issues check_fence_shared_border(const lanelet::LaneletMap & map);
+  lanelet::validation::Issues check_fence_on_shared_border(const lanelet::LaneletMap & map);
 
-  static Segment make_segment(const Point & a, const Point & b);
+  /**
+   * @brief check that lanelets don't share a border linestring whose type is fence
+   */
+  lanelet::validation::Issues check_fence_typed_shared_border(const lanelet::LaneletMap & map);
+
+  /**
+   * @brief return pairs of lanelets which share the linestring as their bound and lie on the
+   * opposite sides of it. Pairs without a road lanelet are excluded.
+   */
+  static LaneletPairs find_lanelets_sharing(
+    const lanelet::LaneletMap & map, const lanelet::ConstLineString3d & line);
+
+  lanelet::validation::Issues issues_for_pairs(const LaneletPairs & pairs, const int issue_number);
+
+  static FenceSegments collect_fence_segments(const lanelet::LaneletMap & map);
+
+  static bool is_fence(const lanelet::ConstLineString3d & line);
+
+  /**
+   * @brief return true if another fence linestring is at the same position as at least one segment
+   * of the linestring
+   */
+  static bool fence_lies_on(
+    const lanelet::ConstLineString3d & line, const FenceSegments & fence_segments);
+
+  static Segment make_segment(const lanelet::ConstPoint3d & a, const lanelet::ConstPoint3d & b);
 
   /**
    * @brief return a polygon which is an expanded shape of the lanelet. each point will be expanded
