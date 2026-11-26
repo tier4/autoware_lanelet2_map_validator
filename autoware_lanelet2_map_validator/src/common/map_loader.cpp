@@ -14,10 +14,13 @@
 
 #include "lanelet2_map_validator/map_loader.hpp"
 
+#include <GeographicLib/MGRS.hpp>
+#include <GeographicLib/UTMUPS.hpp>
 #include <autoware_lanelet2_extension/projection/mgrs_projector.hpp>
 #include <autoware_lanelet2_extension/projection/transverse_mercator_projector.hpp>
 
 #include <memory>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -33,7 +36,35 @@ constexpr const char * mgrs = "mgrs";
 constexpr const char * transverse_mercator = "transverse_mercator";
 constexpr const char * utm = "utm";
 }  // namespace projector_names
+
+constexpr int mgrs_100km_grid_precision = 0;
 }  // namespace
+
+std::set<std::string> get_mgrs_grids(const std::vector<lanelet::GPSPoint> & points)
+{
+  std::set<std::string> grids;
+  for (const auto & point : points) {
+    int zone{};
+    bool is_north{};
+    double utm_x{};
+    double utm_y{};
+    std::string mgrs_code;
+    try {
+      GeographicLib::UTMUPS::Forward(point.lat, point.lon, zone, is_north, utm_x, utm_y);
+      GeographicLib::MGRS::Forward(
+        zone, is_north, utm_x, utm_y, point.lat, mgrs_100km_grid_precision, mgrs_code);
+    } catch (const GeographicLib::GeographicErr &) {
+      continue;
+    }
+    grids.insert(mgrs_code);
+  }
+  return grids;
+}
+
+bool is_in_same_mgrs_grid(const std::vector<lanelet::GPSPoint> & points)
+{
+  return get_mgrs_grids(points).size() <= 1;
+}
 
 std::unique_ptr<lanelet::Projector> getProjector(
   const std::string & projector_type, const lanelet::GPSPoint & origin)
