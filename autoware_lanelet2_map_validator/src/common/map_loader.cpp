@@ -18,6 +18,7 @@
 #include <GeographicLib/UTMUPS.hpp>
 #include <autoware_lanelet2_extension/projection/mgrs_projector.hpp>
 #include <autoware_lanelet2_extension/projection/transverse_mercator_projector.hpp>
+#include <pugixml.hpp>
 
 #include <memory>
 #include <set>
@@ -38,6 +39,34 @@ constexpr const char * utm = "utm";
 }  // namespace projector_names
 
 constexpr int mgrs_100km_grid_precision = 0;
+
+std::vector<lanelet::GPSPoint> load_gps_points(const std::string & map_file)
+{
+  std::vector<lanelet::GPSPoint> points;
+  pugi::xml_document doc;
+  if (!doc.load_file(map_file.c_str())) {
+    return points;
+  }
+  for (const pugi::xml_node & node : doc.child("osm").children("node")) {
+    const pugi::xml_attribute lat = node.attribute("lat");
+    const pugi::xml_attribute lon = node.attribute("lon");
+    if (lat && lon) {
+      points.push_back({lat.as_double(), lon.as_double()});
+    }
+  }
+  return points;
+}
+
+std::string mgrs_cross_grid_error(const std::set<std::string> & grids)
+{
+  std::string grid_list;
+  for (const auto & grid : grids) {
+    grid_list += (grid_list.empty() ? "" : ", ") + grid;
+  }
+  return "The map spans multiple MGRS grids (" + grid_list +
+         ") and cannot be projected correctly by the mgrs projector. "
+         "Use another projector such as transverse_mercator.";
+}
 }  // namespace
 
 std::set<std::string> get_mgrs_grids(const std::vector<lanelet::GPSPoint> & points)
@@ -100,6 +129,12 @@ loadAndValidateMap(
     }
     if (!map) {
       errors.push_back("Failed to load map!");
+    }
+    if (map && projector_type == projector_names::mgrs) {
+      const auto points = load_gps_points(map_file);
+      if (!is_in_same_mgrs_grid(points)) {
+        errors.push_back(mgrs_cross_grid_error(get_mgrs_grids(points)));
+      }
     }
     issues.emplace_back("general", utils::transform(errors, [](auto & error) {
                           return lanelet::validation::Issue(
