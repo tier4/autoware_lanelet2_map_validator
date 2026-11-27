@@ -142,6 +142,7 @@ Then you will see `lanelet2_validation_results.json` in your current working dir
 
 - Choose your input requirement set from the `autoware_lanelet2_map_validator/map_requirements` directory that suits your purpose the most.
   - `autoware_requirement_set.json` is the most general file for Autoware if you don't have any specifications.
+- The `mgrs` projector cannot handle a map spanning multiple MGRS grids (100 km squares). Such a map is reported as an error in `map-loading` of the results. Use the `transverse_mercator` projector with the map origin (`--lat`, `--lon`) instead, e.g. `map_origin` in `map_projector_info.yaml`.
 - `lanelet2_validation_results.json` will be overwritten if it already exists!!
 - The following tab will be appended to the lanelet2 map (`.osm` file). This tab shouldn't harm the Autoware behaviour.
   - All information will be generated automatically. The `validator_version` is obtained from the `package.xml` and the `requirements_version` is obtained from the requirement set JSON file.

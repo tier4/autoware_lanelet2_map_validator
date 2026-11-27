@@ -142,6 +142,7 @@ ros2 run autoware_lanelet2_map_validator autoware_lanelet2_map_validator \
 
 - 検証目的と合致した要求仕様リストを `autoware_lanelet2_map_validator/map_requirements` ディレクトリから探してください。
   - 特に指定の要求仕様リストがなければ Autoware の地図仕様に即した `autoware_lanelet2_map_validator` を使ってください。
+- `mgrs` 投影法は、複数の MGRS グリッド（100 km 四方）にまたがる地図を扱えません。そのような地図は検証結果の `map-loading` でエラーになります。代わりに `transverse_mercator` 投影法を使い、地図の原点を `--lat`, `--lon` で指定してください（例: `map_projector_info.yaml` の `map_origin`）。
 - `lanelet2_validation_results.json` が既に存在する場合は上書きされてしまいます。
 - 下記のようなタブが Lanelet2 地図 (`osm` ファイル) に追記されます。このタブは Autoware の挙動に影響はしません。
   - 本タブの情報は自動的に付与されるもので、何か手入力する必要はありません。`validation_version` は `package.xml` から、`requirements_version` は要求仕様リストから取得されます。
