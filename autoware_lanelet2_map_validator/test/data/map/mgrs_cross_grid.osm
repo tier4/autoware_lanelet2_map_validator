@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm generator="VMB">
+  <MetaInfo format_version="1" map_version="1"/>
+  <node id="1" lat="34.77" lon="137.9995">
+    <tag k="ele" v="60.0"/>
+  </node>
+  <node id="2" lat="34.77" lon="138.0005">
+    <tag k="ele" v="60.0"/>
+  </node>
+  <node id="3" lat="34.77003" lon="137.9995">
+    <tag k="ele" v="60.0"/>
+  </node>
+  <node id="4" lat="34.77003" lon="138.0005">
+    <tag k="ele" v="60.0"/>
+  </node>
+  <way id="5">
+    <nd ref="3"/>
+    <nd ref="4"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="6">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <relation id="7">
+    <member type="way" role="left" ref="5"/>
+    <member type="way" role="right" ref="6"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="speed_limit" v="10"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+  </relation>
+</osm>

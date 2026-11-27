@@ -15,17 +15,23 @@
 #ifndef LANELET2_MAP_VALIDATOR__MAP_LOADER_HPP_  // NOLINT
 #define LANELET2_MAP_VALIDATOR__MAP_LOADER_HPP_  // NOLINT
 
+#include <lanelet2_core/primitives/GPSPoint.h>
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>
 #include <lanelet2_validation/Validation.h>
 
 #include <memory>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 namespace lanelet::autoware::validation
 {
+
+std::set<std::string> get_mgrs_grids(const std::vector<lanelet::GPSPoint> & points);
+
+bool is_in_same_mgrs_grid(const std::vector<lanelet::GPSPoint> & points);
 
 std::pair<lanelet::LaneletMapPtr, std::vector<lanelet::validation::DetectedIssues>>
 loadAndValidateMap(
