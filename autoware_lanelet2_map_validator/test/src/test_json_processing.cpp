@@ -50,6 +50,9 @@ protected:
     file >> json_data;
     return json_data;
   }
+
+  static constexpr const char * lanelet2_error_header =
+    "Errors ocurred while parsing Lanelet Map:";  // cspell:disable-line
 };
 
 TEST_F(JsonProcessingTest, ParseValidatorsWithValidInput)
@@ -66,10 +69,12 @@ TEST_F(JsonProcessingTest, ParseValidatorsWithValidInput)
     validators["parsing.valid_input.no_prerequisites2"].prereq_with_forgive_warnings.size(), 0);
   EXPECT_EQ(
     validators["parsing.valid_input.with_prerequisites1"].prereq_with_forgive_warnings.size(), 2);
-  EXPECT_TRUE(validators["parsing.valid_input.with_prerequisites1"]
-                .prereq_with_forgive_warnings["parsing.valid_input.no_prerequisites1"]);
-  EXPECT_FALSE(validators["parsing.valid_input.with_prerequisites1"]
-                 .prereq_with_forgive_warnings["parsing.valid_input.no_prerequisites2"]);
+  EXPECT_TRUE(
+    validators["parsing.valid_input.with_prerequisites1"]
+      .prereq_with_forgive_warnings["parsing.valid_input.no_prerequisites1"]);
+  EXPECT_FALSE(
+    validators["parsing.valid_input.with_prerequisites1"]
+      .prereq_with_forgive_warnings["parsing.valid_input.no_prerequisites2"]);
 }
 
 TEST_F(JsonProcessingTest, CreateValidationQueueNoCycles)
@@ -159,7 +164,7 @@ TEST_F(JsonProcessingTest, SummarizeValidatorResults)
   EXPECT_EQ(output.find("warnings were found"), std::string::npos);
 }
 
-TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonSkipFirstMessage)
+TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonSkipLanelet2ErrorHeader)
 {
   ValidatorConfigStore::initialize(
     "", get_package_share_directory() + "/config/issues_info.json", "en");
@@ -168,7 +173,7 @@ TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonSkipFirstMessage)
   loading_issues.push_back(
     {"general",
      {
-       lanelet::validation::Issue(lanelet::validation::Severity::Error, "skip_me"),
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, lanelet2_error_header),
        lanelet::validation::Issue(lanelet::validation::Severity::Error, "keep_from_first_group"),
      }});
   loading_issues.push_back(
@@ -210,7 +215,7 @@ TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonWithAllMessagesSkipped)
   loading_issues.push_back(
     {"general",
      {
-       lanelet::validation::Issue(lanelet::validation::Severity::Error, "skip_me"),
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, lanelet2_error_header),
      }});
 
   json output_json = {{"requirements", json::array()}};
@@ -225,5 +230,30 @@ TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonWithAllMessagesSkipped)
   EXPECT_EQ(validator["passed"], true);
   ASSERT_TRUE(validator["issues"].is_array());
   EXPECT_TRUE(validator["issues"].empty());
+}
+
+TEST_F(JsonProcessingTest, AppendLoadingIssuesToJsonKeepFirstMessageWithoutHeader)
+{
+  ValidatorConfigStore::initialize(
+    "", get_package_share_directory() + "/config/issues_info.json", "en");
+
+  std::vector<lanelet::validation::DetectedIssues> loading_issues;
+  loading_issues.push_back(
+    {"general",
+     {
+       lanelet::validation::Issue(lanelet::validation::Severity::Error, "keep_me"),
+     }});
+
+  json output_json = {{"requirements", json::array()}};
+  append_loading_issues_to_json(output_json, loading_issues);
+
+  ASSERT_EQ(output_json["requirements"].size(), 1);
+  const auto & inserted_requirement = output_json["requirements"][0];
+  EXPECT_EQ(inserted_requirement["passed"], false);
+
+  const auto & issues = inserted_requirement["validators"][0]["issues"];
+  ASSERT_EQ(issues.size(), 1);
+  EXPECT_EQ(
+    issues[0]["message"], "The following error occurred while loading the map file: keep_me");
 }
 }  // namespace lanelet::autoware::validation
